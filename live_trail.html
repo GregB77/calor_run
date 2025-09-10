@@ -69,6 +69,10 @@ body.dark th { background: linear-gradient(135deg, #444 0%, #880066 100%); color
 body.dark tbody tr:nth-child(odd) { background: #1e1e1e; }
 body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
 </style>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
 <script>
 const elements = {
   chronoTime: document.getElementById('chrono-time'),
@@ -217,8 +221,5 @@ window.addEventListener('beforeunload', ()=>{ if (chronoInterval) clearInterval(
   · <a href="#" id="theme-toggle">Basculer le thème</a>
 </p>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="scripts.js"></script>
 </body>
 </html>
