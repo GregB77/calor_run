@@ -20,8 +20,8 @@ body{
   color:var(--fg);
   line-height:1.5;
   padding:24px;
+  transition: background 0.3s,color 0.3s;
 }
-h1{font-size:2rem;margin-bottom:8px;color:var(--head-blue);}
 .wrap{display:grid;gap:20px;}
 .card{
   background:var(--card);
@@ -53,6 +53,28 @@ tbody tr:nth-child(even){background:#f2f2f2;}
 #tbl-age-10 th{background:var(--head-blue);}
 #tbl-age-20 th{background:var(--head-pink);}
 
+/* Colonnes total en gras */
+td.total, th.total{font-weight:700;}
+
+/* Ligne mise à jour / thème */
+.update-theme {
+  text-align:center;
+  margin-top:20px;
+  padding:10px 15px;
+  border-radius:12px;
+  background:rgba(0,0,0,0.03);
+  font-size:0.9rem;
+  transition: background 0.3s;
+}
+.update-theme a {
+  color:var(--head-blue);
+  text-decoration:none;
+  cursor:pointer;
+  font-weight:500;
+}
+body.dark .update-theme { background: rgba(255,255,255,0.05); }
+body.dark .update-theme a { color: var(--head-pink); }
+
 /* Dark theme */
 body.dark{background:#121212;color:#eee;}
 body.dark .card{background:#1e1e1e;color:#eee;border-color:#333;}
@@ -68,11 +90,6 @@ body.dark #tbl-age-10 th{background:#3a73c4;color:#fff;}
 body.dark #tbl-age-20 th{background:#e661a0;color:#fff;}
 body.dark tbody tr:nth-child(odd){background:#1e1e1e;}
 body.dark tbody tr:nth-child(even){background:#2a2a2a;}
-
-/* Basculer thème */
-.theme-switch{margin-top:20px;text-align:center;}
-.theme-switch button{padding:8px 12px;font-size:0.9rem;border-radius:6px;border:none;cursor:pointer;background:#eee;color:#111;}
-body.dark .theme-switch button{background:#333;color:#fff;}
 </style>
 </head>
 <body>
@@ -88,11 +105,11 @@ body.dark .theme-switch button{background:#333;color:#fff;}
         <th>Catégorie</th>
         <th>Femmes (10km)</th>
         <th>Hommes (10km)</th>
-        <th>Total (10km)</th>
+        <th class="total">Total (10km)</th>
         <th>Femmes (20km)</th>
         <th>Hommes (20km)</th>
-        <th>Total (20km)</th>
-        <th>Total général</th>
+        <th class="total">Total (20km)</th>
+        <th class="total">Total général</th>
       </tr>
     </thead>
     <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
@@ -125,11 +142,10 @@ body.dark .theme-switch button{background:#333;color:#fff;}
 
 </div>
 
-<!-- Basculer thème et dernière mise à jour -->
-<div class="theme-switch">
-  <span>Dernière mise à jour : <span id="update-time">--:--:--</span></span>
-  <button id="theme-toggle">Basculer le thème</button>
-</div>
+<!-- Ligne mise à jour et bascule thème -->
+<p class="update-theme">
+Dernière mise à jour : <span id="update-time">--:--:--</span> · <a id="theme-toggle">Basculer le thème</a>
+</p>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -180,18 +196,28 @@ function renderCats(body, data){
     const total = t10+t20;
     rows.push(`<tr>
       <td>${cat}</td>
-      <td>${v10.f}</td><td>${v10.h}</td><td>${t10}</td>
-      <td>${v20.f}</td><td>${v20.h}</td><td>${t20}</td>
-      <td>${total}</td>
+      <td>${v10.f}</td><td>${v10.h}</td><td class="total">${t10}</td>
+      <td>${v20.f}</td><td>${v20.h}</td><td class="total">${t20}</td>
+      <td class="total">${total}</td>
     </tr>`);
     tot10f+=v10.f; tot10h+=v10.h; tot20f+=v20.f; tot20h+=v20.h;
   });
+
+  const tot10 = tot10f+tot10h;
+  const tot20 = tot20f+tot20h;
+  const grandTotal = tot10+tot20;
+
   rows.push(`<tr style="font-weight:700">
     <td>Totaux</td>
-    <td>${tot10f}</td><td>${tot10h}</td><td>${tot10f+tot10h}</td>
-    <td>${tot20f}</td><td>${tot20h}</td><td>${tot20f+tot20h}</td>
-    <td>${tot10f+tot10h+tot20f+tot20h}</td>
+    <td>${tot10f} (${Math.round(100*tot10f/tot10||0)}%)</td>
+    <td>${tot10h} (${Math.round(100*tot10h/tot10||0)}%)</td>
+    <td class="total">${tot10}</td>
+    <td>${tot20f} (${Math.round(100*tot20f/tot20||0)}%)</td>
+    <td>${tot20h} (${Math.round(100*tot20h/tot20||0)}%)</td>
+    <td class="total">${tot20}</td>
+    <td class="total">${grandTotal}</td>
   </tr>`);
+
   body.innerHTML = rows.join('');
 }
 
@@ -218,15 +244,13 @@ function renderAges(body10, body20, data){
   body20.innerHTML=buildRows(ages[20]);
 }
 
-// Firebase update listener
 db.ref('participants').on('value',snap=>{
   const data = snap.val()||{};
   renderCats(el.cat,data);
   renderAges(el.age10,el.age20,data);
   document.getElementById('update-time').textContent=new Date().toLocaleTimeString('fr-FR');
 });
-  
-// Theme toggle
+
 document.getElementById('theme-toggle').addEventListener('click',()=>{
   document.body.classList.toggle('dark');
 });
