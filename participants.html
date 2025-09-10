@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Participants Calor Run</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
+  <style>
+    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; color: #333; padding: 20px; }
+    h2 { text-align: center; color: #2c3e50; }
+    .counters { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; font-size: 1.2em; font-weight: bold; }
+    #search { display: block; margin: 10px auto 20px auto; padding: 8px 12px; width: 50%; border-radius: 5px; border: 1px solid #ccc; }
+    table { border-collapse: collapse; width: 100%; max-width: 1000px; margin: 0 auto 20px auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); background-color: #fff; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 12px 15px; text-align: left; cursor: pointer; }
+    th { background-color: #34495e; color: #ecf0f1; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; user-select: none; }
+    tr:nth-child(even) { background: #f2f2f2; }
+    tr:hover { background: #e9ffe9; }
+    .arrow { font-size: 12px; margin-left: 5px; }
+    .center { text-align: center; }
+  </style>
+</head>
+<body>
+  <h2>Participants Calor Run</h2>
+
+  <div class="counters">
+    <div id="count10">Course 10 km : 0</div>
+    <div id="count20">Course 20 km : 0</div>
+    <div id="countTotal">Total : 0</div>
+  </div>
+
+  <input type="text" id="search" placeholder="Rechercher...">
+
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th data-column="Dossard" class="center">Dossard <span class="arrow"></span></th>
+        <th data-column="Nom">Nom <span class="arrow"></span></th>
+        <th data-column="Prenom">Prénom <span class="arrow"></span></th>
+        <th data-column="Club">Club <span class="arrow"></span></th>
+        <th data-column="HF" class="center">H/F <span class="arrow"></span></th>
+        <th data-column="CAT" class="center">CAT <span class="arrow"></span></th>
+        <th data-column="CourseDisplay" class="center">Course <span class="arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+      authDomain: "calor-run.firebaseapp.com",
+      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "calor-run",
+      storageBucket: "calor-run.firebasestorage.app",
+      messagingSenderId: "329949291334",
+      appId: "1:329949291334:web:c71ef20268c609cf953b47",
+      measurementId: "G-YVQPW6JGPK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dbRef = ref(db, "participants");
+
+    let data = [];
+    let filteredData = [];
+    let sortState = {}; 
+
+    const tbody = document.querySelector("#data-table tbody");
+    const searchInput = document.getElementById("search");
+    const headers = document.querySelectorAll("th");
+
+    function renderTable() {
+      tbody.innerHTML = "";
+      filteredData.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="center">${row.Dossard}</td>
+          <td>${row.Nom}</td>
+          <td>${row.Prenom}</td>
+          <td>${row.Club}</td>
+          <td class="center">${row.HF}</td>
+          <td class="center">${row.CAT}</td>
+          <td class="center">${row.CourseDisplay}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("count10").textContent = `Course 10 km : ${filteredData.filter(r => r.Course == 10).length}`;
+      document.getElementById("count20").textContent = `Course 20 km : ${filteredData.filter(r => r.Course == 20).length}`;
+      document.getElementById("countTotal").textContent = `Total : ${filteredData.length}`;
+    }
+
+    function clearArrows() {
+      headers.forEach(th => { th.querySelector(".arrow").textContent = ""; });
+    }
+
+    function sortByColumn(column) {
+      if(column === "Age") return;
+
+      let direction = sortState[column] === 'Asc' ? 'Desc' : 'Asc';
+      sortState[column] = direction;
+
+      filteredData.sort((a,b) => {
+        let valA = a[column];
+        let valB = b[column];
+
+        if(!isNaN(valA) && !isNaN(valB)){
+          valA = Number(valA);
+          valB = Number(valB);
+        }
+
+        if(valA < valB) return direction === 'Asc' ? -1 : 1;
+        if(valA > valB) return direction === 'Asc' ? 1 : -1;
+        return 0;
+      });
+
+      clearArrows();
+      const th = document.querySelector(`th[data-column='${column}'] .arrow`);
+      if(th) th.textContent = direction === 'Asc' ? '▲' : '▼';
+
+      renderTable();
+    }
+
+    headers.forEach(th => {
+      th.addEventListener("click", () => sortByColumn(th.dataset.column));
+    });
+
+    searchInput.addEventListener("input", () => {
+      const term = searchInput.value.toLowerCase();
+      const searchableColumns = ["Dossard","Nom","Prenom","Club","HF","CAT","CourseDisplay"];
+
+      filteredData = data.map(r => ({
+        ...r,
+        CourseDisplay: `${r.Course} KM`
+      })).filter(row =>
+        searchableColumns.some(col => String(row[col]).toLowerCase().includes(term))
+      );
+
+      renderTable();
+    });
+
+    onValue(dbRef, (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        // On ne récupère que les colonnes visibles
+        data = Object.values(val).map(row => ({
+          Dossard: row.Dossard,
+          Nom: row.Nom,
+          Prenom: row.Prenom,
+          Club: row.Club,
+          HF: row.HF,
+          CAT: row.CAT,
+          Course: row.Course
+        }));
+
+        filteredData = data.map(r => ({ ...r, CourseDisplay: `${r.Course} KM` }));
+        renderTable();
+      }
+    });
+  </script>
+</body>
+</html>
