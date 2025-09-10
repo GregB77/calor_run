@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Participants Calor Run</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♂️‍➡️</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃🏻‍♀️‍➡️</text></svg>">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -17,6 +17,7 @@
 
     h2 { text-align: center; margin-bottom: 20px; }
 
+    /* Top bar */
     .top-bar {
       display: flex;
       align-items: center;
@@ -32,6 +33,7 @@
       border: none;
       font-size: 0.95rem;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      height: 42px; /* même hauteur pour tous */
     }
 
     #search { flex: 1; border: 1px solid #ccc; }
@@ -49,6 +51,7 @@
     #count20 { background: #E61780; }
     #countTotal { background: linear-gradient(135deg, #215E99, #E61780); }
 
+    /* Tableau */
     table { 
       border-collapse: collapse; 
       width: 100%; 
@@ -61,21 +64,37 @@
     }
 
     th, td { padding: 12px 15px; font-size: 0.9rem; }
-    th { 
+    td.center, th.center { text-align: center; }
+
+    th {
       background: linear-gradient(135deg, #215E99 0%, #E61780 100%); 
       color: #fff; 
       text-transform: uppercase; 
       letter-spacing: 0.05em; 
       user-select: none;
       position: relative;
+      padding-right: 25px; /* espace pour l’indicateur */
+      cursor: pointer;
     }
 
-    th .arrow {
-      font-size: 12px; 
-      margin-left: 5px;
+    /* Tri discret */
+    th::after {
+      content: '';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%) rotate(0deg);
+      border: 5px solid transparent;
+      border-top-color: rgba(255,255,255,0.4); /* triangle discret */
+      opacity: 0.5;
+      transition: transform 0.2s, opacity 0.2s, border-top-color 0.2s;
     }
 
-    td.center, th.center { text-align: center; }
+    th.sorted::after {
+      border-top-color: #fff; /* tri actif mis en avant */
+      opacity: 1;
+      transform: translateY(-50%) rotate(180deg); /* inversé pour distinction */
+    }
 
     tr:nth-child(even) { background: #f2f2f2; }
     tr:hover { background: #e9f7ff; }
@@ -84,7 +103,7 @@
   </style>
 </head>
 <body>
-  <h2>--- PARTICIPANTS CALOR RUN ---</h2>
+  <h2>PARTICIPANTS CALOR RUN</h2>
 
   <div class="top-bar">
     <input type="text" id="search" placeholder="Rechercher...">
@@ -98,13 +117,13 @@
   <table id="data-table">
     <thead>
       <tr>
-        <th data-column="dossard" class="center">Dossard <span class="arrow">▲</span></th>
-        <th data-column="nom">Nom <span class="arrow"></span></th>
-        <th data-column="prenom">Prénom <span class="arrow"></span></th>
-        <th data-column="club">Club <span class="arrow"></span></th>
-        <th data-column="genre" class="center">Genre <span class="arrow"></span></th>
-        <th data-column="categorie" class="center">CAT <span class="arrow"></span></th>
-        <th data-column="course" class="center">Course <span class="arrow"></span></th>
+        <th data-column="dossard" class="center">Dossard</th>
+        <th data-column="nom">Nom</th>
+        <th data-column="prenom">Prénom</th>
+        <th data-column="club">Club</th>
+        <th data-column="genre" class="center">Genre</th>
+        <th data-column="categorie" class="center">CAT</th>
+        <th data-column="course" class="center">Course</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -131,7 +150,7 @@
 
     let data = [];
     let filteredData = [];
-    let sortState = { dossard: 'Asc' }; // Tri par défaut colonne Dossard
+    let sortState = { dossard: 'Asc' }; // Tri par défaut
 
     const tbody = document.querySelector("#data-table tbody");
     const searchInput = document.getElementById("search");
@@ -158,8 +177,8 @@
       document.getElementById("countTotal").textContent = `Total : ${filteredData.length}`;
     }
 
-    function clearArrows() {
-      headers.forEach(th => { th.querySelector(".arrow").textContent = ""; });
+    function clearSortIndicators() {
+      headers.forEach(th => th.classList.remove('sorted'));
     }
 
     function sortByColumn(column, initial = false) {
@@ -178,9 +197,9 @@
         return 0;
       });
 
-      clearArrows();
-      const th = document.querySelector(`th[data-column='${column}'] .arrow`);
-      if(th) th.textContent = direction === 'Asc' ? '▲' : '▼';
+      clearSortIndicators();
+      const th = document.querySelector(`th[data-column='${column}']`);
+      if(th) th.classList.add('sorted');
 
       renderTable();
     }
@@ -195,7 +214,7 @@
         .filter(row =>
           Object.values(row).some(val => String(val).toLowerCase().includes(term))
         );
-      sortByColumn('dossard', true); // maintien tri par défaut après recherche
+      sortByColumn('dossard', true); // maintenir tri par défaut après recherche
     });
 
     onValue(dbRef, (snapshot) => {
