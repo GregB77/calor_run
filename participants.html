@@ -32,13 +32,13 @@
   <table id="data-table">
     <thead>
       <tr>
-        <th data-column="Dossard" class="center">Dossard <span class="arrow"></span></th>
-        <th data-column="Nom">Nom <span class="arrow"></span></th>
-        <th data-column="Prenom">Prénom <span class="arrow"></span></th>
-        <th data-column="Club">Club <span class="arrow"></span></th>
-        <th data-column="HF" class="center">H/F <span class="arrow"></span></th>
-        <th data-column="CAT" class="center">CAT <span class="arrow"></span></th>
-        <th data-column="CourseDisplay" class="center">Course <span class="arrow"></span></th>
+        <th data-column="dossard" class="center">Dossard <span class="arrow"></span></th>
+        <th data-column="nom">Nom<span class="arrow"></span></th>
+        <th data-column="prenom">Prénom<span class="arrow"></span></th>
+        <th data-column="club">Club<span class="arrow"></span></th>
+        <th data-column="genre" class="center">Genre<span class="arrow"></span></th>
+        <th data-column="categorie" class="center">CAT<span class="arrow"></span></th>
+        <th data-column="course" class="center">Course<span class="arrow"></span></th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -76,13 +76,13 @@
       filteredData.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="center">${row.Dossard}</td>
-          <td>${row.Nom}</td>
-          <td>${row.Prenom}</td>
-          <td>${row.Club}</td>
-          <td class="center">${row.HF}</td>
-          <td class="center">${row.CAT}</td>
-          <td class="center">${row.CourseDisplay}</td>
+          <td class="center">${row.dossard}</td>
+          <td>${row.nom}</td>
+          <td>${row.prenom}</td>
+          <td>${row.club}</td>
+          <td class="center">${row.genre}</td>
+          <td class="center">${row.categorie}</td>
+          <td class="center">${row.course}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -129,11 +129,11 @@
 
     searchInput.addEventListener("input", () => {
       const term = searchInput.value.toLowerCase();
-      const searchableColumns = ["Dossard","Nom","Prenom","Club","HF","CAT","CourseDisplay"];
+      const searchableColumns = ["Dossard","Nom","Prénom","Club","Genre","CAT","Course"];
 
       filteredData = data.map(r => ({
         ...r,
-        CourseDisplay: `${r.Course} KM`
+        course: `${r.course} KM`
       })).filter(row =>
         searchableColumns.some(col => String(row[col]).toLowerCase().includes(term))
       );
@@ -146,16 +146,16 @@
       if (val) {
         // On ne récupère que les colonnes visibles
         data = Object.values(val).map(row => ({
-          Dossard: row.Dossard,
-          Nom: row.Nom,
-          Prenom: row.Prenom,
-          Club: row.Club,
-          HF: row.HF,
-          CAT: row.CAT,
-          Course: row.Course
+          dossard: row.dossard,
+          nom: row.nom,
+          prenom: row.prenom,
+          club: row.club,
+          genre: row.genre,
+          CAT: row.categorie,
+          course: row.course
         }));
 
-        filteredData = data.map(r => ({ ...r, CourseDisplay: `${r.Course} KM` }));
+        filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
         renderTable();
       }
     });
