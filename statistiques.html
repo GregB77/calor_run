@@ -6,52 +6,73 @@
 <title>Stats Calor Run</title>
 <style>
 :root {
-  --bg:#f9f9f9; --fg:#111; --card:#fff; --line:#e5e5e5;
-  --head-blue: #215E99;
-  --head-pink: #E61780;
-  --head-gray: #999;
+  --bg:#f9f9f9; 
+  --fg:#111; 
+  --card:#fff; 
+  --line:#e5e5e5; 
+  --head-blue:#215E99;
+  --head-pink:#E61780;
+  --head-gray:#777;
 }
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:24px;transition:background 0.3s,color 0.3s;}
-body.dark { background:#121212; color:#eee; }
-body.dark .card { background:#1e1e1e; color:#eee; border-color:#333; }
-body.dark th { color:#fff; }
-body.dark tbody tr:nth-child(odd) { background:#1e1e1e; }
-body.dark tbody tr:nth-child(even) { background:#2a2a2a; }
-
-h1{font-size:2rem;margin-bottom:8px;color:#215E99;}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  line-height:1.5;
+  padding:24px;
+}
+h1{font-size:2rem;margin-bottom:8px;color:var(--head-blue);}
 .wrap{display:grid;gap:20px;}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:16px;}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  padding:16px;
+}
 .card h2{font-size:1.1rem;margin-bottom:12px;}
 .tables{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;min-width:640px;}
 th,td{border:1px solid var(--line);padding:6px 8px;text-align:center;font-size:.95rem;}
+th{color:#fff;font-weight:700;}
 tbody tr:nth-child(odd){background:#fff;}
 tbody tr:nth-child(even){background:#f2f2f2;}
 .muted{color:#777;}
 
-/* Grille 1 - couleurs spécifiques des colonnes */
+/* Grille 1 headers */
+#tbl-cat th:nth-child(1),
+#tbl-cat th:nth-child(8){background:var(--head-gray);}
 #tbl-cat th:nth-child(2),
 #tbl-cat th:nth-child(3),
-#tbl-cat th:nth-child(4) { background: var(--head-blue); }
+#tbl-cat th:nth-child(4){background:var(--head-blue);}
 #tbl-cat th:nth-child(5),
 #tbl-cat th:nth-child(6),
-#tbl-cat th:nth-child(7) { background: var(--head-pink); }
-#tbl-cat th:nth-child(1),
-#tbl-cat th:nth-child(8) { background: var(--head-gray); }
+#tbl-cat th:nth-child(7){background:var(--head-pink);}
 
-/* Grille 2 - couleurs des en-têtes */
-#tbl-age-10 th { background: var(--head-blue); color: #fff; }
-#tbl-age-20 th { background: var(--head-pink); color: #fff; }
+/* Grille 2 headers */
+#tbl-age-10 th{background:var(--head-blue);}
+#tbl-age-20 th{background:var(--head-pink);}
 
-/* séparations verticales discrètes */
-th.sep, td.sep { border-left:1px solid #ccc; }
+/* Dark theme */
+body.dark{background:#121212;color:#eee;}
+body.dark .card{background:#1e1e1e;color:#eee;border-color:#333;}
+body.dark #tbl-cat th:nth-child(1),
+body.dark #tbl-cat th:nth-child(8){background:#777;}
+body.dark #tbl-cat th:nth-child(2),
+body.dark #tbl-cat th:nth-child(3),
+body.dark #tbl-cat th:nth-child(4){background:#3a73c4;}
+body.dark #tbl-cat th:nth-child(5),
+body.dark #tbl-cat th:nth-child(6),
+body.dark #tbl-cat th:nth-child(7){background:#e661a0;}
+body.dark #tbl-age-10 th{background:#3a73c4;color:#fff;}
+body.dark #tbl-age-20 th{background:#e661a0;color:#fff;}
+body.dark tbody tr:nth-child(odd){background:#1e1e1e;}
+body.dark tbody tr:nth-child(even){background:#2a2a2a;}
 
-/* colonnes Totaux en gras */
-th.total, td.total { font-weight:700; }
-
-/* Ligne bascule thème et dernière mise à jour */
-.footer { text-align:center; margin-top:20px; font-size:0.9rem; color:#666; }
-.footer a { color: var(--head-blue); text-decoration:none; margin-left:6px; }
+/* Basculer thème */
+.theme-switch{margin-top:20px;text-align:center;}
+.theme-switch button{padding:8px 12px;font-size:0.9rem;border-radius:6px;border:none;cursor:pointer;background:#eee;color:#111;}
+body.dark .theme-switch button{background:#333;color:#fff;}
 </style>
 </head>
 <body>
@@ -65,13 +86,13 @@ th.total, td.total { font-weight:700; }
     <thead>
       <tr>
         <th>Catégorie</th>
-        <th class="sep">Femmes (10km)</th>
+        <th>Femmes (10km)</th>
         <th>Hommes (10km)</th>
-        <th class="total">Total (10km)</th>
-        <th class="sep">Femmes (20km)</th>
+        <th>Total (10km)</th>
+        <th>Femmes (20km)</th>
         <th>Hommes (20km)</th>
-        <th class="total">Total (20km)</th>
-        <th class="sep total">Total général</th>
+        <th>Total (20km)</th>
+        <th>Total général</th>
       </tr>
     </thead>
     <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
@@ -81,47 +102,33 @@ th.total, td.total { font-weight:700; }
 
 <section class="card">
   <h2>-/+ Âgés - 10 km | 20 km</h2>
-  <div class="tables" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    
+  <div class="tables" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
     <table id="tbl-age-10">
       <thead>
         <tr>
-          <th>Dossard</th>
-          <th>Prénom</th>
-          <th>Nom</th>
-          <th>Âge</th>
+          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
         </tr>
       </thead>
-      <tbody>
-        <tr><td colspan="4" class="muted">Chargement…</td></tr>
-      </tbody>
+      <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
     </table>
 
     <table id="tbl-age-20">
       <thead>
         <tr>
-          <th>Dossard</th>
-          <th>Prénom</th>
-          <th>Nom</th>
-          <th>Âge</th>
+          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
         </tr>
       </thead>
-      <tbody>
-        <tr><td colspan="4" class="muted">Chargement…</td></tr>
-      </tbody>
+      <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
     </table>
-
   </div>
 </section>
 
-<div id="err" class="error" style="display:none;"></div>
-
 </div>
 
-<!-- Footer bascule thème et dernière mise à jour -->
-<div class="footer">
-  Dernière mise à jour : <span id="update-time">--:--:--</span>
-  · <a href="#" id="theme-toggle">Basculer le thème</a>
+<!-- Basculer thème et dernière mise à jour -->
+<div class="theme-switch">
+  <span>Dernière mise à jour : <span id="update-time">--:--:--</span></span>
+  <button id="theme-toggle">Basculer le thème</button>
 </div>
 
 <!-- Firebase -->
@@ -129,7 +136,6 @@ th.total, td.total { font-weight:700; }
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
-// Firebase init et fonctions de rendu comme précédemment
 const firebaseConfig = {
   apiKey:"AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
   authDomain:"calor-run.firebaseapp.com",
@@ -145,25 +151,83 @@ const db = firebase.database();
 const el = {
   cat: document.querySelector('#tbl-cat tbody'),
   age10: document.querySelector('#tbl-age-10 tbody'),
-  age20: document.querySelector('#tbl-age-20 tbody'),
-  err: document.getElementById('err'),
-  updateTime: document.getElementById('update-time'),
-  themeToggle: document.getElementById('theme-toggle')
+  age20: document.querySelector('#tbl-age-20 tbody')
 };
 
-// Fonctions parseDate, computeAge, renderCats, renderAges, showError identiques à ton code précédent
+const orderCat = ['CA','JU','ES','SE','M0','M1','M2','M3','M4','M5','M6','M7','M8','M9','M10'];
 
-// Exemple simplifié pour mise à jour de la dernière date
-db.ref('participants').on('value', snap => {
-  const data = snap.val() || {};
-  renderCats(el.cat, data);
-  renderAges(el.age10, el.age20, data);
-  el.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
+function parseDate(d){if(!d)return null;const dt=new Date(d);return isNaN(dt.getTime())?null:dt;}
+function computeAge(d){if(!d)return null;const today=new Date();let a=today.getFullYear()-d.getFullYear();if(today.getMonth()<d.getMonth()||(today.getMonth()===d.getMonth()&&today.getDate()<d.getDate()))a--;return a;}
+
+function renderCats(body, data){
+  const counts = {10:{},20:{}};
+  Object.values(data||{}).forEach(p=>{
+    const course = Number(p.course)||0;
+    const cat = p.categorie||'—';
+    const genre = (p.genre||'').toLowerCase();
+    counts[course][cat] = counts[course][cat]||{f:0,h:0};
+    if(genre==='f' || genre==='femme') counts[course][cat].f++;
+    else counts[course][cat].h++;
+  });
+
+  const rows=[];
+  let tot10f=0,tot10h=0,tot20f=0,tot20h=0;
+  orderCat.forEach(cat=>{
+    const v10 = counts[10][cat]||{f:0,h:0};
+    const v20 = counts[20][cat]||{f:0,h:0};
+    const t10 = v10.f+v10.h;
+    const t20 = v20.f+v20.h;
+    const total = t10+t20;
+    rows.push(`<tr>
+      <td>${cat}</td>
+      <td>${v10.f}</td><td>${v10.h}</td><td>${t10}</td>
+      <td>${v20.f}</td><td>${v20.h}</td><td>${t20}</td>
+      <td>${total}</td>
+    </tr>`);
+    tot10f+=v10.f; tot10h+=v10.h; tot20f+=v20.f; tot20h+=v20.h;
+  });
+  rows.push(`<tr style="font-weight:700">
+    <td>Totaux</td>
+    <td>${tot10f}</td><td>${tot10h}</td><td>${tot10f+tot10h}</td>
+    <td>${tot20f}</td><td>${tot20h}</td><td>${tot20f+tot20h}</td>
+    <td>${tot10f+tot10h+tot20f+tot20h}</td>
+  </tr>`);
+  body.innerHTML = rows.join('');
+}
+
+function renderAges(body10, body20, data){
+  const ages={10:{oldest:null,youngest:null},20:{oldest:null,youngest:null}};
+  Object.values(data||{}).forEach(p=>{
+    const course = Number(p.course)||0;
+    const birth = parseDate(p.date_naiss);
+    const age = computeAge(birth);
+    if(!birth||age===null) return;
+    const pack={dossard:p.dossard||'',prenom:p.prenom||'',nom:p.nom||'',age};
+    if(course===10){
+      if(!ages[10].oldest||age>ages[10].oldest.age) ages[10].oldest=pack;
+      if(!ages[10].youngest||age<ages[10].youngest.age) ages[10].youngest=pack;
+    }
+    if(course===20){
+      if(!ages[20].oldest||age>ages[20].oldest.age) ages[20].oldest=pack;
+      if(!ages[20].youngest||age<ages[20].youngest.age) ages[20].youngest=pack;
+    }
+  });
+
+  function buildRows(a){return [a.oldest,a.youngest].filter(Boolean).map(p=>`<tr><td>${p.dossard}</td><td>${p.prenom}</td><td>${p.nom}</td><td>${p.age} ans</td></tr>`).join('')||'<tr><td colspan="4" class="muted">Aucune donnée.</td></tr>'; }
+  body10.innerHTML=buildRows(ages[10]);
+  body20.innerHTML=buildRows(ages[20]);
+}
+
+// Firebase update listener
+db.ref('participants').on('value',snap=>{
+  const data = snap.val()||{};
+  renderCats(el.cat,data);
+  renderAges(el.age10,el.age20,data);
+  document.getElementById('update-time').textContent=new Date().toLocaleTimeString('fr-FR');
 });
-
-// Dark mode toggle
-el.themeToggle.addEventListener('click', e => {
-  e.preventDefault();
+  
+// Theme toggle
+document.getElementById('theme-toggle').addEventListener('click',()=>{
   document.body.classList.toggle('dark');
 });
 </script>
