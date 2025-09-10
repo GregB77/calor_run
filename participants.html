@@ -76,7 +76,8 @@
       user-select: none;
     }
     tr:nth-child(even) { background: #f2f2f2; }
-    tr:hover { background: #e9f7ff; }
+    tr:hover { background: #e9f7ff; } /* clair */
+    body.dark tr:hover { background: #333; } /* sombre */
     .arrow { font-size: 12px; margin-left: 5px; }
     .center { text-align: center; }
 
@@ -209,12 +210,14 @@
     });
 
     searchInput.addEventListener("input", () => {
-      const term = searchInput.value.toLowerCase();
+      let term = searchInput.value.toLowerCase().replace(/\s+/g, ""); // normalise la saisie
       filteredData = data.map(r => ({
         ...r,
-        course: `${r.course} KM`
+        course: `${r.course} km` // normalise la colonne
       })).filter(row =>
-        Object.values(row).some(val => String(val).toLowerCase().includes(term))
+        Object.values(row).some(val => 
+          String(val).toLowerCase().replace(/\s+/g, "").includes(term)
+        )
       );
       renderTable();
     });
@@ -232,7 +235,7 @@
           course: row.course
         }));
 
-        filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
+        filteredData = data.map(r => ({ ...r, course: `${r.course} km` }));
         renderTable();
       }
     });
