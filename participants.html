@@ -9,16 +9,13 @@
   h2 { text-align: center; margin-bottom: 20px; }
 
   .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 20px auto; max-width: 1000px; }
-  #search, .counter { padding: 10px 15px; border-radius: 6px; border: none; font-size: 0.95rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); height: 42px; }
-  #search { flex: 1; border: 1px solid #ccc; }
-  .counters { display: flex; gap: 10px; }
-  .counter { min-width: 100px; text-align: center; font-weight: bold; color: #fff; }
-  #count10 { background: #215E99; }
-  #count20 { background: #E61780; }
-  #countTotal { background: linear-gradient(135deg, #215E99, #E61780); }
+  #search { flex: 1; padding: 10px 15px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.95rem; height: 42px; }
+
+  .counters { font-weight: bold; font-size: 1rem; color: #333; background: #fff; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); white-space: nowrap; }
 
   /* Filtres rapides */
-  .filters { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+  .filters { display: flex; gap: 20px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+  .filter-group { display: flex; gap: 6px; }
   .filters button, .filters select { padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; background: #fff; }
   .filters button.active { background: #215E99; color: #fff; border-color: #215E99; }
 
@@ -41,26 +38,26 @@
 
 <div class="top-bar">
   <input type="text" id="search" placeholder="Rechercher...">
-  <div class="counters">
-    <div id="count10" class="counter">10 km : 0</div>
-    <div id="count20" class="counter">20 km : 0</div>
-    <div id="countTotal" class="counter">Total : 0</div>
-  </div>
+  <div id="counters" class="counters">10 km : 0 | 20 km : 0 | Total : 0</div>
 </div>
 
 <div class="filters">
   <!-- Course -->
-  <button data-course="10" class="course-filter">10 km</button>
-  <button data-course="20" class="course-filter">20 km</button>
-  <button data-course="" class="course-filter active">Tous</button>
+  <div class="filter-group">
+    <button data-course="10" class="course-filter">10 km</button>
+    <button data-course="20" class="course-filter">20 km</button>
+    <button data-course="" class="course-filter active">Tous</button>
+  </div>
 
   <!-- Genre -->
-  <button data-genre="H" class="genre-filter">H</button>
-  <button data-genre="F" class="genre-filter">F</button>
-  <button data-genre="" class="genre-filter active">Tous</button>
+  <div class="filter-group">
+    <button data-genre="H" class="genre-filter">H</button>
+    <button data-genre="F" class="genre-filter">F</button>
+    <button data-genre="" class="genre-filter active">Tous</button>
+  </div>
 
-  <!-- Catégorie dynamique -->
-  <select id="categorieFilter"><option value="">Toutes les catégories</option></select>
+  <!-- Catégorie -->
+  <select id="categorieFilter"></select>
 </div>
 
 <table id="data-table">
@@ -99,12 +96,13 @@ const dbRef = ref(db, "participants");
 
 let data = [];
 let filteredData = [];
-let sortState = { dossard: 'Asc' }; 
+let sortState = { dossard: 'Asc' };
 
 const tbody = document.querySelector("#data-table tbody");
 const searchInput = document.getElementById("search");
 const headers = document.querySelectorAll("th");
 const categorieSelect = document.getElementById("categorieFilter");
+const countersDiv = document.getElementById("counters");
 
 function renderTable() {
   tbody.innerHTML = "";
@@ -122,9 +120,10 @@ function renderTable() {
     tbody.appendChild(tr);
   });
 
-  document.getElementById("count10").textContent = `10 km : ${filteredData.filter(r => r.course.includes("10")).length}`;
-  document.getElementById("count20").textContent = `20 km : ${filteredData.filter(r => r.course.includes("20")).length}`;
-  document.getElementById("countTotal").textContent = `Total : ${filteredData.length}`;
+  const count10 = filteredData.filter(r => r.course.includes("10")).length;
+  const count20 = filteredData.filter(r => r.course.includes("20")).length;
+  const total = filteredData.length;
+  countersDiv.textContent = `10 km : ${count10} | 20 km : ${count20} | Total : ${total}`;
 }
 
 function clearSortIndicators() {
@@ -170,7 +169,6 @@ function applyFilters() {
 }
 
 headers.forEach(th=>th.addEventListener('click', ()=>sortByColumn(th.dataset.column)));
-
 searchInput.addEventListener('input', applyFilters);
 
 // Gestion des boutons Course
@@ -191,10 +189,12 @@ document.querySelectorAll('.genre-filter').forEach(btn=>{
   });
 });
 
-// Catégorie dynamique
+// Catégorie avec ordre fixe
 function populateCategories() {
-  const cats = Array.from(new Set(data.map(r=>r.categorie))).sort();
-  categorieSelect.innerHTML = `<option value="">Toutes les catégories</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const categoriesOrder = ["CA","JU","ES","SE","M0","M1","M2","M3","M4","M5","M6","M7","M8","M9","M10"];
+  let html = `<option value="">CAT</option><option value="">Toutes</option>`;
+  categoriesOrder.forEach(c => html += `<option value="${c}">${c}</option>`);
+  categorieSelect.innerHTML = html;
 }
 categorieSelect.addEventListener('change', applyFilters);
 
