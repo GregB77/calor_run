@@ -8,25 +8,34 @@
 :root {
   --bg:#f9f9f9; --fg:#111; --card:#fff; --line:#e5e5e5; --head-grad:linear-gradient(135deg,#215E99 0%,#E61780 100%);
 }
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:24px;}
-body.dark{--bg:#111; --fg:#f9f9f9; --card:#222; --line:#555;}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:24px;transition:background 0.3s,color 0.3s;}
+body.dark { background:#121212; color:#eee; }
+body.dark .card { background:#1e1e1e; color:#eee; border-color:#333; }
+body.dark th { background:linear-gradient(135deg,#444 0%,#880066 100%); color:#fff; }
+body.dark tbody tr:nth-child(odd) { background:#1e1e1e; }
+body.dark tbody tr:nth-child(even) { background:#2a2a2a; }
+
 h1{font-size:2rem;margin-bottom:8px;color:#215E99;}
 .wrap{display:grid;gap:20px;}
-.card{background:var(--card);border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:16px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:16px;}
 .card h2{font-size:1.1rem;margin-bottom:12px;}
 .tables{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;min-width:640px;}
 th,td{border:1px solid var(--line);padding:6px 8px;text-align:center;font-size:.95rem;}
 th{color:#fff;font-weight:700;background:var(--head-grad);}
 tbody tr:nth-child(odd){background:#fff;}
-body.dark tbody tr:nth-child(odd){background:#222;}
 tbody tr:nth-child(even){background:#f2f2f2;}
-body.dark tbody tr:nth-child(even){background:#333;}
 .muted{color:#777;}
+
+/* séparations verticales discrètes */
 th.sep, td.sep { border-left:1px solid #ccc; }
+
+/* colonnes Totaux en gras */
 th.total, td.total { font-weight:700; }
-.last-update{margin-top:12px;font-size:0.9rem;color:#555;}
-body.dark .last-update{color:#ccc;}
+
+/* Ligne bascule thème et dernière mise à jour */
+.footer { text-align:center; margin-top:20px; font-size:0.9rem; color:#666; }
+.footer a { color: var(--accent, #1f6feb); text-decoration:none; margin-left:6px; }
 </style>
 </head>
 <body>
@@ -50,40 +59,56 @@ body.dark .last-update{color:#ccc;}
       </tr>
     </thead>
     <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
-    <tfoot><tr><td colspan="8" id="last-update-cat" class="muted">Dernière mise à jour : --:--:--</td></tr></tfoot>
   </table>
 </div>
 </section>
 
 <section class="card">
-<h2>Âges extrêmes — 10 km | 20 km</h2>
-<div class="tables" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-  
-  <table id="tbl-age-10">
-    <thead>
-      <tr><th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th></tr>
-    </thead>
-    <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
-    <tfoot><tr><td colspan="4" id="last-update-age10" class="muted">Dernière mise à jour : --:--:--</td></tr></tfoot>
-  </table>
+  <h2>-/+ Âgés - 10 km | 20 km</h2>
+  <div class="tables" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    
+    <table id="tbl-age-10">
+      <thead>
+        <tr>
+          <th>Dossard</th>
+          <th>Prénom</th>
+          <th>Nom</th>
+          <th>Âge</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" class="muted">Chargement…</td></tr>
+      </tbody>
+    </table>
 
-  <table id="tbl-age-20">
-    <thead>
-      <tr><th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th></tr>
-    </thead>
-    <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
-    <tfoot><tr><td colspan="4" id="last-update-age20" class="muted">Dernière mise à jour : --:--:--</td></tr></tfoot>
-  </table>
+    <table id="tbl-age-20">
+      <thead>
+        <tr>
+          <th>Dossard</th>
+          <th>Prénom</th>
+          <th>Nom</th>
+          <th>Âge</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" class="muted">Chargement…</td></tr>
+      </tbody>
+    </table>
 
-</div>
+  </div>
 </section>
 
 <div id="err" class="error" style="display:none;"></div>
-<p class="last-update">
-  <a href="#" id="theme-toggle">Basculer le thème</a>
-</p>
+
 </div>
 
+<!-- Footer bascule thème et dernière mise à jour -->
+<div class="footer">
+  Dernière mise à jour : <span id="update-time">--:--:--</span>
+  · <a href="#" id="theme-toggle">Basculer le thème</a>
+</div>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
@@ -104,21 +129,15 @@ const el = {
   cat: document.querySelector('#tbl-cat tbody'),
   age10: document.querySelector('#tbl-age-10 tbody'),
   age20: document.querySelector('#tbl-age-20 tbody'),
-  err: document.getElementById('err')
-};
-
-const updateEl = {
-  cat: document.getElementById('last-update-cat'),
-  age10: document.getElementById('last-update-age10'),
-  age20: document.getElementById('last-update-age20')
+  err: document.getElementById('err'),
+  updateTime: document.getElementById('update-time'),
+  themeToggle: document.getElementById('theme-toggle')
 };
 
 const orderCat = ['CA','JU','ES','SE','M0','M1','M2','M3','M4','M5','M6','M7','M8','M9','M10'];
 
 function parseDate(d){if(!d)return null;const dt=new Date(d);return isNaN(dt.getTime())?null:dt;}
 function computeAge(d){if(!d)return null;const today=new Date();let a=today.getFullYear()-d.getFullYear();if(today.getMonth()<d.getMonth()||(today.getMonth()===d.getMonth()&&today.getDate()<d.getDate()))a--;return a;}
-
-function formatTime(dt){return dt.toLocaleTimeString();}
 
 function renderCats(body, data){
   const counts = {10:{},20:{}};
@@ -165,7 +184,6 @@ function renderCats(body, data){
   </tr>`);
 
   body.innerHTML = rows.join('');
-  updateEl.cat.textContent = "Dernière mise à jour : " + formatTime(new Date());
 }
 
 function renderAges(body10, body20, data){
@@ -186,35 +204,32 @@ function renderAges(body10, body20, data){
     }
   });
 
-  function buildRows(a){return [a.oldest,a.youngest].filter(Boolean).map(p=>`<tr>
-    <td>${p.dossard}</td><td>${p.prenom}</td><td>${p.nom}</td><td>${p.age} ans</td>
-  </tr>`).join('')||'<tr><td colspan="4" class="muted">Aucune donnée.</td></tr>';}
-
+  function buildRows(a){return [a.oldest,a.youngest].filter(Boolean).map(p=>`<tr><td>${p.dossard}</td><td>${p.prenom}</td><td>${p.nom}</td><td>${p.age} ans</td></tr>`).join('')||'<tr><td colspan="4" class="muted">Aucune donnée.</td></tr>'; }
   body10.innerHTML=buildRows(ages[10]);
   body20.innerHTML=buildRows(ages[20]);
-
-  updateEl.age10.textContent = "Dernière mise à jour : " + formatTime(new Date());
-  updateEl.age20.textContent = "Dernière mise à jour : " + formatTime(new Date());
 }
 
 function showError(msg){el.err.style.display='block';el.err.textContent=msg;}
 
-// Theme toggle
-document.getElementById('theme-toggle').addEventListener('click', e=>{
-  e.preventDefault();
-  document.body.classList.toggle('dark');
-});
-
+// Firebase listeners
 db.ref('participants').on('value',snap=>{
   try{
     const data = snap.val()||{};
     renderCats(el.cat,data);
     renderAges(el.age10,el.age20,data);
+    const now = new Date();
+    el.updateTime.textContent = now.toLocaleTimeString('fr-FR');
   }catch(e){
     console.error(e);
     showError("Erreur traitement : "+e.message);
   }
 },err=>{console.error(err);showError("Erreur Firebase : "+err.message);});
+
+// Basculer le thème
+el.themeToggle.addEventListener('click',e=>{
+  e.preventDefault();
+  document.body.classList.toggle('dark');
+});
 </script>
 </body>
 </html>
