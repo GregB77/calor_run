@@ -9,15 +9,45 @@
   h2 { text-align: center; margin-bottom: 20px; }
 
   .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 20px auto; max-width: 1000px; }
-  #search { flex: 1; padding: 10px 15px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.95rem; height: 42px; }
 
-  .counters { font-weight: bold; font-size: 1rem; color: #333; background: #fff; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); white-space: nowrap; }
+  /* Style commun aux "grilles" */
+  .box {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  #search { flex: 1; }
 
-  /* Filtres rapides */
-  .filters { display: flex; gap: 20px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+  /* Compteurs */
+  #counters span { margin: 0 4px; }
+  #counters .blue { color: #215E99; }
+  #counters .pink { color: #E61780; }
+
+  /* Filtres */
+  .filters { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
   .filter-group { display: flex; gap: 6px; }
-  .filters button, .filters select { padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; background: #fff; }
-  .filters button.active { background: #215E99; color: #fff; border-color: #215E99; }
+  .filter-box a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    margin: 0 4px;
+  }
+  .filter-box a.active {
+    color: #215E99;
+    font-weight: bold;
+  }
+  #categorieFilter {
+    appearance: none;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
 
   /* Tableau */
   table { border-collapse: collapse; width: 100%; max-width: 1000px; margin: 0 auto 20px auto; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -37,27 +67,31 @@
 <h2>Participants Calor Run</h2>
 
 <div class="top-bar">
-  <input type="text" id="search" placeholder="Rechercher...">
-  <div id="counters" class="counters">10 km : 0 | 20 km : 0 | Total : 0</div>
+  <input type="text" id="search" class="box" placeholder="Rechercher...">
+  <div id="counters" class="box">
+    <span class="blue">10 km : 0</span> | 
+    <span class="pink">20 km : 0</span> | 
+    <span>Total : 0</span>
+  </div>
 </div>
 
 <div class="filters">
   <!-- Course -->
-  <div class="filter-group">
-    <button data-course="10" class="course-filter">10 km</button>
-    <button data-course="20" class="course-filter">20 km</button>
-    <button data-course="" class="course-filter active">Tous</button>
+  <div class="filter-box box">
+    <a data-course="10" class="course-filter">10 km</a> | 
+    <a data-course="20" class="course-filter">20 km</a> | 
+    <a data-course="" class="course-filter active">Tous</a>
   </div>
 
   <!-- Genre -->
-  <div class="filter-group">
-    <button data-genre="H" class="genre-filter">H</button>
-    <button data-genre="F" class="genre-filter">F</button>
-    <button data-genre="" class="genre-filter active">Tous</button>
+  <div class="filter-box box">
+    <a data-genre="H" class="genre-filter">H</a> | 
+    <a data-genre="F" class="genre-filter">F</a> | 
+    <a data-genre="" class="genre-filter active">Tous</a>
   </div>
 
   <!-- Catégorie -->
-  <select id="categorieFilter"></select>
+  <select id="categorieFilter" class="box"></select>
 </div>
 
 <table id="data-table">
@@ -68,7 +102,7 @@
       <th data-column="prenom">Prénom</th>
       <th data-column="club">Club</th>
       <th data-column="genre" class="center">Genre</th>
-      <th data-column="categorie" class="center">CAT</th>
+      <th data-column="categorie" class="center">Catégorie</th>
       <th data-column="course" class="center">Course</th>
     </tr>
   </thead>
@@ -123,7 +157,11 @@ function renderTable() {
   const count10 = filteredData.filter(r => r.course.includes("10")).length;
   const count20 = filteredData.filter(r => r.course.includes("20")).length;
   const total = filteredData.length;
-  countersDiv.textContent = `10 km : ${count10} | 20 km : ${count20} | Total : ${total}`;
+  countersDiv.innerHTML = `
+    <span class="blue">10 km : ${count10}</span> | 
+    <span class="pink">20 km : ${count20}</span> | 
+    <span>Total : ${total}</span>
+  `;
 }
 
 function clearSortIndicators() {
@@ -171,28 +209,28 @@ function applyFilters() {
 headers.forEach(th=>th.addEventListener('click', ()=>sortByColumn(th.dataset.column)));
 searchInput.addEventListener('input', applyFilters);
 
-// Gestion des boutons Course
-document.querySelectorAll('.course-filter').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.course-filter').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+// Gestion Course
+document.querySelectorAll('.course-filter').forEach(link=>{
+  link.addEventListener('click', ()=>{
+    document.querySelectorAll('.course-filter').forEach(l=>l.classList.remove('active'));
+    link.classList.add('active');
     applyFilters();
   });
 });
 
-// Gestion des boutons Genre
-document.querySelectorAll('.genre-filter').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.genre-filter').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+// Gestion Genre
+document.querySelectorAll('.genre-filter').forEach(link=>{
+  link.addEventListener('click', ()=>{
+    document.querySelectorAll('.genre-filter').forEach(l=>l.classList.remove('active'));
+    link.classList.add('active');
     applyFilters();
   });
 });
 
-// Catégorie avec ordre fixe
+// Catégories
 function populateCategories() {
   const categoriesOrder = ["CA","JU","ES","SE","M0","M1","M2","M3","M4","M5","M6","M7","M8","M9","M10"];
-  let html = `<option value="">CAT</option><option value="">Toutes</option>`;
+  let html = `<option value="">Toutes CAT</option>`;
   categoriesOrder.forEach(c => html += `<option value="${c}">${c}</option>`);
   categorieSelect.innerHTML = html;
 }
