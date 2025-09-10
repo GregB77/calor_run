@@ -19,21 +19,37 @@ body {
 }
 
 /* Chronomètre */
-.chrono-container { text-align: center; margin: 20px 0 30px; padding: 20px; background: linear-gradient(135deg, #215E99 0%, #E61780 100%); border-radius: 15px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.chrono-container { 
+  text-align: center; 
+  margin: 20px 0 30px; 
+  padding: 20px; 
+  background: linear-gradient(135deg, #215E99 0%, #E61780 100%); 
+  border-radius: 15px; 
+  color: white; 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+}
 
 .chrono-time {
   font-family: 'Courier New', monospace;
-  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-size: 3rem;
   font-weight: bold;
   letter-spacing: 0.1em;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 8em;
 }
 
-.chrono-time span { margin-left: 0.4em; }
+.chrono-time span { 
+  margin-left: 0.5em;
+}
+
+@media (max-width: 480px) {
+  .chrono-time {
+    font-size: 2rem;
+  }
+}
+
 .chrono-time.paused { opacity: 0.7; }
 
 /* Loading & compteurs */
@@ -65,7 +81,6 @@ body.dark th { background: linear-gradient(135deg, #444 0%, #880066 100%); color
 body.dark tbody tr:nth-child(odd) { background: #1e1e1e; }
 body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
 </style>
-
 </head>
 <body>
 
@@ -101,12 +116,11 @@ body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
   · <a href="#" id="theme-toggle">Basculer le thème</a>
 </p>
 
-<!-- Firebase scripts doivent être chargés avant ton code JS -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
-// Ton code JS principal
 const elements = {
   chronoTime: document.getElementById('chrono-time'),
   chronoText: document.getElementById('chrono-text'),
@@ -138,11 +152,9 @@ const firebaseConfig = {
   measurementId: "G-YVQPW6JGPK"
 };
 
-// Initialisation Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Fonctions utilitaires
 function formatTime(ms) {
   const sec = Math.floor(ms / 1000),
         h = Math.floor(sec / 3600).toString().padStart(2,'0'),
@@ -169,17 +181,16 @@ function startChrono() {
   update();
   chronoInterval = setInterval(update, 1000);
 }
-function stopChrono() { 
-  if (chronoInterval) { clearInterval(chronoInterval); chronoInterval=null; } 
-  elements.chronoText.textContent="--:--:--"; 
-  elements.chronoTime.classList.add('paused'); 
+function stopChrono() {
+  if (chronoInterval) { clearInterval(chronoInterval); chronoInterval=null; }
+  elements.chronoText.textContent="--:--:--";
+  elements.chronoTime.classList.add('paused');
 }
 
 // Classement
 function createTableRow(p) {
   const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${p.dossard}</td><td>${p.nom}</td><td>${p.prenom}</td><td>${p.tempsStr}</td><td>${p.course}</td>
-  <td>${p.scratch}</td><td>${p.genre}</td><td>${p.posGenre}</td><td>${p.categorie}</td><td>${p.posCat}</td>`;
+  tr.innerHTML = `<td>${p.dossard}</td><td>${p.nom}</td><td>${p.prenom}</td><td>${p.tempsStr}</td><td>${p.course}</td><td>${p.scratch}</td><td>${p.genre}</td><td>${p.posGenre}</td><td>${p.categorie}</td><td>${p.posCat}</td>`;
   return tr;
 }
 
@@ -200,17 +211,10 @@ function calculatePositions(classement) {
 function displayData(classement, count10, count20) {
   const fragment = document.createDocumentFragment();
   classement.forEach(p=>fragment.appendChild(createTableRow(p)));
-  elements.tbody.innerHTML=''; 
-  elements.tbody.appendChild(fragment);
-  elements.loading.style.display='none'; 
-  elements.error.style.display='none'; 
-  elements.compteurs.style.display='block'; 
-  elements.tableContainer.style.display='block';
-  elements.count10.textContent=count10; 
-  elements.count20.textContent=count20;
-  const now = new Date(); 
-  elements.updateTime.textContent = now.toLocaleTimeString('fr-FR'); 
-  elements.lastUpdate.style.display='block';
+  elements.tbody.innerHTML=''; elements.tbody.appendChild(fragment);
+  elements.loading.style.display='none'; elements.error.style.display='none'; elements.compteurs.style.display='block'; elements.tableContainer.style.display='block';
+  elements.count10.textContent=count10; elements.count20.textContent=count20;
+  const now = new Date(); elements.updateTime.textContent = now.toLocaleTimeString('fr-FR'); elements.lastUpdate.style.display='block';
   currentClassement=[...classement];
 }
 
@@ -228,20 +232,12 @@ function updateClassement() {
 }
 
 // Dark theme toggle
-elements.themeToggle.addEventListener('click', e=>{ 
-  e.preventDefault(); 
-  document.body.classList.toggle('dark'); 
-});
+elements.themeToggle.addEventListener('click', e=>{ e.preventDefault(); document.body.classList.toggle('dark'); });
 
 // Firebase listeners
-db.ref('data/depart_course').on('value', snap=>{
-  departureTimestamp = snap.exists()?new Date(snap.val()).getTime():null; 
-  departureTimestamp?startChrono():stopChrono(); 
-  updateClassement(); 
-});
+db.ref('data/depart_course').on('value', snap=>{ departureTimestamp = snap.exists()?new Date(snap.val()).getTime():null; departureTimestamp?startChrono():stopChrono(); updateClassement(); });
 db.ref('participants').on('value', snap=>{ participants = snap.val()||{}; updateClassement(); });
 db.ref('scan_dossards').on('value', snap=>{ scans = snap.val()||{}; updateClassement(); });
-
 window.addEventListener('beforeunload', ()=>{ if (chronoInterval) clearInterval(chronoInterval); });
 </script>
 
