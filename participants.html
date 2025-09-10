@@ -44,121 +44,120 @@
     <tbody></tbody>
   </table>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.firebasestorage.app",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47",
-      measurementId: "G-YVQPW6JGPK"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+    authDomain: "calor-run.firebaseapp.com",
+    databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "calor-run",
+    storageBucket: "calor-run.firebasestorage.app",
+    messagingSenderId: "329949291334",
+    appId: "1:329949291334:web:c71ef20268c609cf953b47",
+    measurementId: "G-YVQPW6JGPK"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const dbRef = ref(db, "participants");
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const dbRef = ref(db, "participants");
 
-    let data = [];
-    let filteredData = [];
-    let sortState = {}; 
+  let data = [];
+  let filteredData = [];
+  let sortState = {}; 
 
-    const tbody = document.querySelector("#data-table tbody");
-    const searchInput = document.getElementById("search");
-    const headers = document.querySelectorAll("th");
+  const tbody = document.querySelector("#data-table tbody");
+  const searchInput = document.getElementById("search");
+  const headers = document.querySelectorAll("th");
 
-    function renderTable() {
-      tbody.innerHTML = "";
-      filteredData.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="center">${row.dossard}</td>
-          <td>${row.nom}</td>
-          <td>${row.prenom}</td>
-          <td>${row.club}</td>
-          <td class="center">${row.genre}</td>
-          <td class="center">${row.categorie}</td>
-          <td class="center">${row.course}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      document.getElementById("count10").textContent = `Course 10 km : ${filteredData.filter(r => r.Course == 10).length}`;
-      document.getElementById("count20").textContent = `Course 20 km : ${filteredData.filter(r => r.Course == 20).length}`;
-      document.getElementById("countTotal").textContent = `Total : ${filteredData.length}`;
-    }
-
-    function clearArrows() {
-      headers.forEach(th => { th.querySelector(".arrow").textContent = ""; });
-    }
-
-    function sortByColumn(column) {
-      if(column === "Age") return;
-
-      let direction = sortState[column] === 'Asc' ? 'Desc' : 'Asc';
-      sortState[column] = direction;
-
-      filteredData.sort((a,b) => {
-        let valA = a[column];
-        let valB = b[column];
-
-        if(!isNaN(valA) && !isNaN(valB)){
-          valA = Number(valA);
-          valB = Number(valB);
-        }
-
-        if(valA < valB) return direction === 'Asc' ? -1 : 1;
-        if(valA > valB) return direction === 'Asc' ? 1 : -1;
-        return 0;
-      });
-
-      clearArrows();
-      const th = document.querySelector(`th[data-column='${column}'] .arrow`);
-      if(th) th.textContent = direction === 'Asc' ? '▲' : '▼';
-
-      renderTable();
-    }
-
-    headers.forEach(th => {
-      th.addEventListener("click", () => sortByColumn(th.dataset.column));
+  function renderTable() {
+    tbody.innerHTML = "";
+    filteredData.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="center">${row.dossard}</td>
+        <td>${row.nom}</td>
+        <td>${row.prenom}</td>
+        <td>${row.club || ""}</td>
+        <td class="center">${row.genre}</td>
+        <td class="center">${row.categorie}</td>
+        <td class="center">${row.course} KM</td>
+      `;
+      tbody.appendChild(tr);
     });
 
-    searchInput.addEventListener("input", () => {
-      const term = searchInput.value.toLowerCase();
-      const searchableColumns = ["Dossard","Nom","Prénom","Club","Genre","CAT","Course"];
+    document.getElementById("count10").textContent =
+      `Course 10 km : ${filteredData.filter(r => Number(r.course) === 10).length}`;
+    document.getElementById("count20").textContent =
+      `Course 20 km : ${filteredData.filter(r => Number(r.course) === 20).length}`;
+    document.getElementById("countTotal").textContent =
+      `Total : ${filteredData.length}`;
+  }
 
-      filteredData = data.map(r => ({
-        ...r,
-        course: `${r.course} KM`
-      })).filter(row =>
-        searchableColumns.some(col => String(row[col]).toLowerCase().includes(term))
-      );
+  function clearArrows() {
+    headers.forEach(th => { th.querySelector(".arrow").textContent = ""; });
+  }
 
-      renderTable();
-    });
+  function sortByColumn(column) {
+    let direction = sortState[column] === 'Asc' ? 'Desc' : 'Asc';
+    sortState[column] = direction;
 
-    onValue(dbRef, (snapshot) => {
-      const val = snapshot.val();
-      if (val) {
-        // On ne récupère que les colonnes visibles
-        data = Object.values(val).map(row => ({
-          dossard: row.dossard,
-          nom: row.nom,
-          prenom: row.prenom,
-          club: row.club,
-          genre: row.genre,
-          categorie: row.categorie,
-          course: row.course
-        }));
+    filteredData.sort((a, b) => {
+      let valA = a[column];
+      let valB = b[column];
 
-        filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
-        renderTable();
+      if (!isNaN(valA) && !isNaN(valB)) {
+        valA = Number(valA);
+        valB = Number(valB);
       }
+
+      if (valA < valB) return direction === 'Asc' ? -1 : 1;
+      if (valA > valB) return direction === 'Asc' ? 1 : -1;
+      return 0;
     });
-  </script>
+
+    clearArrows();
+    const th = document.querySelector(`th[data-column='${column}'] .arrow`);
+    if (th) th.textContent = direction === 'Asc' ? '▲' : '▼';
+
+    renderTable();
+  }
+
+  headers.forEach(th => {
+    th.addEventListener("click", () => sortByColumn(th.dataset.column));
+  });
+
+  searchInput.addEventListener("input", () => {
+    const term = searchInput.value.toLowerCase();
+    const searchableColumns = ["dossard","nom","prenom","club","genre","categorie","course"];
+
+    filteredData = data.filter(row =>
+      searchableColumns.some(col => String(row[col]).toLowerCase().includes(term))
+    );
+
+    renderTable();
+  });
+
+  onValue(dbRef, (snapshot) => {
+    const val = snapshot.val();
+    if (val) {
+      data = Object.values(val).map(row => ({
+        dossard: row.dossard || "",
+        nom: row.nom || "",
+        prenom: row.prenom || "",
+        club: row.club || "",
+        genre: row.genre || "",
+        categorie: row.categorie || "",
+        course: row.course || ""
+      }));
+
+      filteredData = [...data];
+      renderTable();
+    }
+  });
+</script>
+
+  
 </body>
 </html>
