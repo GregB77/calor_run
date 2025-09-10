@@ -1,249 +1,214 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Participants Calor Run</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♀️</text></svg>">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<title>Participants Calor Run</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f9f9f9; color: #333; padding: 20px; line-height: 1.4; }
+  h2 { text-align: center; margin-bottom: 20px; }
 
-    body { 
-      font-family: system-ui, -apple-system, sans-serif; 
-      background: #f9f9f9; 
-      color: #333; 
-      padding: 20px; 
-      line-height: 1.4;
-    }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 20px auto; max-width: 1000px; }
+  #search, .counter { padding: 10px 15px; border-radius: 6px; border: none; font-size: 0.95rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); height: 42px; }
+  #search { flex: 1; border: 1px solid #ccc; }
+  .counters { display: flex; gap: 10px; }
+  .counter { min-width: 100px; text-align: center; font-weight: bold; color: #fff; }
+  #count10 { background: #215E99; }
+  #count20 { background: #E61780; }
+  #countTotal { background: linear-gradient(135deg, #215E99, #E61780); }
 
-    h2 { text-align: center; margin-bottom: 20px; }
+  /* Filtres rapides */
+  .filters { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+  .filters button, .filters select { padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; background: #fff; }
+  .filters button.active { background: #215E99; color: #fff; border-color: #215E99; }
 
-    /* Top bar */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin: 20px auto;
-      max-width: 1000px;
-    }
+  /* Tableau */
+  table { border-collapse: collapse; width: 100%; max-width: 1000px; margin: 0 auto 20px auto; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  th, td { padding: 12px 15px; font-size: 0.9rem; }
+  td.center, th.center { text-align: center; }
+  th { background: linear-gradient(135deg, #215E99 0%, #E61780 100%); color: #fff; text-transform: uppercase; letter-spacing: 0.05em; user-select: none; position: relative; padding-right: 25px; cursor: pointer; }
+  th::after { content: ''; position: absolute; right: 8px; top: 50%; transform: translateY(-50%) rotate(0deg); border: 5px solid transparent; border-top-color: rgba(255,255,255,0.4); opacity: 0.5; transition: transform 0.3s ease, border-top-color 0.3s, opacity 0.3s; }
+  th.sorted.asc::after { transform: translateY(-50%) rotate(0deg); border-top-color: #fff; opacity: 1; }
+  th.sorted.desc::after { transform: translateY(-50%) rotate(180deg); border-top-color: #fff; opacity: 1; }
 
-    #search, .counter {
-      padding: 10px 15px;
-      border-radius: 6px;
-      border: none;
-      font-size: 0.95rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      height: 42px; /* même hauteur pour tous */
-    }
-
-    #search { flex: 1; border: 1px solid #ccc; }
-
-    .counters { display: flex; gap: 10px; }
-
-    .counter {
-      min-width: 100px;
-      text-align: center;
-      font-weight: bold;
-      color: #fff;
-    }
-
-    #count10 { background: #215E99; }
-    #count20 { background: #E61780; }
-    #countTotal { background: linear-gradient(135deg, #215E99, #E61780); }
-
-    /* Tableau */
-    table { 
-      border-collapse: collapse; 
-      width: 100%; 
-      max-width: 1000px; 
-      margin: 0 auto 20px auto; 
-      border-radius: 8px; 
-      overflow: hidden; 
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    th, td { padding: 12px 15px; font-size: 0.9rem; }
-    td.center, th.center { text-align: center; }
-
-    th {
-      background: linear-gradient(135deg, #215E99 0%, #E61780 100%); 
-      color: #fff; 
-      text-transform: uppercase; 
-      letter-spacing: 0.05em; 
-      user-select: none;
-      position: relative;
-      padding-right: 25px; /* espace pour l’indicateur */
-      cursor: pointer;
-    }
-
-    /* Tri discret et animé */
-    th::after {
-      content: '';
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%) rotate(0deg);
-      border: 5px solid transparent;
-      border-top-color: rgba(255,255,255,0.4); /* triangle discret */
-      opacity: 0.5;
-      transition: transform 0.3s ease, border-top-color 0.3s, opacity 0.3s;
-    }
-
-    th.sorted.asc::after {
-      transform: translateY(-50%) rotate(0deg); /* flèche vers le haut pour Ascendant */
-      border-top-color: #fff;
-      opacity: 1;
-    }
-
-    th.sorted.desc::after {
-      transform: translateY(-50%) rotate(180deg); /* flèche vers le bas pour Descendant */
-      border-top-color: #fff;
-      opacity: 1;
-    }
-
-    tr:nth-child(even) { background: #f2f2f2; }
-    tr:hover { background: #e9f7ff; }
-
-    .footer { text-align: center; margin-top: 20px; font-size: 0.9rem; }
-  </style>
+  tr:nth-child(even) { background: #f2f2f2; }
+  tr:hover { background: #e9f7ff; }
+</style>
 </head>
 <body>
-  <h2>Participants Calor Run</h2>
 
-  <div class="top-bar">
-    <input type="text" id="search" placeholder="Rechercher...">
-    <div class="counters">
-      <div id="count10" class="counter">10 km : 0</div>
-      <div id="count20" class="counter">20 km : 0</div>
-      <div id="countTotal" class="counter">Total : 0</div>
-    </div>
+<h2>Participants Calor Run</h2>
+
+<div class="top-bar">
+  <input type="text" id="search" placeholder="Rechercher...">
+  <div class="counters">
+    <div id="count10" class="counter">10 km : 0</div>
+    <div id="count20" class="counter">20 km : 0</div>
+    <div id="countTotal" class="counter">Total : 0</div>
   </div>
+</div>
 
-  <table id="data-table">
-    <thead>
-      <tr>
-        <th data-column="dossard" class="center">Dossard</th>
-        <th data-column="nom">Nom</th>
-        <th data-column="prenom">Prénom</th>
-        <th data-column="club">Club</th>
-        <th data-column="genre" class="center">Genre</th>
-        <th data-column="categorie" class="center">CAT</th>
-        <th data-column="course" class="center">Course</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<div class="filters">
+  <!-- Course -->
+  <button data-course="10" class="course-filter">10 km</button>
+  <button data-course="20" class="course-filter">20 km</button>
+  <button data-course="" class="course-filter active">Tous</button>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+  <!-- Genre -->
+  <button data-genre="H" class="genre-filter">H</button>
+  <button data-genre="F" class="genre-filter">F</button>
+  <button data-genre="" class="genre-filter active">Tous</button>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.firebasestorage.app",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47",
-      measurementId: "G-YVQPW6JGPK"
-    };
+  <!-- Catégorie dynamique -->
+  <select id="categorieFilter"><option value="">Toutes les catégories</option></select>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const dbRef = ref(db, "participants");
+<table id="data-table">
+  <thead>
+    <tr>
+      <th data-column="dossard" class="center">Dossard</th>
+      <th data-column="nom">Nom</th>
+      <th data-column="prenom">Prénom</th>
+      <th data-column="club">Club</th>
+      <th data-column="genre" class="center">Genre</th>
+      <th data-column="categorie" class="center">CAT</th>
+      <th data-column="course" class="center">Course</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-    let data = [];
-    let filteredData = [];
-    let sortState = { dossard: 'Asc' }; // Tri par défaut
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    const tbody = document.querySelector("#data-table tbody");
-    const searchInput = document.getElementById("search");
-    const headers = document.querySelectorAll("th");
+const firebaseConfig = {
+  apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+  authDomain: "calor-run.firebaseapp.com",
+  databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "calor-run",
+  storageBucket: "calor-run.firebasestorage.app",
+  messagingSenderId: "329949291334",
+  appId: "1:329949291334:web:c71ef20268c609cf953b47",
+  measurementId: "G-YVQPW6JGPK"
+};
 
-    function renderTable() {
-      tbody.innerHTML = "";
-      filteredData.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="center">${row.dossard}</td>
-          <td>${row.nom}</td>
-          <td>${row.prenom}</td>
-          <td>${row.club}</td>
-          <td class="center">${row.genre}</td>
-          <td class="center">${row.categorie}</td>
-          <td class="center">${row.course}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const dbRef = ref(db, "participants");
 
-      document.getElementById("count10").textContent = `10 km : ${filteredData.filter(r => r.course.includes("10")).length}`;
-      document.getElementById("count20").textContent = `20 km : ${filteredData.filter(r => r.course.includes("20")).length}`;
-      document.getElementById("countTotal").textContent = `Total : ${filteredData.length}`;
-    }
+let data = [];
+let filteredData = [];
+let sortState = { dossard: 'Asc' }; 
 
-    function clearSortIndicators() {
-      headers.forEach(th => th.classList.remove('sorted', 'asc', 'desc'));
-    }
+const tbody = document.querySelector("#data-table tbody");
+const searchInput = document.getElementById("search");
+const headers = document.querySelectorAll("th");
+const categorieSelect = document.getElementById("categorieFilter");
 
-    function sortByColumn(column, initial = false) {
-      let direction;
-      if(initial) {
-        direction = 'Asc';
-      } else {
-        direction = sortState[column] === 'Asc' ? 'Desc' : 'Asc';
-      }
-      sortState[column] = direction;
+function renderTable() {
+  tbody.innerHTML = "";
+  filteredData.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="center">${row.dossard}</td>
+      <td>${row.nom}</td>
+      <td>${row.prenom}</td>
+      <td>${row.club}</td>
+      <td class="center">${row.genre}</td>
+      <td class="center">${row.categorie}</td>
+      <td class="center">${row.course}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 
-      filteredData.sort((a,b) => {
-        let valA = a[column], valB = b[column];
-        if(!isNaN(valA) && !isNaN(valB)){
-          valA = Number(valA);
-          valB = Number(valB);
-        }
-        if(valA < valB) return direction === 'Asc' ? -1 : 1;
-        if(valA > valB) return direction === 'Asc' ? 1 : -1;
-        return 0;
-      });
+  document.getElementById("count10").textContent = `10 km : ${filteredData.filter(r => r.course.includes("10")).length}`;
+  document.getElementById("count20").textContent = `20 km : ${filteredData.filter(r => r.course.includes("20")).length}`;
+  document.getElementById("countTotal").textContent = `Total : ${filteredData.length}`;
+}
 
-      clearSortIndicators();
-      const th = document.querySelector(`th[data-column='${column}']`);
-      if(th) th.classList.add('sorted', direction.toLowerCase());
+function clearSortIndicators() {
+  headers.forEach(th => th.classList.remove('sorted', 'asc', 'desc'));
+}
 
-      renderTable();
-    }
+function sortByColumn(column, initial=false) {
+  let direction = initial ? 'Asc' : (sortState[column]==='Asc'?'Desc':'Asc');
+  sortState[column] = direction;
 
-    headers.forEach(th => {
-      th.addEventListener("click", () => sortByColumn(th.dataset.column));
+  filteredData.sort((a,b)=>{
+    let valA=a[column], valB=b[column];
+    if(!isNaN(valA)&&!isNaN(valB)){ valA=Number(valA); valB=Number(valB); }
+    if(valA<valB) return direction==='Asc'?-1:1;
+    if(valA>valB) return direction==='Asc'?1:-1;
+    return 0;
+  });
+
+  clearSortIndicators();
+  const th = document.querySelector(`th[data-column='${column}']`);
+  if(th) th.classList.add('sorted', direction.toLowerCase());
+
+  renderTable();
+}
+
+function applyFilters() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const courseFilter = document.querySelector('.course-filter.active').dataset.course;
+  const genreFilter = document.querySelector('.genre-filter.active').dataset.genre;
+  const categorieFilter = categorieSelect.value;
+
+  filteredData = data
+    .map(r=>({...r, course:`${r.course} KM`}))
+    .filter(r=>{
+      const matchSearch = Object.values(r).some(val=>String(val).toLowerCase().includes(searchTerm));
+      const matchCourse = !courseFilter || r.course.includes(courseFilter);
+      const matchGenre = !genreFilter || r.genre === genreFilter;
+      const matchCat = !categorieFilter || r.categorie === categorieFilter;
+      return matchSearch && matchCourse && matchGenre && matchCat;
     });
 
-    searchInput.addEventListener("input", () => {
-      const term = searchInput.value.toLowerCase();
-      filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }))
-        .filter(row =>
-          Object.values(row).some(val => String(val).toLowerCase().includes(term))
-        );
-      sortByColumn('dossard', true); // maintenir tri par défaut après recherche
-    });
+  sortByColumn('dossard', true);
+}
 
-    onValue(dbRef, (snapshot) => {
-      const val = snapshot.val();
-      if (val) {
-        data = Object.values(val).map(row => ({
-          dossard: row.dossard,
-          nom: row.nom,
-          prenom: row.prenom,
-          club: row.club,
-          genre: row.genre,
-          categorie: row.categorie,
-          course: row.course
-        }));
+headers.forEach(th=>th.addEventListener('click', ()=>sortByColumn(th.dataset.column)));
 
-        filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
-        sortByColumn('dossard', true); // Tri par défaut au chargement
-      }
-    });
-  </script>
+searchInput.addEventListener('input', applyFilters);
+
+// Gestion des boutons Course
+document.querySelectorAll('.course-filter').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.course-filter').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  });
+});
+
+// Gestion des boutons Genre
+document.querySelectorAll('.genre-filter').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.genre-filter').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  });
+});
+
+// Catégorie dynamique
+function populateCategories() {
+  const cats = Array.from(new Set(data.map(r=>r.categorie))).sort();
+  categorieSelect.innerHTML = `<option value="">Toutes les catégories</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+categorieSelect.addEventListener('change', applyFilters);
+
+onValue(dbRef, snapshot=>{
+  const val = snapshot.val();
+  if(val){
+    data = Object.values(val).map(r=>({
+      dossard: r.dossard, nom:r.nom, prenom:r.prenom, club:r.club,
+      genre:r.genre, categorie:r.categorie, course:r.course
+    }));
+    populateCategories();
+    applyFilters();
+  }
+});
+</script>
 </body>
 </html>
