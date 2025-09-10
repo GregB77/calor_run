@@ -27,10 +27,13 @@
     .title h1{margin:0;font-size:18px}
     .buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:14px}
     .buttons-center{display:flex;justify-content:center;gap:12px;margin-top:14px}
+    .separator{
+      border-top:1px solid #ddd;
+      margin:30px 0; /* plus d'espace au-dessus et en-dessous */
+    }
     .btn{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(249,250,251,0.9));cursor:pointer;font-weight:600;text-decoration:none;color:inherit;justify-content:center}
     .btn:active{transform:translateY(1px)}
     .btn svg{width:20px;height:20px;flex-shrink:0}
-    .meta{margin-top:10px;color:var(--muted);font-size:13px}
   </style>
 </head>
 <body>
@@ -67,6 +70,9 @@
         </a>
       </div>
 
+      <!-- Ligne de séparation avec plus d'espace -->
+      <div class="separator"></div>
+
       <!-- Deuxième ligne de boutons centrée avec icônes -->
       <div class="buttons-center" role="group" aria-label="Résultats courses">
         <a class="btn" href="https://gregb77.github.io/calor_run/resultats_10.html">
@@ -79,7 +85,6 @@
         </a>
       </div>
 
-      <p class="meta">Cliquez sur un bouton pour ouvrir la section correspondante.</p>
     </section>
   </main>
 </body>
