@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tableau de bord — Trail</title>
+  <style>
+    :root{--bg:#f7f8fc;--card:#ffffff;--accent:#1f6feb;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;background:var(--bg);color:#111}
+    .container{max-width:980px;margin:28px auto;padding:18px}
+    .header{background:linear-gradient(90deg,#0ea5e9 0%, #6366f1 100%);border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(15,23,42,0.08)}
+    .header img{display:block;width:100%;height:220px;object-fit:cover}
+    .card{background:var(--card);border-radius:12px;padding:18px;margin-top:-36px;box-shadow:0 6px 24px rgba(15,23,42,0.06)}
+    .title{display:flex;align-items:center;gap:12px}
+    .title h1{margin:0;font-size:18px}
+    .buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:14px}
+    .btn{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(249,250,251,0.9));cursor:pointer;font-weight:600}
+    .btn:active{transform:translateY(1px)}
+    .btn svg{width:20px;height:20px;flex-shrink:0}
+    .meta{margin-top:10px;color:var(--muted);font-size:13px}
+    @media (max-width:420px){.header img{height:160px}}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="header" aria-label="Bannière">
+      <!-- Remplacez src par le chemin de votre image d'en-tête -->
+      <img src="calor.png" alt="Calor Run" />
+    </section>
 
+    <section class="card" aria-labelledby="main-title">
+      <div class="title">
+        <h1 id="main-title">Tableau de bord — Trail</h1>
+      </div>
+
+      <div class="buttons" role="group" aria-label="Actions principales">
+        <button class="btn" id="participants">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM6 20c0-2.21 3.58-4 6-4s6 1.79 6 4v1H6v-1z" stroke="currentColor" stroke-width="0.7"/></svg>
+          Participants
+        </button>
+
+        <button class="btn" id="statistiques">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 13h4v7H3v-7zM10 7h4v13h-4V7zM17 3h4v17h-4V3z" stroke="currentColor" stroke-width="0.7"/></svg>
+          Statistiques
+        </button>
+
+        <button class="btn" id="live">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="0.7"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" stroke="currentColor" stroke-width="0.7"/></svg>
+          Live Trail
+        </button>
+
+        <button class="btn" id="scan">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="0.7"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="0.7"/><path d="M21 7v-2a1 1 0 0 0-1-1h-2" stroke="currentColor" stroke-width="0.7"/><path d="M3 17v2a1 1 0 0 0 1 1h2" stroke="currentColor" stroke-width="0.7"/></svg>
+          Scan Dossards
+        </button>
+      </div>
+
+      <p class="meta">Cliquez sur un bouton pour ouvrir la section correspondante. (Exemple statique — ajoutez vos handlers JavaScript ci-dessous.)</p>
+    </section>
+  </main>
+
+  <script>
+    // Exemple minimal de gestion des clics — remplacez par vos routes/actions
+    document.getElementById('participants').addEventListener('click', ("https://gregb77.github.io/calor_run/participants.html")=>{console.log('Ouvrir Participants');alert('Ouvrir Participants');});
+    document.getElementById('statistiques').addEventListener('click', ("https://gregb77.github.io/calor_run/statistiques.html")=>{console.log('Ouvrir Statistiques');alert('Ouvrir Statistiques');});
+    document.getElementById('live').addEventListener('click', ("https://gregb77.github.io/calor_run/live_trail.html")=>{console.log('Ouvrir Live Trail');alert('Ouvrir Live Trail');});
+    document.getElementById('scan').addEventListener('click', ("https://gregb77.github.io/calor_run/scan_dossards.html")=>{console.log('Ouvrir Scan Dossards');alert('Ouvrir Scan Dossards');});
+  </script>
+</body>
+</html>
