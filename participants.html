@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Participants Calor Run</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♂️‍➡️</text></svg>">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,11 +13,10 @@
       color: #333; 
       padding: 20px; 
       line-height: 1.4;
-      transition: background 0.3s, color 0.3s;
     }
+
     h2 { text-align: center; margin-bottom: 20px; }
 
-    /* Top bar */
     .top-bar {
       display: flex;
       align-items: center;
@@ -35,15 +34,9 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    #search {
-      flex: 1;
-      border: 1px solid #ccc;
-    }
+    #search { flex: 1; border: 1px solid #ccc; }
 
-    .counters {
-      display: flex;
-      gap: 10px;
-    }
+    .counters { display: flex; gap: 10px; }
 
     .counter {
       min-width: 100px;
@@ -51,11 +44,11 @@
       font-weight: bold;
       color: #fff;
     }
+
     #count10 { background: #215E99; }
     #count20 { background: #E61780; }
     #countTotal { background: linear-gradient(135deg, #215E99, #E61780); }
 
-    /* Tableau */
     table { 
       border-collapse: collapse; 
       width: 100%; 
@@ -66,39 +59,32 @@
       background: #fff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    th, td { padding: 12px 15px; text-align: left; cursor: pointer; font-size: 0.9rem; }
+
+    th, td { padding: 12px 15px; font-size: 0.9rem; }
     th { 
       background: linear-gradient(135deg, #215E99 0%, #E61780 100%); 
       color: #fff; 
       text-transform: uppercase; 
       letter-spacing: 0.05em; 
-      font-size: 0.85rem;
       user-select: none;
+      position: relative;
     }
+
+    th .arrow {
+      font-size: 12px; 
+      margin-left: 5px;
+    }
+
+    td.center, th.center { text-align: center; }
+
     tr:nth-child(even) { background: #f2f2f2; }
-    tr:hover { background: #e9f7ff; } /* clair */
-    body.dark tr:hover { background: #333; } /* sombre */
-    .arrow { font-size: 12px; margin-left: 5px; }
-    .center { text-align: center; }
+    tr:hover { background: #e9f7ff; }
 
-    /* Dark mode */
-    body.dark { background: #121212; color: #eee; }
-    body.dark table { background: #1e1e1e; color: #eee; }
-    body.dark th { background: linear-gradient(135deg, #444, #880066); }
-    body.dark tr:nth-child(even) { background: #2a2a2a; }
-    body.dark tr:nth-child(odd) { background: #1e1e1e; }
-    body.dark #search { background: #2a2a2a; color: #eee; border: 1px solid #555; }
-    body.dark #count10 { background: #444; }
-    body.dark #count20 { background: #880066; }
-    body.dark #countTotal { background: linear-gradient(135deg, #444, #880066); }
-
-    /* Footer */
     .footer { text-align: center; margin-top: 20px; font-size: 0.9rem; }
-    .footer a { color: inherit; text-decoration: underline; cursor: pointer; }
   </style>
 </head>
 <body>
-  <h2>Participants Calor Run</h2>
+  <h2>--- PARTICIPANTS CALOR RUN ---</h2>
 
   <div class="top-bar">
     <input type="text" id="search" placeholder="Rechercher...">
@@ -112,21 +98,17 @@
   <table id="data-table">
     <thead>
       <tr>
-        <th data-column="dossard" class="center">Dossard <span class="arrow"></span></th>
-        <th data-column="nom">Nom<span class="arrow"></span></th>
-        <th data-column="prenom">Prénom<span class="arrow"></span></th>
-        <th data-column="club">Club<span class="arrow"></span></th>
-        <th data-column="genre" class="center">Genre<span class="arrow"></span></th>
-        <th data-column="categorie" class="center">CAT<span class="arrow"></span></th>
-        <th data-column="course" class="center">Course<span class="arrow"></span></th>
+        <th data-column="dossard" class="center">Dossard <span class="arrow">▲</span></th>
+        <th data-column="nom">Nom <span class="arrow"></span></th>
+        <th data-column="prenom">Prénom <span class="arrow"></span></th>
+        <th data-column="club">Club <span class="arrow"></span></th>
+        <th data-column="genre" class="center">Genre <span class="arrow"></span></th>
+        <th data-column="categorie" class="center">CAT <span class="arrow"></span></th>
+        <th data-column="course" class="center">Course <span class="arrow"></span></th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
-
-  <p class="footer">
-    <a href="#" id="theme-toggle">Basculer le thème</a>
-  </p>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -149,7 +131,7 @@
 
     let data = [];
     let filteredData = [];
-    let sortState = {}; 
+    let sortState = { dossard: 'Asc' }; // Tri par défaut colonne Dossard
 
     const tbody = document.querySelector("#data-table tbody");
     const searchInput = document.getElementById("search");
@@ -180,19 +162,17 @@
       headers.forEach(th => { th.querySelector(".arrow").textContent = ""; });
     }
 
-    function sortByColumn(column) {
+    function sortByColumn(column, initial = false) {
       let direction = sortState[column] === 'Asc' ? 'Desc' : 'Asc';
+      if(initial) direction = 'Asc';
       sortState[column] = direction;
 
       filteredData.sort((a,b) => {
-        let valA = a[column];
-        let valB = b[column];
-
+        let valA = a[column], valB = b[column];
         if(!isNaN(valA) && !isNaN(valB)){
           valA = Number(valA);
           valB = Number(valB);
         }
-
         if(valA < valB) return direction === 'Asc' ? -1 : 1;
         if(valA > valB) return direction === 'Asc' ? 1 : -1;
         return 0;
@@ -210,16 +190,12 @@
     });
 
     searchInput.addEventListener("input", () => {
-      let term = searchInput.value.toLowerCase().replace(/\s+/g, ""); // normalise la saisie
-      filteredData = data.map(r => ({
-        ...r,
-        course: `${r.course} km` // normalise la colonne
-      })).filter(row =>
-        Object.values(row).some(val => 
-          String(val).toLowerCase().replace(/\s+/g, "").includes(term)
-        )
-      );
-      renderTable();
+      const term = searchInput.value.toLowerCase();
+      filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }))
+        .filter(row =>
+          Object.values(row).some(val => String(val).toLowerCase().includes(term))
+        );
+      sortByColumn('dossard', true); // maintien tri par défaut après recherche
     });
 
     onValue(dbRef, (snapshot) => {
@@ -235,15 +211,9 @@
           course: row.course
         }));
 
-        filteredData = data.map(r => ({ ...r, course: `${r.course} km` }));
-        renderTable();
+        filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
+        sortByColumn('dossard', true); // Tri par défaut au chargement
       }
-    });
-
-    // Basculer le thème
-    document.getElementById("theme-toggle").addEventListener("click", e => {
-      e.preventDefault();
-      document.body.classList.toggle("dark");
     });
   </script>
 </body>
