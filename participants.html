@@ -1,1 +1,527 @@
-<!DOCTYPE html> <html lang="fr"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Participants Calor Run</title> <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♀️</text></svg>"> <style> :root { --primary-blue: #215E99; --primary-pink: #E61780; --bg-overlay: rgba(33, 94, 153, 0.3); --text-dark: #333; --bg-white: #fff; --bg-light: #f9f9f9; --border-light: #ccc; --hover-blue: #e9f7ff; --shadow-light: rgba(0, 0, 0, 0.1); --shadow-medium: rgba(0, 0, 0, 0.15); --header-bg: #e0e0e0; --transition-smooth: 0.3s ease; --border-radius: 8px; --max-width: 1000px; } * { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.5; color: var(--text-dark); min-height: 100vh; padding: 20px; position: relative; overflow-x: hidden; } /* Fond de page estompé */ body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink)); opacity: 0.3; z-index: -1; } .container { max-width: var(--max-width); margin: 0 auto; } /* Titre avec image de fond */ .header { text-align: center; margin-bottom: 20px; color: var(--primary-blue); font-size: 1.3rem; font-weight: normal; padding: 20px 20px 60px 20px; border-radius: 10px; max-width: var(--max-width); margin-left: auto; margin-right: auto; background: url('calor.png') left/cover no-repeat; } .controls { display: flex; gap: 15px; margin-bottom: 25px; align-items: center; flex-wrap: wrap; } .search-container { flex: 1; min-width: 250px; } #search { width: 100%; padding: 12px 16px; border: 2px solid var(--border-light); border-radius: var(--border-radius); font-size: 1rem; transition: border-color var(--transition-smooth); } #search:focus { outline: none; border-color: var(--primary-blue); } .counter-box { display: flex; align-items: center; gap: 8px; padding: 10px 16px; /***/ background: var(--bg-white); border-radius: var(--border-radius); box-shadow: 0 2px 8px var(--shadow-light); /*font-weight: 500;*/ white-space: nowrap; min-width: fit-content; } .counter-10km { color: var(--primary-blue); } .counter-20km { color: var(--primary-pink); } .table-container { background: var(--bg-white); border-radius: var(--border-radius); overflow: hidden; box-shadow: 0 4px 12px var(--shadow-medium); } table { width: 100%; border-collapse: collapse; } th, td { padding: 14px 16px; text-align: left; font-size: 0.95rem; } th { background: var(--header-bg); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; user-select: none; position: relative; transition: background-color var(--transition-smooth); } th:hover { background: #d5d5d5; } /* Colonnes centrées */ .text-center { text-align: center; } /* Indicateur de tri */ .sort-indicator { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 6px solid rgba(0, 0, 0, 0.4); opacity: 0.5; transition: all var(--transition-smooth); } th.sorted .sort-indicator { opacity: 1; border-bottom-color: var(--primary-blue); } th.sorted.desc .sort-indicator { transform: translateY(-50%) rotate(180deg); } tbody tr:nth-child(even) { background: var(--bg-light); } tbody tr:hover { background: var(--hover-blue); transform: translateY(-1px); transition: all var(--transition-smooth); } .loading { text-align: center; padding: 40px; font-size: 1.1rem; color: var(--primary-blue); } .no-results { text-align: center; padding: 40px; color: #666; font-style: italic; } @media (max-width: 768px) { body { padding: 10px; } .controls { flex-direction: column; align-items: stretch; } .counter-box { justify-content: center; flex-wrap: wrap; } table { font-size: 0.85rem; } th, td { padding: 10px 8px; } } @media (max-width: 600px) { .counter-box { flex-direction: column; gap: 4px; } } </style> </head> <body> <div class="container"> <div class="header"> PARTICIPANTS CALOR RUN </div> <div class="controls"> <div class="search-container"> <input type="text" id="search" placeholder="Rechercher par nom, prénom, club..." autocomplete="off"> </div> <div id="counter" class="counter-box"> <span class="counter-10km">10 km : 0</span> <span>•</span> <span class="counter-20km">20 km : 0</span> <span>•</span> <span>Total : 0</span> </div> </div> <div class="table-container"> <table id="data-table"> <thead> <tr> <th data-column="dossard" class="text-center"> Dossard <span class="sort-indicator"></span> </th> <th data-column="nom"> Nom <span class="sort-indicator"></span> </th> <th data-column="prenom"> Prénom <span class="sort-indicator"></span> </th> <th data-column="club"> Club <span class="sort-indicator"></span> </th> <th data-column="genre" class="text-center"> Genre <span class="sort-indicator"></span> </th> <th data-column="categorie" class="text-center"> Catégorie <span class="sort-indicator"></span> </th> <th data-column="course" class="text-center"> Course <span class="sort-indicator"></span> </th> </tr> </thead> <tbody id="table-body"> <tr> <td colspan="7" class="loading">Chargement des données...</td> </tr> </tbody> </table> </div> </div> <script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"; import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"; // Configuration Firebase const firebaseConfig = { apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo", authDomain: "calor-run.firebaseapp.com", databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app", projectId: "calor-run", storageBucket: "calor-run.firebasestorage.app", messagingSenderId: "329949291334", appId: "1:329949291334:web:c71ef20268c609cf953b47", measurementId: "G-YVQPW6JGPK" }; // Initialisation Firebase const app = initializeApp(firebaseConfig); const db = getDatabase(app); const dbRef = ref(db, "participants"); // État de l'application const AppState = { allData: [], filteredData: [], currentSort: { column: 'dossard', direction: 'asc' }, isLoading: true }; // Éléments DOM const elements = { tbody: document.getElementById("table-body"), searchInput: document.getElementById("search"), counter: document.getElementById("counter"), headers: document.querySelectorAll("th[data-column]") }; // Utilitaires const utils = { debounce(func, wait) { let timeout; return function executedFunction(...args) { const later = () => { clearTimeout(timeout); func(...args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }, normalizeString(str) { return str.toString().toLowerCase().trim(); } }; // Fonctions de rendu function renderTable() { if (AppState.isLoading) return; if (AppState.filteredData.length === 0) { elements.tbody.innerHTML = <tr> <td colspan="7" class="no-results"> ${AppState.allData.length === 0 ? 'Aucune donnée disponible' : 'Aucun résultat trouvé'} </td> </tr> ; updateCounter(); return; } const fragment = document.createDocumentFragment(); AppState.filteredData.forEach(participant => { const row = document.createElement("tr"); row.innerHTML = <td class="text-center">${participant.dossard}</td> <td>${participant.nom}</td> <td>${participant.prenom}</td> <td>${participant.club || '-'}</td> <td class="text-center">${participant.genre}</td> <td class="text-center">${participant.categorie}</td> <td class="text-center">${participant.course} km</td> ; fragment.appendChild(row); }); elements.tbody.innerHTML = ''; elements.tbody.appendChild(fragment); updateCounter(); } function updateCounter() { const km10Count = AppState.filteredData.filter(p => p.course == "10").length; const km20Count = AppState.filteredData.filter(p => p.course == "20").length; const total = AppState.filteredData.length; elements.counter.innerHTML = <span class="counter-10km">10 km : ${km10Count}</span> <span>•</span> <span class="counter-20km">20 km : ${km20Count}</span> <span>•</span> <span>Total : ${total}</span> ; } function updateSortIndicators() { elements.headers.forEach(header => { header.classList.remove('sorted', 'asc', 'desc'); if (header.dataset.column === AppState.currentSort.column) { header.classList.add('sorted', AppState.currentSort.direction); } }); } // Fonctions de logique métier function sortData(column, direction = null) { if (!direction) { direction = AppState.currentSort.column === column && AppState.currentSort.direction === 'asc' ? 'desc' : 'asc'; } AppState.currentSort = { column, direction }; AppState.filteredData.sort((a, b) => { let valueA = a[column]; let valueB = b[column]; // Gestion des valeurs numériques if (!isNaN(valueA) && !isNaN(valueB)) { valueA = Number(valueA); valueB = Number(valueB); } else { valueA = utils.normalizeString(valueA); valueB = utils.normalizeString(valueB); } if (valueA < valueB) return direction === 'asc' ? -1 : 1; if (valueA > valueB) return direction === 'asc' ? 1 : -1; return 0; }); updateSortIndicators(); renderTable(); } function filterData(searchTerm) { const term = utils.normalizeString(searchTerm); if (!term) { AppState.filteredData = [...AppState.allData]; } else { AppState.filteredData = AppState.allData.filter(participant => { return Object.entries(participant).some(([key, value]) => { // Pour la colonne course, on permet la recherche avec "km" if (key === 'course') { const courseWithKm = ${value} km; return utils.normalizeString(courseWithKm).includes(term) || utils.normalizeString(value).includes(term); } return utils.normalizeString(value).includes(term); }); }); } sortData(AppState.currentSort.column, AppState.currentSort.direction); } // Gestionnaires d'événements const debouncedFilter = utils.debounce((searchTerm) => { filterData(searchTerm); }, 300); elements.searchInput.addEventListener("input", (e) => { debouncedFilter(e.target.value); }); elements.headers.forEach(header => { header.addEventListener("click", () => { sortData(header.dataset.column); }); }); // Initialisation des données Firebase function initializeData() { const unsubscribe = onValue(dbRef, (snapshot) => { const data = snapshot.val(); if (data) { AppState.allData = Object.values(data).map(participant => ({ dossard: participant.dossard || '', nom: participant.nom || '', prenom: participant.prenom || '', club: participant.club || '', genre: participant.genre || '', categorie: participant.categorie || '', course: participant.course || '' })); AppState.filteredData = [...AppState.allData]; AppState.isLoading = false; sortData('dossard', 'asc'); } else { AppState.allData = []; AppState.filteredData = []; AppState.isLoading = false; renderTable(); } }, (error) => { console.error("Erreur lors du chargement des données:", error); AppState.isLoading = false; elements.tbody.innerHTML = <tr> <td colspan="7" class="no-results"> Erreur lors du chargement des données </td> </tr> ; }); // Nettoyage lors du déchargement de la page window.addEventListener('beforeunload', () => { off(dbRef, 'value', unsubscribe); }); } // Démarrage de l'application initializeData(); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participants Calor Run</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♀️</text></svg>">
+  <style>
+    :root {
+      --primary-blue: #215E99;
+      --primary-pink: #E61780;
+      --bg-overlay: rgba(33, 94, 153, 0.3);
+      --text-dark: #333;
+      --bg-white: #fff;
+      --bg-light: #f9f9f9;
+      --border-light: #ccc;
+      --hover-blue: #e9f7ff;
+      --shadow-light: rgba(0, 0, 0, 0.1);
+      --shadow-medium: rgba(0, 0, 0, 0.15);
+      --header-bg: #e0e0e0;
+      --transition-smooth: 0.3s ease;
+      --border-radius: 8px;
+      --max-width: 1000px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.5;
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Fond de page estompé */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    /* Titre avec image de fond */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--primary-blue);
+      font-size: 1.3rem;
+      font-weight: normal;
+      padding: 20px 20px 60px 20px;
+      border-radius: 10px;
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
+      background: url('calor.png') left/cover no-repeat;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-container {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    #search {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border-light);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: border-color var(--transition-smooth);
+    }
+
+    #search:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+    }
+
+    .counter-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px; /***/
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 8px var(--shadow-light);
+      /*font-weight: 500;*/
+      white-space: nowrap;
+      min-width: fit-content;
+    }
+
+    .counter-10km { color: var(--primary-blue); }
+    .counter-20km { color: var(--primary-pink); }
+
+    .table-container {
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow-medium);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: var(--header-bg);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      transition: background-color var(--transition-smooth);
+    }
+
+    th:hover {
+      background: #d5d5d5;
+    }
+
+    /* Colonnes centrées */
+    .text-center {
+      text-align: center;
+    }
+
+    /* Indicateur de tri */
+    .sort-indicator {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 6px solid rgba(0, 0, 0, 0.4);
+      opacity: 0.5;
+      transition: all var(--transition-smooth);
+    }
+
+    th.sorted .sort-indicator {
+      opacity: 1;
+      border-bottom-color: var(--primary-blue);
+    }
+
+    th.sorted.desc .sort-indicator {
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--bg-light);
+    }
+
+    tbody tr:hover {
+      background: var(--hover-blue);
+      transform: translateY(-1px);
+      transition: all var(--transition-smooth);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.1rem;
+      color: var(--primary-blue);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .counter-box {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      table {
+        font-size: 0.85rem;
+      }
+      
+      th, td {
+        padding: 10px 8px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .counter-box {
+        flex-direction: column;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      PARTICIPANTS CALOR RUN
+    </div>
+
+    <div class="controls">
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Rechercher par nom, prénom, club..." autocomplete="off">
+      </div>
+      <div id="counter" class="counter-box">
+        <span class="counter-10km">10 km : 0</span>
+        <span>•</span>
+        <span class="counter-20km">20 km : 0</span>
+        <span>•</span>
+        <span>Total : 0</span>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table id="data-table">
+        <thead>
+          <tr>
+            <th data-column="dossard" class="text-center">
+              Dossard
+              <span class="sort-indicator"></span>
+            </th>
+            <th data-column="nom">
+              Nom
+              <span class="sort-indicator"></span>
+            </th>
+            <th data-column="prenom">
+              Prénom
+              <span class="sort-indicator"></span>
+            </th>
+            <th data-column="club">
+              Club
+              <span class="sort-indicator"></span>
+            </th>
+            <th data-column="genre" class="text-center">
+              Genre
+              <span class="sort-indicator"></span>
+            </th>
+            <th data-column="categorie" class="text-center">
+              Catégorie
+              <span class="sort-indicator"></span>
+            </th>
+            <th data-column="course" class="text-center">
+              Course
+              <span class="sort-indicator"></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr>
+            <td colspan="7" class="loading">Chargement des données...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // Configuration Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+      authDomain: "calor-run.firebaseapp.com",
+      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "calor-run",
+      storageBucket: "calor-run.firebasestorage.app",
+      messagingSenderId: "329949291334",
+      appId: "1:329949291334:web:c71ef20268c609cf953b47",
+      measurementId: "G-YVQPW6JGPK"
+    };
+
+    // Initialisation Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dbRef = ref(db, "participants");
+
+    // État de l'application
+    const AppState = {
+      allData: [],
+      filteredData: [],
+      currentSort: { column: 'dossard', direction: 'asc' },
+      isLoading: true
+    };
+
+    // Éléments DOM
+    const elements = {
+      tbody: document.getElementById("table-body"),
+      searchInput: document.getElementById("search"),
+      counter: document.getElementById("counter"),
+      headers: document.querySelectorAll("th[data-column]")
+    };
+
+    // Utilitaires
+    const utils = {
+      debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      },
+
+      normalizeString(str) {
+        return str.toString().toLowerCase().trim();
+      }
+    };
+
+    // Fonctions de rendu
+    function renderTable() {
+      if (AppState.isLoading) return;
+
+      if (AppState.filteredData.length === 0) {
+        elements.tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="no-results">
+              ${AppState.allData.length === 0 ? 'Aucune donnée disponible' : 'Aucun résultat trouvé'}
+            </td>
+          </tr>
+        `;
+        updateCounter();
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      
+      AppState.filteredData.forEach(participant => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="text-center">${participant.dossard}</td>
+          <td>${participant.nom}</td>
+          <td>${participant.prenom}</td>
+          <td>${participant.club || '-'}</td>
+          <td class="text-center">${participant.genre}</td>
+          <td class="text-center">${participant.categorie}</td>
+          <td class="text-center">${participant.course} km</td>
+        `;
+        fragment.appendChild(row);
+      });
+
+      elements.tbody.innerHTML = '';
+      elements.tbody.appendChild(fragment);
+      updateCounter();
+    }
+
+    function updateCounter() {
+      const km10Count = AppState.filteredData.filter(p => p.course == "10").length;
+      const km20Count = AppState.filteredData.filter(p => p.course == "20").length;
+      const total = AppState.filteredData.length;
+
+      elements.counter.innerHTML = `
+        <span class="counter-10km">10 km : ${km10Count}</span>
+        <span>•</span>
+        <span class="counter-20km">20 km : ${km20Count}</span>
+        <span>•</span>
+        <span>Total : ${total}</span>
+      `;
+    }
+
+    function updateSortIndicators() {
+      elements.headers.forEach(header => {
+        header.classList.remove('sorted', 'asc', 'desc');
+        if (header.dataset.column === AppState.currentSort.column) {
+          header.classList.add('sorted', AppState.currentSort.direction);
+        }
+      });
+    }
+
+    // Fonctions de logique métier
+    function sortData(column, direction = null) {
+      if (!direction) {
+        direction = AppState.currentSort.column === column && AppState.currentSort.direction === 'asc' ? 'desc' : 'asc';
+      }
+
+      AppState.currentSort = { column, direction };
+
+      AppState.filteredData.sort((a, b) => {
+        let valueA = a[column];
+        let valueB = b[column];
+
+        // Gestion des valeurs numériques
+        if (!isNaN(valueA) && !isNaN(valueB)) {
+          valueA = Number(valueA);
+          valueB = Number(valueB);
+        } else {
+          valueA = utils.normalizeString(valueA);
+          valueB = utils.normalizeString(valueB);
+        }
+
+        if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+        if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      updateSortIndicators();
+      renderTable();
+    }
+
+    function filterData(searchTerm) {
+      const term = utils.normalizeString(searchTerm);
+      
+      if (!term) {
+        AppState.filteredData = [...AppState.allData];
+      } else {
+        AppState.filteredData = AppState.allData.filter(participant => {
+          return Object.entries(participant).some(([key, value]) => {
+            // Pour la colonne course, on permet la recherche avec "km"
+            if (key === 'course') {
+              const courseWithKm = `${value} km`;
+              return utils.normalizeString(courseWithKm).includes(term) || 
+                     utils.normalizeString(value).includes(term);
+            }
+            return utils.normalizeString(value).includes(term);
+          });
+        });
+      }
+
+      sortData(AppState.currentSort.column, AppState.currentSort.direction);
+    }
+
+    // Gestionnaires d'événements
+    const debouncedFilter = utils.debounce((searchTerm) => {
+      filterData(searchTerm);
+    }, 300);
+
+    elements.searchInput.addEventListener("input", (e) => {
+      debouncedFilter(e.target.value);
+    });
+
+    elements.headers.forEach(header => {
+      header.addEventListener("click", () => {
+        sortData(header.dataset.column);
+      });
+    });
+
+    // Initialisation des données Firebase
+    function initializeData() {
+      const unsubscribe = onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        
+        if (data) {
+          AppState.allData = Object.values(data).map(participant => ({
+            dossard: participant.dossard || '',
+            nom: participant.nom || '',
+            prenom: participant.prenom || '',
+            club: participant.club || '',
+            genre: participant.genre || '',
+            categorie: participant.categorie || '',
+            course: participant.course || ''
+          }));
+          
+          AppState.filteredData = [...AppState.allData];
+          AppState.isLoading = false;
+          
+          sortData('dossard', 'asc');
+        } else {
+          AppState.allData = [];
+          AppState.filteredData = [];
+          AppState.isLoading = false;
+          renderTable();
+        }
+      }, (error) => {
+        console.error("Erreur lors du chargement des données:", error);
+        AppState.isLoading = false;
+        elements.tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="no-results">
+              Erreur lors du chargement des données
+            </td>
+          </tr>
+        `;
+      });
+
+      // Nettoyage lors du déchargement de la page
+      window.addEventListener('beforeunload', () => {
+        off(dbRef, 'value', unsubscribe);
+      });
+    }
+
+    // Démarrage de l'application
+    initializeData();
+  </script>
+</body>
+</html>
