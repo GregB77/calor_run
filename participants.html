@@ -37,8 +37,8 @@
       border: 1px solid #ccc;
     }
 
-    #search { flex: 3.5; }       /* ~80% */
-    .counter-box { flex: 1.5; }  /* ~20% */
+    #search { flex: 4; }       /* ~80% */
+    .counter-box { flex: 1; }  /* ~20% */
 
     .counter-box {
       display: flex;
@@ -46,7 +46,7 @@
       justify-content: center;
       background: #fff;
       color: #000;
-      font-weight: bold; /* en gras */
+      /* font-weight: bold; /* en gras */
     }
 
     .counter-box span { margin: 0 5px; }
@@ -127,8 +127,8 @@
   <div class="top-bar">
     <input type="text" id="search" placeholder="Rechercher...">
     <div id="counter" class="counter-box">
-      <span class="blue">10km : 0</span> | 
-      <span class="pink">20km : 0</span> | 
+      <span class="blue">10 km : 0</span> | 
+      <span class="pink">20 km : 0</span> | 
       <span>Total : 0</span>
     </div>
   </div>
@@ -235,7 +235,7 @@
 
     searchInput.addEventListener("input", () => {
       const term = searchInput.value.toLowerCase();
-      filteredData = data.map(r => ({ ...r, course: `${r.course}km` }))
+      filteredData = data.map(r => ({ ...r, course: `${r.course} km` }))
         .filter(row =>
           Object.values(row).some(val => String(val).toLowerCase().includes(term))
         );
@@ -255,7 +255,7 @@
           course: row.course
         }));
 
-        filteredData = data.map(r => ({ ...r, course: `${r.course}km` }));
+        filteredData = data.map(r => ({ ...r, course: `${r.course} km` }));
         sortByColumn('dossard', true);
       }
     });
