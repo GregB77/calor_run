@@ -9,13 +9,14 @@
 
     body { 
       font-family: system-ui, -apple-system, sans-serif; 
-      background: #f9f9f9; 
+      background: linear-gradient(to bottom, #215E99, #E61780); /* dégradé bleu -> rose */
       color: #333; 
       padding: 20px; 
       line-height: 1.4;
+      min-height: 100vh;
     }
 
-    h2 { text-align: center; margin-bottom: 20px; }
+    h2 { text-align: center; margin-bottom: 20px; color: #fff; }
 
     /* Top bar */
     .top-bar {
@@ -33,7 +34,7 @@
       border: none;
       font-size: 0.95rem;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      height: 42px; /* même hauteur pour tous */
+      height: 42px;
     }
 
     #search { flex: 1; border: 1px solid #ccc; }
@@ -64,18 +65,27 @@
     }
 
     th, td { padding: 12px 15px; font-size: 0.9rem; }
-    td.center, th.center { text-align: center; }
+
+    /* alignements colonnes */
+    th:nth-child(1), td:nth-child(1), /* Dossard */
+    th:nth-child(4), td:nth-child(4), /* Club */
+    th:nth-child(5), td:nth-child(5), /* Genre */
+    th:nth-child(6), td:nth-child(6), /* CAT */
+    th:nth-child(7), td:nth-child(7)  /* Course */
+    { text-align: center; }
+
+    th:nth-child(2), td:nth-child(2), /* Nom */
+    th:nth-child(3), td:nth-child(3)  /* Prénom */
+    { text-align: left; }
 
     th {
-      /* background: linear-gradient(135deg, #215E99 0%, #E61780 100%); 
-      color: #fff; */ 
       background: #e0e0e0; /* fond uni gris */
-      color: #000;        /* texte noir pour contraster */
+      color: #000;
       text-transform: uppercase; 
       letter-spacing: 0.05em; 
       user-select: none;
       position: relative;
-      padding-right: 25px; /* espace pour l’indicateur */
+      padding-right: 25px; 
       cursor: pointer;
     }
 
@@ -87,27 +97,27 @@
       top: 50%;
       transform: translateY(-50%) rotate(0deg);
       border: 5px solid transparent;
-      border-top-color: rgba(255,255,255,0.4); /* triangle discret */
+      border-top-color: rgba(0,0,0,0.4);
       opacity: 0.5;
       transition: transform 0.3s ease, border-top-color 0.3s, opacity 0.3s;
     }
 
     th.sorted.asc::after {
-      transform: translateY(-50%) rotate(0deg); /* flèche vers le haut pour Ascendant */
-      border-top-color: #fff;
+      transform: translateY(-50%) rotate(0deg);
+      border-top-color: #000;
       opacity: 1;
     }
 
     th.sorted.desc::after {
-      transform: translateY(-50%) rotate(180deg); /* flèche vers le bas pour Descendant */
-      border-top-color: #fff;
+      transform: translateY(-50%) rotate(180deg);
+      border-top-color: #000;
       opacity: 1;
     }
 
-    tr:nth-child(even) { background: #f2f2f2; }
+    tr:nth-child(even) { background: #f9f9f9; }
     tr:hover { background: #e9f7ff; }
 
-    .footer { text-align: center; margin-top: 20px; font-size: 0.9rem; }
+    .footer { text-align: center; margin-top: 20px; font-size: 0.9rem; color: #fff; }
   </style>
 </head>
 <body>
@@ -125,13 +135,13 @@
   <table id="data-table">
     <thead>
       <tr>
-        <th data-column="dossard" class="center">Dossard</th>
+        <th data-column="dossard">Dossard</th>
         <th data-column="nom">Nom</th>
         <th data-column="prenom">Prénom</th>
         <th data-column="club">Club</th>
-        <th data-column="genre" class="center">Genre</th>
-        <th data-column="categorie" class="center">CAT</th>
-        <th data-column="course" class="center">Course</th>
+        <th data-column="genre">Genre</th>
+        <th data-column="categorie">CAT</th>
+        <th data-column="course">Course</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -158,7 +168,7 @@
 
     let data = [];
     let filteredData = [];
-    let sortState = { dossard: 'Asc' }; // Tri par défaut
+    let sortState = { dossard: 'Asc' };
 
     const tbody = document.querySelector("#data-table tbody");
     const searchInput = document.getElementById("search");
@@ -169,13 +179,13 @@
       filteredData.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="center">${row.dossard}</td>
+          <td>${row.dossard}</td>
           <td>${row.nom}</td>
           <td>${row.prenom}</td>
           <td>${row.club}</td>
-          <td class="center">${row.genre}</td>
-          <td class="center">${row.categorie}</td>
-          <td class="center">${row.course}</td>
+          <td>${row.genre}</td>
+          <td>${row.categorie}</td>
+          <td>${row.course}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -226,7 +236,7 @@
         .filter(row =>
           Object.values(row).some(val => String(val).toLowerCase().includes(term))
         );
-      sortByColumn('dossard', true); // maintenir tri par défaut après recherche
+      sortByColumn('dossard', true);
     });
 
     onValue(dbRef, (snapshot) => {
@@ -243,7 +253,7 @@
         }));
 
         filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
-        sortByColumn('dossard', true); // Tri par défaut au chargement
+        sortByColumn('dossard', true);
       }
     });
   </script>
