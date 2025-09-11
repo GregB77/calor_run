@@ -28,29 +28,32 @@
       max-width: 1000px;
     }
 
-    #search, .counter {
+    #search, .counter-box {
       padding: 10px 15px;
       border-radius: 6px;
-      border: none;
       font-size: 0.95rem;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       height: 42px;
+      border: 1px solid #ccc;
     }
 
-    #search { flex: 1; border: 1px solid #ccc; }
+    #search { flex: 1; }
 
-    .counters { display: flex; gap: 10px; }
-
-    .counter {
-      min-width: 100px;
-      text-align: center;
-      font-weight: bold;
-      color: #fff;
+    .counter-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: #000;
     }
 
-    #count10 { background: #215E99; }
-    #count20 { background: #E61780; }
-    #countTotal { background: linear-gradient(0.25turn, #215E99, #E61780, #215E99); }
+    .counter-box span {
+      margin: 0 5px;
+    }
+
+    .counter-box .blue { color: #215E99; }
+    .counter-box .pink { color: #E61780; }
 
     /* Tableau */
     table { 
@@ -125,10 +128,10 @@
 
   <div class="top-bar">
     <input type="text" id="search" placeholder="Rechercher...">
-    <div class="counters">
-      <div id="count10" class="counter">10 km : 0</div>
-      <div id="count20" class="counter">20 km : 0</div>
-      <div id="countTotal" class="counter">Total : 0</div>
+    <div id="counter" class="counter-box">
+      <span class="blue">10 KM : 0</span> | 
+      <span class="pink">20 KM : 0</span> | 
+      <span>TOTAL : 0</span>
     </div>
   </div>
 
@@ -190,9 +193,11 @@
         tbody.appendChild(tr);
       });
 
-      document.getElementById("count10").textContent = `10 km : ${filteredData.filter(r => r.course.includes("10")).length}`;
-      document.getElementById("count20").textContent = `20 km : ${filteredData.filter(r => r.course.includes("20")).length}`;
-      document.getElementById("countTotal").textContent = `Total : ${filteredData.length}`;
+      document.getElementById("counter").innerHTML = `
+        <span class="blue">10 KM : ${filteredData.filter(r => r.course.includes("10")).length}</span> | 
+        <span class="pink">20 KM : ${filteredData.filter(r => r.course.includes("20")).length}</span> | 
+        <span>TOTAL : ${filteredData.length}</span>
+      `;
     }
 
     function clearSortIndicators() {
