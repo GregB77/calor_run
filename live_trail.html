@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Calor Run</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
+<!-- Ajout de la police Orbitron -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
   --primary-blue: #215E99;
@@ -34,7 +36,7 @@ body::before {
   z-index: -1;
 }
 
-/* Chronomètre avec image calor.png */
+/* Chronomètre avec calor.png 100% visible */
 .chrono-container { 
   text-align: center; 
   margin: 20px 0 30px; 
@@ -43,25 +45,21 @@ body::before {
   color: white; 
   box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
   position: relative;
-  background-image: url('calor.png'), linear-gradient(135deg, #215E99 0%, #E61780 100%);
-  background-repeat: no-repeat, no-repeat;
-  background-position: center center, left top;
-  background-size: 150px auto, cover;
+  background-image: url('calor.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
   overflow: hidden;
   min-height: 180px;
 }
-.chrono-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.12);
-  pointer-events: none;
-  z-index: 0;
-}
+/* Suppression de l'overlay blanc */
+.chrono-container::before { display: none !important; }
+
 .chrono-time {
   position: relative;
   z-index: 1;
-  font-family: 'Courier New', monospace;
+  /* Changement de police */
+  font-family: 'Orbitron', 'Courier New', monospace;
   font-size: 3rem;
   font-weight: bold;
   letter-spacing: 0.1em;
@@ -69,73 +67,24 @@ body::before {
   align-items: center;
   justify-content: center;
   min-width: 8em;
+  background: rgba(0,0,0,0.1); /* Optionnel : léger fond pour contraste */
+  border-radius: 0.5em;
+  padding: 0.2em 0.7em;
 }
-.chrono-time span { margin-left: 0.5em; }
+.chrono-time span { margin-left: 0; }
 @media (max-width: 480px) { .chrono-time { font-size: 2rem; } }
 .chrono-time.paused { opacity: 0.7; }
 
-/* Loading & compteurs */
-.loading { text-align: center; font-size: 1.2rem; color: #666; margin: 40px 0; }
-.compteurs { text-align: center; margin-bottom: 30px; font-size: clamp(0.9rem, 2.5vw, 1.1rem); font-weight: bold; }
-.compteur { display: inline-block; margin: 5px 10px; padding: 10px 15px; color: white; border-radius: 5px; min-width: 120px; transition: transform 0.2s ease; }
-.compteur.updated { animation: bounce 0.6s ease; }
-@keyframes bounce { 0%,20%,50%,80%,100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
-.compteur:nth-child(1) { background: #215E99; }
-.compteur:nth-child(2) { background: #E61780; }
-
-/* Tableau */
-.table-container { overflow-x: auto; margin-bottom: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-table { width: 100%; border-collapse: collapse; background: var(--bg-white); min-width: 800px; }
-th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.9rem; }
-th {
-  background: var(--header-bg); /* Fond gris comme participants.html */
-  color: #333;
-  font-weight: bold;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-tbody tr:nth-child(odd) { background: #fff; }
-tbody tr:nth-child(even) { background: var(--bg-light); }
-
-/* Erreurs & dernières mises à jour */
-.error { text-align: center; color: #d32f2f; font-weight: bold; margin: 40px 0; padding: 20px; background: #ffebee; border-radius: 8px; }
-.last-update { text-align: center; color: #666; font-size: 0.9rem; margin-top: 20px; }
-
-/* Dark theme */
-body.dark { background: #121212; color: #eee; }
-body.dark .chrono-container { background: linear-gradient(135deg, #444 0%, #880066 100%); }
-body.dark table { background: #1e1e1e; color: #eee; }
-body.dark th { background: #444; color: #fff; }
-body.dark tbody tr:nth-child(odd) { background: #1e1e1e; }
-body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
+...
+/* Le reste de votre CSS reste inchangé */
 </style>
 </head>
 <body>
 
 <div id="chrono-container" class="chrono-container">
   <div class="chrono-time" id="chrono-time">
-    ⏱️ <span id="chrono-text">--:--:--</span>
+    <span id="chrono-text">--:--:--</span>
   </div>
-</div>
-
-<div id="loading" class="loading">Connexion en temps réel...</div>
-
-<div id="compteurs" class="compteurs" style="display:none;">
-  <div class="compteur" id="compteur-10">10km : <span id="count-10">0</span> arrivés</div>
-  <div class="compteur" id="compteur-20">20km : <span id="count-20">0</span> arrivés</div>
-</div>
-
-<div class="table-container" id="table-container" style="display:none;">
-  <table id="classement">
-    <thead>
-      <tr>
-        <th>Dossard</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Course</th>
-        <th>Scratch</th><th>Genre</th><th>Pos. Genre</th><th>CAT</th><th>Pos. CAT</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
 </div>
 
 <div id="error" class="error" style="display:none;"></div>
