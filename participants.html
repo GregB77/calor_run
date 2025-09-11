@@ -4,60 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Participants Calor Run</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♀️</text></svg>">
   <style>
     :root {
       --primary-blue: #215E99;
       --primary-pink: #E61780;
-      --bg-overlay: rgba(33, 94, 153, 0.3);
-      --text-dark: #333;
+      --header-bg: #e0e0e0;
       --bg-white: #fff;
       --bg-light: #f9f9f9;
-      --border-light: #ccc;
       --hover-blue: #e9f7ff;
-      --shadow-light: rgba(0, 0, 0, 0.1);
-      --shadow-medium: rgba(0, 0, 0, 0.15);
-      --header-bg: #e0e0e0;
-      --transition-smooth: 0.3s ease;
+      --text-dark: #333;
       --border-radius: 8px;
+      --shadow-light: rgba(0, 0, 0, 0.1);
+      --transition-smooth: 0.3s ease;
       --max-width: 1000px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: system-ui, sans-serif;
       line-height: 1.5;
       color: var(--text-dark);
       min-height: 100vh;
       padding: 20px;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Fond de page estompé */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
       background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
-      opacity: 0.3;
-      z-index: -1;
+      background-attachment: fixed;
     }
 
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-    }
+    .container { max-width: var(--max-width); margin: 0 auto; }
 
-    /* Titre avec image de fond */
     .header {
       text-align: center;
       margin-bottom: 20px;
@@ -66,9 +41,6 @@
       font-weight: normal;
       padding: 20px 20px 60px 20px;
       border-radius: 10px;
-      max-width: var(--max-width);
-      margin-left: auto;
-      margin-right: auto;
       background: url('calor.png') left/cover no-repeat;
     }
 
@@ -80,165 +52,90 @@
       flex-wrap: wrap;
     }
 
-    .search-container {
-      flex: 1;
-      min-width: 250px;
-    }
+    .search-container { flex: 1; min-width: 250px; }
 
     #search {
       width: 100%;
       padding: 12px 16px;
-      border: 2px solid var(--border-light);
+      border: 2px solid #ccc;
       border-radius: var(--border-radius);
       font-size: 1rem;
-      transition: border-color var(--transition-smooth);
-    }
-
-    #search:focus {
-      outline: none;
-      border-color: var(--primary-blue);
     }
 
     .counter-box {
       display: flex;
-      align-items: center;
       gap: 8px;
-      padding: 10px 16px; /***/
+      padding: 10px 16px;
       background: var(--bg-white);
       border-radius: var(--border-radius);
-      box-shadow: 0 2px 8px var(--shadow-light);
+      box-shadow: 0 2px 6px var(--shadow-light);
       white-space: nowrap;
-      min-width: fit-content;
     }
 
     .counter-10km { color: var(--primary-blue); }
     .counter-20km { color: var(--primary-pink); }
 
-    .table-container {
-      background: var(--bg-white);
+    /* >>> AJOUT RESPONSIVE <<< */
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow-medium);
+      box-shadow: 0 4px 12px var(--shadow-light);
+      background: var(--bg-white);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 700px; /* force le scroll horizontal sur mobile */
     }
 
     th, td {
       padding: 14px 16px;
       text-align: left;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      position: relative;
+      white-space: nowrap; /* évite le retour à la ligne dans les en-têtes */
     }
 
     th {
       background: var(--header-bg);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
       cursor: pointer;
       user-select: none;
-      position: relative;
-      transition: background-color var(--transition-smooth);
-    }
-
-    th:hover {
-      background: #d5d5d5;
-    }
-
-    /* Colonnes centrées */
-    .text-center {
-      text-align: center;
     }
 
     /* Indicateur de tri */
     .sort-indicator {
       position: absolute;
-      right: 8px;
+      right: 6px;
       top: 50%;
       transform: translateY(-50%);
-      width: 0;
-      height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
       border-bottom: 6px solid rgba(0, 0, 0, 0.4);
       opacity: 0.5;
-      transition: all var(--transition-smooth);
     }
 
-    th.sorted .sort-indicator {
-      opacity: 1;
-      border-bottom-color: var(--primary-blue);
-    }
+    th.sorted .sort-indicator { opacity: 1; border-bottom-color: var(--primary-blue); }
+    th.sorted.desc .sort-indicator { transform: translateY(-50%) rotate(180deg); }
 
-    th.sorted.desc .sort-indicator {
-      transform: translateY(-50%) rotate(180deg);
-    }
-
-    tbody tr:nth-child(even) {
-      background: var(--bg-light);
-    }
-
-    tbody tr:hover {
-      background: var(--hover-blue);
-      transform: translateY(-1px);
-      transition: all var(--transition-smooth);
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1rem;
-      color: var(--primary-blue);
-    }
-
-    .no-results {
-      text-align: center;
-      padding: 40px;
-      color: #666;
-      font-style: italic;
-    }
+    tbody tr:nth-child(even) { background: var(--bg-light); }
+    tbody tr:hover { background: var(--hover-blue); }
 
     @media (max-width: 768px) {
       body { padding: 10px; }
-      
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .counter-box {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      
-      table {
-        font-size: 0.85rem;
-      }
-      
-      th, td {
-        padding: 10px 8px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .counter-box {
-        flex-direction: column;
-        gap: 4px;
-      }
+      table { font-size: 0.85rem; }
+      th, td { padding: 10px 8px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      PARTICIPANTS CALOR RUN
-    </div>
+    <div class="header">PARTICIPANTS CALOR RUN</div>
 
     <div class="controls">
       <div class="search-container">
-        <input type="text" id="search" placeholder="Rechercher par nom, prénom, club..." autocomplete="off">
+        <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
       </div>
       <div id="counter" class="counter-box">
         <span class="counter-10km">10 km : 0</span>
@@ -249,44 +146,22 @@
       </div>
     </div>
 
-    <div class="table-container">
+    <!-- >>> TABLE WRAPPED DANS .table-responsive <<< -->
+    <div class="table-responsive">
       <table id="data-table">
         <thead>
           <tr>
-            <th data-column="dossard" class="text-center">
-              Dossard
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="nom">
-              Nom
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="prenom">
-              Prénom
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="club">
-              Club
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="genre" class="text-center">
-              Genre
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="categorie" class="text-center">
-              Catégorie
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="course" class="text-center">
-              Course
-              <span class="sort-indicator"></span>
-            </th>
+            <th data-column="dossard">Dossard<span class="sort-indicator"></span></th>
+            <th data-column="nom">Nom<span class="sort-indicator"></span></th>
+            <th data-column="prenom">Prénom<span class="sort-indicator"></span></th>
+            <th data-column="club">Club<span class="sort-indicator"></span></th>
+            <th data-column="genre">Genre<span class="sort-indicator"></span></th>
+            <th data-column="categorie">Catégorie<span class="sort-indicator"></span></th>
+            <th data-column="course">Course<span class="sort-indicator"></span></th>
           </tr>
         </thead>
-        <tbody id="table-body">
-          <tr>
-            <td colspan="7" class="loading">Chargement des données...</td>
-          </tr>
+        <tbody>
+          <tr><td colspan="7">Chargement des données...</td></tr>
         </tbody>
       </table>
     </div>
