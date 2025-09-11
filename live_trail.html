@@ -34,7 +34,7 @@ body::before {
   z-index: -1;
 }
 
-/* Chronomètre avec image calor.png */
+/* Chronomètre avec image calor.png qui remplit toute la grille */
 .chrono-container { 
   text-align: center; 
   margin: 20px 0 30px; 
@@ -46,7 +46,7 @@ body::before {
   background-image: url('calor.png'), linear-gradient(135deg, #215E99 0%, #E61780 100%);
   background-repeat: no-repeat, no-repeat;
   background-position: center center, left top;
-  background-size: 150px auto, cover;
+  background-size: cover, cover; /* <-- ICI l'image remplit TOUTE la zone */
   overflow: hidden;
   min-height: 180px;
 }
