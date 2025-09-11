@@ -192,9 +192,9 @@
       });
 
       document.getElementById("counter").innerHTML = `
-        <span class="blue">10 KM : ${filteredData.filter(r => r.course.includes("10")).length}</span> | 
-        <span class="pink">20 KM : ${filteredData.filter(r => r.course.includes("20")).length}</span> | 
-        <span>TOTAL : ${filteredData.length}</span>
+        <span class="blue">10km : ${filteredData.filter(r => r.course.includes("10")).length}</span> | 
+        <span class="pink">20km : ${filteredData.filter(r => r.course.includes("20")).length}</span> | 
+        <span>Total : ${filteredData.length}</span>
       `;
     }
 
@@ -255,7 +255,7 @@
           course: row.course
         }));
 
-        filteredData = data.map(r => ({ ...r, course: `${r.course}km` }));
+        filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
         sortByColumn('dossard', true);
       }
     });
