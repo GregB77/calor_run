@@ -1,314 +1,214 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Participants Calor Run</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #f9f9f9; color: #333; padding: 20px; line-height: 1.4; }
-    h2 { text-align: center; margin-bottom: 20px; }
+<meta charset="UTF-8">
+<title>Participants Calor Run</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f9f9f9; color: #333; padding: 20px; line-height: 1.4; }
+  h2 { text-align: center; margin-bottom: 20px; }
 
-    /* Barre et boîtes filtres/compteurs */
-    .top-bar, .filter-box, .counter-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 10px auto;
-      max-width: 1000px;
-      padding: 10px 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      font-size: 0.95rem;
-    }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 20px auto; max-width: 1000px; }
+  #search { flex: 1; padding: 10px 15px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.95rem; height: 42px; }
 
-    #search, select {
-      flex: 1;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 0.95rem;
-    }
+  .counters { font-weight: bold; font-size: 1rem; color: #333; background: #fff; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); white-space: nowrap; }
 
-    .filter-box { justify-content: center; }
-    .filter-box a {
-      cursor: pointer;
-      text-decoration: none;
-      color: #555;
-    }
-    .filter-box a:hover { text-decoration: underline; }
-    .filter-box span { color: #aaa; }
+  /* Filtres rapides */
+  .filters { display: flex; gap: 20px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+  .filter-group { display: flex; gap: 6px; }
+  .filters button, .filters select { padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; background: #fff; }
+  .filters button.active { background: #215E99; color: #fff; border-color: #215E99; }
 
-    /* Couleurs actives */
-    .filter-box a.active { font-weight: bold; }
-    .filter-box a.active[data-course="10"],
-    .filter-box a.active[data-genre="H"] { color: #215E99; } /* bleu */
-    .filter-box a.active[data-course="20"],
-    .filter-box a.active[data-genre="F"] { color: #E61780; } /* rose */
-    .filter-box a.active[data-course=""],
-    .filter-box a.active[data-genre=""] { color: #000; } /* noir */
+  /* Tableau */
+  table { border-collapse: collapse; width: 100%; max-width: 1000px; margin: 0 auto 20px auto; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  th, td { padding: 12px 15px; font-size: 0.9rem; }
+  td.center, th.center { text-align: center; }
+  th { background: linear-gradient(135deg, #215E99 0%, #E61780 100%); color: #fff; text-transform: uppercase; letter-spacing: 0.05em; user-select: none; position: relative; padding-right: 25px; cursor: pointer; }
+  th::after { content: ''; position: absolute; right: 8px; top: 50%; transform: translateY(-50%) rotate(0deg); border: 5px solid transparent; border-top-color: rgba(255,255,255,0.4); opacity: 0.5; transition: transform 0.3s ease, border-top-color 0.3s, opacity 0.3s; }
+  th.sorted.asc::after { transform: translateY(-50%) rotate(0deg); border-top-color: #fff; opacity: 1; }
+  th.sorted.desc::after { transform: translateY(-50%) rotate(180deg); border-top-color: #fff; opacity: 1; }
 
-    /* Compteurs */
-    .counter-box { justify-content: space-between; }
-    .counter-box span { margin: 0 5px; }
-    .blue { color: #215E99; }
-    .pink { color: #E61780; }
-
-    /* Tableau */
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 1000px;
-      margin: 20px auto;
-      border-radius: 8px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    th, td { padding: 12px 15px; text-align: left; font-size: 0.9rem; }
-    th {
-      background: linear-gradient(135deg, #215E99 0%, #E61780 100%);
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-size: 0.85rem;
-      user-select: none;
-      cursor: pointer;
-      position: relative;
-    }
-    tr:nth-child(even) { background: #f2f2f2; }
-    tr:hover { background: #e9f7ff; }
-    .center { text-align: center; }
-
-    /* Flèches tri */
-    .sort-icons {
-      display: inline-flex;
-      flex-direction: column;
-      margin-left: 5px;
-      font-size: 10px;
-      opacity: 0.4;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-    .sort-icons span.active { opacity: 1; transform: scale(1.3); }
-  </style>
+  tr:nth-child(even) { background: #f2f2f2; }
+  tr:hover { background: #e9f7ff; }
+</style>
 </head>
 <body>
-  <h2>Participants Calor Run</h2>
 
-  <!-- Recherche -->
-  <div class="top-bar">
-    <input type="text" id="search" placeholder="Rechercher...">
+<h2>Participants Calor Run</h2>
+
+<div class="top-bar">
+  <input type="text" id="search" placeholder="Rechercher...">
+  <div id="counters" class="counters">10 km : 0 | 20 km : 0 | Total : 0</div>
+</div>
+
+<div class="filters">
+  <!-- Course -->
+  <div class="filter-group">
+    <button data-course="10" class="course-filter">10 km</button>
+    <button data-course="20" class="course-filter">20 km</button>
+    <button data-course="" class="course-filter active">Tous</button>
   </div>
 
-  <!-- Filtres -->
-  <div class="filter-box">
-    <a class="course-filter active" data-course="10">10 km</a><span>|</span>
-    <a class="course-filter" data-course="20">20 km</a><span>|</span>
-    <a class="course-filter" data-course="">Tous</a>
+  <!-- Genre -->
+  <div class="filter-group">
+    <button data-genre="H" class="genre-filter">H</button>
+    <button data-genre="F" class="genre-filter">F</button>
+    <button data-genre="" class="genre-filter active">Tous</button>
   </div>
 
-  <div class="filter-box">
-    <a class="genre-filter active" data-genre="H">H</a><span>|</span>
-    <a class="genre-filter" data-genre="F">F</a><span>|</span>
-    <a class="genre-filter" data-genre="">Tous</a>
-  </div>
+  <!-- Catégorie -->
+  <select id="categorieFilter"></select>
+</div>
 
-  <div class="top-bar">
-    <select id="categorieFilter">
-      <option value="">Toutes CAT</option>
-      <option value="CA">CA</option>
-      <option value="JU">JU</option>
-      <option value="ES">ES</option>
-      <option value="SE">SE</option>
-      <option value="M0">M0</option>
-      <option value="M1">M1</option>
-      <option value="M2">M2</option>
-      <option value="M3">M3</option>
-      <option value="M4">M4</option>
-      <option value="M5">M5</option>
-      <option value="M6">M6</option>
-      <option value="M7">M7</option>
-      <option value="M8">M8</option>
-      <option value="M9">M9</option>
-      <option value="M10">M10</option>
-    </select>
-  </div>
+<table id="data-table">
+  <thead>
+    <tr>
+      <th data-column="dossard" class="center">Dossard</th>
+      <th data-column="nom">Nom</th>
+      <th data-column="prenom">Prénom</th>
+      <th data-column="club">Club</th>
+      <th data-column="genre" class="center">Genre</th>
+      <th data-column="categorie" class="center">CAT</th>
+      <th data-column="course" class="center">Course</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-  <!-- Compteurs -->
-  <div class="counter-box">
-    <span>10 km : <span id="count10" class="blue">0</span></span>|
-    <span>20 km : <span id="count20" class="pink">0</span></span>|
-    <span>Total : <span id="countTotal">0</span></span>
-  </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-  <!-- Tableau -->
-  <table id="data-table">
-    <thead>
-      <tr>
-        <th data-column="dossard" class="center">Dossard
-          <span class="sort-icons"><span>▲</span><span>▼</span></span>
-        </th>
-        <th data-column="nom">Nom
-          <span class="sort-icons"><span>▲</span><span>▼</span></span>
-        </th>
-        <th data-column="prenom">Prénom
-          <span class="sort-icons"><span>▲</span><span>▼</span></span>
-        </th>
-        <th data-column="club">Club
-          <span class="sort-icons"><span>▲</span><span>▼</span></span>
-        </th>
-        <th data-column="genre" class="center">Genre
-          <span class="sort-icons"><span>▲</span><span>▼</span></span>
-        </th>
-        <th data-column="categorie" class="center">CAT
-          <span class="sort-icons"><span>▲</span><span>▼</span></span>
-        </th>
-        <th data-column="course" class="center">Course
-          <span class="sort-icons"><span>▲</span><span>▼</span></span>
-        </th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+const firebaseConfig = {
+  apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+  authDomain: "calor-run.firebaseapp.com",
+  databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "calor-run",
+  storageBucket: "calor-run.firebasestorage.app",
+  messagingSenderId: "329949291334",
+  appId: "1:329949291334:web:c71ef20268c609cf953b47",
+  measurementId: "G-YVQPW6JGPK"
+};
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const dbRef = ref(db, "participants");
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.firebasestorage.app",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47",
-      measurementId: "G-YVQPW6JGPK"
-    };
+let data = [];
+let filteredData = [];
+let sortState = { dossard: 'Asc' };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const dbRef = ref(db, "participants");
+const tbody = document.querySelector("#data-table tbody");
+const searchInput = document.getElementById("search");
+const headers = document.querySelectorAll("th");
+const categorieSelect = document.getElementById("categorieFilter");
+const countersDiv = document.getElementById("counters");
 
-    let data = [];
-    let filteredData = [];
-    let sortState = { column: "dossard", direction: "Asc" };
+function renderTable() {
+  tbody.innerHTML = "";
+  filteredData.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="center">${row.dossard}</td>
+      <td>${row.nom}</td>
+      <td>${row.prenom}</td>
+      <td>${row.club}</td>
+      <td class="center">${row.genre}</td>
+      <td class="center">${row.categorie}</td>
+      <td class="center">${row.course}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 
-    const tbody = document.querySelector("#data-table tbody");
-    const searchInput = document.getElementById("search");
+  const count10 = filteredData.filter(r => r.course.includes("10")).length;
+  const count20 = filteredData.filter(r => r.course.includes("20")).length;
+  const total = filteredData.length;
+  countersDiv.textContent = `10 km : ${count10} | 20 km : ${count20} | Total : ${total}`;
+}
 
-    function renderTable() {
-      tbody.innerHTML = "";
-      filteredData.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="center">${row.dossard}</td>
-          <td>${row.nom}</td>
-          <td>${row.prenom}</td>
-          <td>${row.club}</td>
-          <td class="center">${row.genre}</td>
-          <td class="center">${row.categorie}</td>
-          <td class="center">${row.course}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+function clearSortIndicators() {
+  headers.forEach(th => th.classList.remove('sorted', 'asc', 'desc'));
+}
 
-      document.getElementById("count10").textContent = filteredData.filter(r => r.course.includes("10")).length;
-      document.getElementById("count20").textContent = filteredData.filter(r => r.course.includes("20")).length;
-      document.getElementById("countTotal").textContent = filteredData.length;
-    }
+function sortByColumn(column, initial=false) {
+  let direction = initial ? 'Asc' : (sortState[column]==='Asc'?'Desc':'Asc');
+  sortState[column] = direction;
 
-    function updateSortIcons() {
-      document.querySelectorAll(".sort-icons").forEach(icon => {
-        icon.querySelectorAll("span").forEach(span => span.classList.remove("active"));
-      });
-      const th = document.querySelector(`th[data-column='${sortState.column}']`);
-      if (th) {
-        const icons = th.querySelectorAll(".sort-icons span");
-        if (sortState.direction === "Asc") icons[0].classList.add("active");
-        else icons[1].classList.add("active");
-      }
-    }
+  filteredData.sort((a,b)=>{
+    let valA=a[column], valB=b[column];
+    if(!isNaN(valA)&&!isNaN(valB)){ valA=Number(valA); valB=Number(valB); }
+    if(valA<valB) return direction==='Asc'?-1:1;
+    if(valA>valB) return direction==='Asc'?1:-1;
+    return 0;
+  });
 
-    function sortByColumn(column, keepDirection = false) {
-      if (sortState.column === column && !keepDirection) {
-        sortState.direction = sortState.direction === "Asc" ? "Desc" : "Asc";
-      } else {
-        sortState.column = column;
-        sortState.direction = "Asc";
-      }
+  clearSortIndicators();
+  const th = document.querySelector(`th[data-column='${column}']`);
+  if(th) th.classList.add('sorted', direction.toLowerCase());
 
-      filteredData.sort((a, b) => {
-        let valA = a[column], valB = b[column];
-        if (!isNaN(valA) && !isNaN(valB)) { valA = Number(valA); valB = Number(valB); }
-        if (valA < valB) return sortState.direction === "Asc" ? -1 : 1;
-        if (valA > valB) return sortState.direction === "Asc" ? 1 : -1;
-        return 0;
-      });
+  renderTable();
+}
 
-      updateSortIcons();
-      renderTable();
-    }
+function applyFilters() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const courseFilter = document.querySelector('.course-filter.active').dataset.course;
+  const genreFilter = document.querySelector('.genre-filter.active').dataset.genre;
+  const categorieFilter = categorieSelect.value;
 
-    function applyFilters() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const courseFilter = document.querySelector('.course-filter.active').dataset.course;
-      const genreFilter = document.querySelector('.genre-filter.active').dataset.genre;
-      const categorieFilter = document.getElementById('categorieFilter').value;
-
-      filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }))
-        .filter(r => {
-          const matchSearch = Object.values(r).some(val => String(val).toLowerCase().includes(searchTerm));
-          const matchCourse = !courseFilter || r.course.includes(courseFilter);
-          const matchGenre = !genreFilter || r.genre === genreFilter;
-          const matchCat = !categorieFilter || r.categorie === categorieFilter;
-          return matchSearch && matchCourse && matchGenre && matchCat;
-        });
-
-      sortByColumn(sortState.column, true);
-    }
-
-    // Listeners
-    document.querySelectorAll('.course-filter').forEach(link => {
-      link.addEventListener('click', () => {
-        document.querySelectorAll('.course-filter').forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        applyFilters();
-      });
+  filteredData = data
+    .map(r=>({...r, course:`${r.course} KM`}))
+    .filter(r=>{
+      const matchSearch = Object.values(r).some(val=>String(val).toLowerCase().includes(searchTerm));
+      const matchCourse = !courseFilter || r.course.includes(courseFilter);
+      const matchGenre = !genreFilter || r.genre === genreFilter;
+      const matchCat = !categorieFilter || r.categorie === categorieFilter;
+      return matchSearch && matchCourse && matchGenre && matchCat;
     });
 
-    document.querySelectorAll('.genre-filter').forEach(link => {
-      link.addEventListener('click', () => {
-        document.querySelectorAll('.genre-filter').forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        applyFilters();
-      });
-    });
+  sortByColumn('dossard', true);
+}
 
-    document.getElementById('categorieFilter').addEventListener('change', applyFilters);
-    searchInput.addEventListener('input', applyFilters);
+headers.forEach(th=>th.addEventListener('click', ()=>sortByColumn(th.dataset.column)));
+searchInput.addEventListener('input', applyFilters);
 
-    document.querySelectorAll("th").forEach(th => {
-      th.addEventListener("click", () => sortByColumn(th.dataset.column));
-    });
+// Gestion des boutons Course
+document.querySelectorAll('.course-filter').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.course-filter').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  });
+});
 
-    // Firebase
-    onValue(dbRef, snapshot => {
-      const val = snapshot.val();
-      if (val) {
-        data = Object.values(val).map(r => ({
-          dossard: r.dossard,
-          nom: r.nom,
-          prenom: r.prenom,
-          club: r.club,
-          genre: r.genre,
-          categorie: r.categorie,
-          course: r.course
-        }));
-        applyFilters();
-      }
-    });
-  </script>
+// Gestion des boutons Genre
+document.querySelectorAll('.genre-filter').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.genre-filter').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  });
+});
+
+// Catégorie avec ordre fixe
+function populateCategories() {
+  const categoriesOrder = ["CA","JU","ES","SE","M0","M1","M2","M3","M4","M5","M6","M7","M8","M9","M10"];
+  let html = `<option value="">CAT</option><option value="">Toutes</option>`;
+  categoriesOrder.forEach(c => html += `<option value="${c}">${c}</option>`);
+  categorieSelect.innerHTML = html;
+}
+categorieSelect.addEventListener('change', applyFilters);
+
+onValue(dbRef, snapshot=>{
+  const val = snapshot.val();
+  if(val){
+    data = Object.values(val).map(r=>({
+      dossard: r.dossard, nom:r.nom, prenom:r.prenom, club:r.club,
+      genre:r.genre, categorie:r.categorie, course:r.course
+    }));
+    populateCategories();
+    applyFilters();
+  }
+});
+</script>
 </body>
 </html>
