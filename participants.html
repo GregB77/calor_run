@@ -42,6 +42,9 @@
       padding: 20px 20px 60px 20px;
       border-radius: 10px;
       background: url('calor.png') left/cover no-repeat;
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .controls {
@@ -50,6 +53,9 @@
       margin-bottom: 25px;
       align-items: center;
       flex-wrap: wrap;
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .search-container { flex: 1; min-width: 250px; }
@@ -82,6 +88,8 @@
       border-radius: var(--border-radius);
       box-shadow: 0 4px 12px var(--shadow-light);
       background: var(--bg-white);
+      max-width: var(--max-width);
+      margin: 0 auto 20px auto;
     }
 
     table {
@@ -114,6 +122,7 @@
       border-right: 5px solid transparent;
       border-bottom: 6px solid rgba(0, 0, 0, 0.4);
       opacity: 0.5;
+      transition: transform var(--transition-smooth), opacity var(--transition-smooth), border-bottom-color var(--transition-smooth);
     }
 
     th.sorted .sort-indicator { opacity: 1; border-bottom-color: var(--primary-blue); }
@@ -121,6 +130,19 @@
 
     tbody tr:nth-child(even) { background: var(--bg-light); }
     tbody tr:hover { background: var(--hover-blue); }
+
+    .loading {
+      text-align: center;
+      padding: 24px;
+      color: var(--primary-blue);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 24px;
+      color: #666;
+      font-style: italic;
+    }
 
     @media (max-width: 768px) {
       body { padding: 10px; }
@@ -161,7 +183,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="7">Chargement des données...</td></tr>
+          <tr><td colspan="7" class="loading">Chargement des données...</td></tr>
         </tbody>
       </table>
     </div>
@@ -169,9 +191,9 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    // Configuration Firebase
+    // Firebase config (inchangé)
     const firebaseConfig = {
       apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
       authDomain: "calor-run.firebaseapp.com",
@@ -183,219 +205,186 @@
       measurementId: "G-YVQPW6JGPK"
     };
 
-    // Initialisation Firebase
+    // Init Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dbRef = ref(db, "participants");
 
-    // État de l'application
-    const AppState = {
+    // App state
+    const state = {
       allData: [],
       filteredData: [],
       currentSort: { column: 'dossard', direction: 'asc' },
       isLoading: true
     };
 
-    // Éléments DOM
-    const elements = {
-      tbody: document.getElementById("table-body"),
-      searchInput: document.getElementById("search"),
-      counter: document.getElementById("counter"),
-      headers: document.querySelectorAll("th[data-column]")
-    };
+    // DOM
+    const tbody = document.querySelector("#data-table tbody");
+    const searchInput = document.getElementById("search");
+    const counterEl = document.getElementById("counter");
+    const headers = document.querySelectorAll("th[data-column]");
 
-    // Utilitaires
-    const utils = {
-      debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-          const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-          };
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-        };
-      },
+    // Intl collator for better string sorting
+    const collator = new Intl.Collator('fr', { sensitivity: 'base', numeric: true });
 
-      normalizeString(str) {
-        return str.toString().toLowerCase().trim();
-      }
-    };
+    // Utilities
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
 
-    // Fonctions de rendu
+    function normalizeValue(val) {
+      if (val === null || val === undefined) return '';
+      if (typeof val === 'number') return val;
+      const s = String(val).trim();
+      // treat numeric-like strings as numbers (but avoid empty strings)
+      if (s !== '' && !Number.isNaN(Number(s))) return Number(s);
+      // normalize text (remove diacritics)
+      return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    // Rendering
     function renderTable() {
-      if (AppState.isLoading) return;
+      if (state.isLoading) {
+        tbody.innerHTML = '<tr><td colspan="7" class="loading">Chargement des données...</td></tr>';
+        return;
+      }
 
-      if (AppState.filteredData.length === 0) {
-        elements.tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="no-results">
-              ${AppState.allData.length === 0 ? 'Aucune donnée disponible' : 'Aucun résultat trouvé'}
-            </td>
-          </tr>
-        `;
+      if (!state.filteredData || state.filteredData.length === 0) {
+        const message = state.allData.length === 0 ? 'Aucune donnée disponible' : 'Aucun résultat trouvé';
+        tbody.innerHTML = `<tr><td colspan="7" class="no-results">${message}</td></tr>`;
         updateCounter();
         return;
       }
 
-      const fragment = document.createDocumentFragment();
-      
-      AppState.filteredData.forEach(participant => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td class="text-center">${participant.dossard}</td>
-          <td>${participant.nom}</td>
-          <td>${participant.prenom}</td>
-          <td>${participant.club || '-'}</td>
-          <td class="text-center">${participant.genre}</td>
-          <td class="text-center">${participant.categorie}</td>
-          <td class="text-center">${participant.course} km</td>
+      const frag = document.createDocumentFragment();
+      state.filteredData.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.dossard}</td>
+          <td>${p.nom}</td>
+          <td>${p.prenom}</td>
+          <td>${p.club || '-'}</td>
+          <td>${p.genre}</td>
+          <td>${p.categorie}</td>
+          <td>${p.course} km</td>
         `;
-        fragment.appendChild(row);
+        frag.appendChild(tr);
       });
 
-      elements.tbody.innerHTML = '';
-      elements.tbody.appendChild(fragment);
+      tbody.innerHTML = '';
+      tbody.appendChild(frag);
       updateCounter();
     }
 
     function updateCounter() {
-      const km10Count = AppState.filteredData.filter(p => p.course == "10").length;
-      const km20Count = AppState.filteredData.filter(p => p.course == "20").length;
-      const total = AppState.filteredData.length;
+      const km10 = state.filteredData.filter(p => String(p.course) === "10").length;
+      const km20 = state.filteredData.filter(p => String(p.course) === "20").length;
+      const total = state.filteredData.length;
 
-      elements.counter.innerHTML = `
-        <span class="counter-10km">10 km : ${km10Count}</span>
+      counterEl.innerHTML = `
+        <span class="counter-10km">10 km : ${km10}</span>
         <span>•</span>
-        <span class="counter-20km">20 km : ${km20Count}</span>
+        <span class="counter-20km">20 km : ${km20}</span>
         <span>•</span>
         <span>Total : ${total}</span>
       `;
     }
 
     function updateSortIndicators() {
-      elements.headers.forEach(header => {
-        header.classList.remove('sorted', 'asc', 'desc');
-        if (header.dataset.column === AppState.currentSort.column) {
-          header.classList.add('sorted', AppState.currentSort.direction);
+      headers.forEach(h => {
+        h.classList.remove('sorted', 'asc', 'desc');
+        if (h.dataset.column === state.currentSort.column) {
+          h.classList.add('sorted', state.currentSort.direction);
         }
       });
     }
 
-    // Fonctions de logique métier
-    function sortData(column, direction = null) {
-      if (!direction) {
-        direction = AppState.currentSort.column === column && AppState.currentSort.direction === 'asc' ? 'desc' : 'asc';
-      }
+    // Logic
+    function sortData(column, forcedDirection = null) {
+      const dir = forcedDirection ? forcedDirection : (state.currentSort.column === column && state.currentSort.direction === 'asc' ? 'desc' : 'asc');
+      state.currentSort = { column, direction: dir };
 
-      AppState.currentSort = { column, direction };
+      state.filteredData.sort((a, b) => {
+        const va = normalizeValue(a[column]);
+        const vb = normalizeValue(b[column]);
 
-      AppState.filteredData.sort((a, b) => {
-        let valueA = a[column];
-        let valueB = b[column];
-
-        // Gestion des valeurs numériques
-        if (!isNaN(valueA) && !isNaN(valueB)) {
-          valueA = Number(valueA);
-          valueB = Number(valueB);
-        } else {
-          valueA = utils.normalizeString(valueA);
-          valueB = utils.normalizeString(valueB);
+        if (typeof va === 'number' && typeof vb === 'number') {
+          return dir === 'asc' ? va - vb : vb - va;
         }
-
-        if (valueA < valueB) return direction === 'asc' ? -1 : 1;
-        if (valueA > valueB) return direction === 'asc' ? 1 : -1;
-        return 0;
+        // collator handles strings (and numeric-ish strings if any)
+        return dir === 'asc' ? collator.compare(va, vb) : collator.compare(vb, va);
       });
 
       updateSortIndicators();
       renderTable();
     }
 
-    function filterData(searchTerm) {
-      const term = utils.normalizeString(searchTerm);
-      
-      if (!term) {
-        AppState.filteredData = [...AppState.allData];
+    function filterData(term) {
+      const t = String(term || '').toLowerCase().trim();
+
+      if (!t) {
+        state.filteredData = [...state.allData];
       } else {
-        AppState.filteredData = AppState.allData.filter(participant => {
-          return Object.entries(participant).some(([key, value]) => {
-            // Pour la colonne course, on permet la recherche avec "km"
-            if (key === 'course') {
-              const courseWithKm = `${value} km`;
-              return utils.normalizeString(courseWithKm).includes(term) || 
-                     utils.normalizeString(value).includes(term);
+        state.filteredData = state.allData.filter(p => {
+          return Object.entries(p).some(([k, v]) => {
+            if (k === 'course') {
+              // match "10", "10km", "10 km"
+              return String(v).toLowerCase().includes(t) || (`${v} km`).toLowerCase().includes(t);
             }
-            return utils.normalizeString(value).includes(term);
+            return String(v).toLowerCase().includes(t);
           });
         });
       }
 
-      sortData(AppState.currentSort.column, AppState.currentSort.direction);
+      // keep current sort direction
+      sortData(state.currentSort.column, state.currentSort.direction);
     }
 
-    // Gestionnaires d'événements
-    const debouncedFilter = utils.debounce((searchTerm) => {
-      filterData(searchTerm);
-    }, 300);
+    const debouncedFilter = debounce((val) => filterData(val), 300);
 
-    elements.searchInput.addEventListener("input", (e) => {
-      debouncedFilter(e.target.value);
+    // Events
+    searchInput.addEventListener('input', (e) => debouncedFilter(e.target.value));
+    headers.forEach(h => h.addEventListener('click', () => sortData(h.dataset.column)));
+
+    // Firebase data load
+    const unsubscribe = onValue(dbRef, (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        state.allData = Object.values(val).map(item => ({
+          dossard: item.dossard ?? '',
+          nom: item.nom ?? '',
+          prenom: item.prenom ?? '',
+          club: item.club ?? '',
+          genre: item.genre ?? '',
+          categorie: item.categorie ?? '',
+          course: item.course ?? ''
+        }));
+
+        state.filteredData = [...state.allData];
+        state.isLoading = false;
+        // default sort
+        sortData('dossard', 'asc');
+      } else {
+        state.allData = [];
+        state.filteredData = [];
+        state.isLoading = false;
+        renderTable();
+      }
+    }, (err) => {
+      console.error('Erreur Firebase:', err);
+      state.isLoading = false;
+      tbody.innerHTML = '<tr><td colspan="7" class="no-results">Erreur lors du chargement des données</td></tr>';
     });
 
-    elements.headers.forEach(header => {
-      header.addEventListener("click", () => {
-        sortData(header.dataset.column);
-      });
-    });
+    // Unsubscribe on unload
+    window.addEventListener('beforeunload', () => { if (typeof unsubscribe === 'function') unsubscribe(); });
 
-    // Initialisation des données Firebase
-    function initializeData() {
-      const unsubscribe = onValue(dbRef, (snapshot) => {
-        const data = snapshot.val();
-        
-        if (data) {
-          AppState.allData = Object.values(data).map(participant => ({
-            dossard: participant.dossard || '',
-            nom: participant.nom || '',
-            prenom: participant.prenom || '',
-            club: participant.club || '',
-            genre: participant.genre || '',
-            categorie: participant.categorie || '',
-            course: participant.course || ''
-          }));
-          
-          AppState.filteredData = [...AppState.allData];
-          AppState.isLoading = false;
-          
-          sortData('dossard', 'asc');
-        } else {
-          AppState.allData = [];
-          AppState.filteredData = [];
-          AppState.isLoading = false;
-          renderTable();
-        }
-      }, (error) => {
-        console.error("Erreur lors du chargement des données:", error);
-        AppState.isLoading = false;
-        elements.tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="no-results">
-              Erreur lors du chargement des données
-            </td>
-          </tr>
-        `;
-      });
-
-      // Nettoyage lors du déchargement de la page
-      window.addEventListener('beforeunload', () => {
-        off(dbRef, 'value', unsubscribe);
-      });
-    }
-
-    // Démarrage de l'application
-    initializeData();
+    // initial render (shows loading)
+    renderTable();
   </script>
 </body>
 </html>
