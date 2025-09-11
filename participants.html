@@ -37,8 +37,8 @@
       border: 1px solid #ccc;
     }
 
-    #search { flex: 4; }       /* ~80% */
-    .counter-box { flex: 1; }  /* ~20% */
+    #search { flex: 3.5; }       /* ~80% */
+    .counter-box { flex: 1.2; }  /* ~20% */
 
     .counter-box {
       display: flex;
@@ -127,9 +127,9 @@
   <div class="top-bar">
     <input type="text" id="search" placeholder="Rechercher...">
     <div id="counter" class="counter-box">
-      <span class="blue">10 KM : 0</span> | 
-      <span class="pink">20 KM : 0</span> | 
-      <span>TOTAL : 0</span>
+      <span class="blue">10km : 0</span> | 
+      <span class="pink">20km : 0</span> | 
+      <span>Total : 0</span>
     </div>
   </div>
 
@@ -255,7 +255,7 @@
           course: row.course
         }));
 
-        filteredData = data.map(r => ({ ...r, course: `${r.course} KM` }));
+        filteredData = data.map(r => ({ ...r, course: `${r.course}km` }));
         sortByColumn('dossard', true);
       }
     });
