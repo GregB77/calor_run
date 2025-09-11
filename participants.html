@@ -7,13 +7,26 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body { 
-      font-family: system-ui, -apple-system, sans-serif; 
-      background: linear-gradient(0.25turn, #215E99, 80%, #E61780); /* dégradé bleu -> rose */
-      color: #333; 
-      padding: 20px; 
-      line-height: 1.4;
+    body {
+      position: relative;
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
       min-height: 100vh;
+      line-height: 1.4;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* Fond de page estompé */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(0.25turn, #215E99, #E61780);
+      opacity: 0.3;  /* fond estompé */
+      z-index: -1;
     }
 
     h2 { text-align: center; margin-bottom: 20px; color: #fff; }
@@ -37,8 +50,8 @@
       border: 1px solid #ccc;
     }
 
-    #search { flex: 3.7; }       /* ~80% */
-    .counter-box { flex: 1.3; }  /* ~20% */
+    #search { flex: 1; } /* recherche prend la place dispo */
+    .counter-box { flex: 0; white-space: nowrap; } /* largeur auto */
 
     .counter-box {
       display: flex;
