@@ -190,7 +190,9 @@ function stopChrono() {
 // Classement
 function createTableRow(p) {
   const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${p.dossard}</td><td>${p.nom}</td><td>${p.prenom}</td><td>${p.tempsStr}</td><td>${p.course}</td><td>${p.scratch}</td><td>${p.genre}</td><td>${p.posGenre}</td><td>${p.categorie}</td><td>${p.posCat}</td>`;
+  // If tempsMs is negative, show "--:--:--" instead of a negative time
+  const tempsDisplay = (typeof p.tempsMs === "number" && p.tempsMs < 0) ? "--:--:--" : p.tempsStr;
+  tr.innerHTML = `<td>${p.dossard}</td><td>${p.nom}</td><td>${p.prenom}</td><td>${tempsDisplay}</td><td>${p.course}</td><td>${p.scratch}</td><td>${p.genre}</td><td>${p.posGenre}</td><td>${p.categorie}</td><td>${p.posCat}</td>`;
   return tr;
 }
 
