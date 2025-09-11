@@ -36,15 +36,14 @@
       min-height: 100vh;
       padding: 20px;
       position: relative;
-      /*background: linear-gradient(0.25turn, var(--primary-blue),80%, var(--primary-pink));
-      opacity: 0.3;*/
+      overflow-x: hidden;
     }
 
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background: linear-gradient(0.25turn, var(--primary-blue),80% , var(--primary-pink));
+      background: linear-gradient(45deg, var(--primary-blue), var(--primary-pink));
       opacity: 0.3;
       z-index: -1;
     }
