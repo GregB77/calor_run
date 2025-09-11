@@ -37,21 +37,19 @@
       border: 1px solid #ccc;
     }
 
-    #search { flex: 1; }
+    #search { flex: 4; }       /* ~80% */
+    .counter-box { flex: 1; }  /* ~20% */
 
     .counter-box {
-      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #fff;
       color: #000;
+      font-weight: bold; /* en gras */
     }
 
-    .counter-box span {
-      margin: 0 5px;
-    }
-
+    .counter-box span { margin: 0 5px; }
     .counter-box .blue { color: #215E99; }
     .counter-box .pink { color: #E61780; }
 
@@ -71,14 +69,14 @@
 
     /* alignements colonnes */
     th:nth-child(1), td:nth-child(1), /* Dossard */
-    th:nth-child(4), td:nth-child(4), /* Club */
     th:nth-child(5), td:nth-child(5), /* Genre */
     th:nth-child(6), td:nth-child(6), /* CAT */
     th:nth-child(7), td:nth-child(7)  /* Course */
     { text-align: center; }
 
     th:nth-child(2), td:nth-child(2), /* Nom */
-    th:nth-child(3), td:nth-child(3)  /* Prénom */
+    th:nth-child(3), td:nth-child(3), /* Prénom */
+    th:nth-child(4), td:nth-child(4)  /* Club */
     { text-align: left; }
 
     th {
