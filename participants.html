@@ -9,7 +9,7 @@
 
     body { 
       font-family: system-ui, -apple-system, sans-serif; 
-      background: linear-gradient(0.25turn, #215E99, 80%, #E61780); /* dégradé bleu -> rose */
+      background: linear-gradient(0.25turn, #215E99, 80%, #E61780);
       color: #333; 
       padding: 20px; 
       line-height: 1.4;
@@ -28,30 +28,31 @@
       max-width: 1000px;
     }
 
-    #search, .counter-box {
+    #search, .counter-bar {
       padding: 10px 15px;
       border-radius: 6px;
+      border: 1px solid #ccc;
       font-size: 0.95rem;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       height: 42px;
-      border: 1px solid #ccc;
+      background: #fff;
     }
 
-    #search { flex: 3.5; }       /* ~80% */
-    .counter-box { flex: 1.2; }  /* ~20% */
+    #search { flex: 0 0 80%; }
 
-    .counter-box {
+    .counter-bar {
+      flex: 0 0 20%;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #fff;
-      color: #000;
-      font-weight: bold; /* en gras */
+      gap: 8px;
+      font-weight: bold;
     }
 
-    .counter-box span { margin: 0 5px; }
-    .counter-box .blue { color: #215E99; }
-    .counter-box .pink { color: #E61780; }
+    .counter-bar span { white-space: nowrap; }
+    .blue { color: #215E99; }
+    .pink { color: #E61780; }
+    .black { color: #000; }
 
     /* Tableau */
     table { 
@@ -63,24 +64,28 @@
       overflow: hidden; 
       background: #fff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      table-layout: fixed; /* Respecter les largeurs */
     }
 
-    th, td { padding: 12px 15px; font-size: 0.9rem; }
+    th, td { 
+      padding: 12px 15px; 
+      font-size: 0.9rem; 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
+    }
 
-    /* alignements colonnes */
-    th:nth-child(1), td:nth-child(1), /* Dossard */
-    th:nth-child(5), td:nth-child(5), /* Genre */
-    th:nth-child(6), td:nth-child(6), /* CAT */
-    th:nth-child(7), td:nth-child(7)  /* Course */
-    { text-align: center; }
-
-    th:nth-child(2), td:nth-child(2), /* Nom */
-    th:nth-child(3), td:nth-child(3), /* Prénom */
-    th:nth-child(4), td:nth-child(4)  /* Club */
-    { text-align: left; }
+    /* Largeurs colonnes */
+    th:nth-child(1), td:nth-child(1) { width: 9ch; max-width: 9ch; text-align: center; }
+    th:nth-child(2), td:nth-child(2) { width: 20ch; max-width: 20ch; text-align: left; }
+    th:nth-child(3), td:nth-child(3) { width: 20ch; max-width: 20ch; text-align: left; }
+    th:nth-child(4), td:nth-child(4) { width: 20ch; max-width: 20ch; text-align: left; }
+    th:nth-child(5), td:nth-child(5) { width: 7ch; max-width: 7ch; text-align: center; }
+    th:nth-child(6), td:nth-child(6) { width: 7ch; max-width: 7ch; text-align: center; }
+    th:nth-child(7), td:nth-child(7) { width: 8ch; max-width: 8ch; text-align: center; }
 
     th {
-      background: #e0e0e0; /* fond uni gris */
+      background: #e0e0e0;
       color: #000;
       text-transform: uppercase; 
       letter-spacing: 0.05em; 
@@ -90,7 +95,7 @@
       cursor: pointer;
     }
 
-    /* Tri discret et animé */
+    /* Tri discret */
     th::after {
       content: '';
       position: absolute;
@@ -126,10 +131,10 @@
 
   <div class="top-bar">
     <input type="text" id="search" placeholder="Rechercher...">
-    <div id="counter" class="counter-box">
-      <span class="blue">10km : 0</span> | 
-      <span class="pink">20km : 0</span> | 
-      <span>Total : 0</span>
+    <div class="counter-bar">
+      <span class="blue">10 KM : <span id="count10">000</span></span> |
+      <span class="pink">20 KM : <span id="count20">000</span></span> |
+      <span class="black">TOTAL : <span id="countTotal">000</span></span>
     </div>
   </div>
 
@@ -191,11 +196,9 @@
         tbody.appendChild(tr);
       });
 
-      document.getElementById("counter").innerHTML = `
-        <span class="blue">10km : ${filteredData.filter(r => r.course.includes("10")).length}</span> | 
-        <span class="pink">20km : ${filteredData.filter(r => r.course.includes("20")).length}</span> | 
-        <span>Total : ${filteredData.length}</span>
-      `;
+      document.getElementById("count10").textContent = filteredData.filter(r => r.course.includes("10")).length;
+      document.getElementById("count20").textContent = filteredData.filter(r => r.course.includes("20")).length;
+      document.getElementById("countTotal").textContent = filteredData.length;
     }
 
     function clearSortIndicators() {
