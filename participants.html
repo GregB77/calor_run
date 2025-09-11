@@ -122,6 +122,17 @@
       box-shadow: 0 4px 12px var(--shadow-medium);
     }
 
+    @media (max-width: 600px) {
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 600px; /* or whatever minimum makes sense for your columns */
+  }
+}
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -224,11 +235,27 @@
     }
 
     @media (max-width: 600px) {
-      .counter-box {
+      .controls {
         flex-direction: column;
-        gap: 4px;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .search-container, .counter-box {
+        width: 100%;
       }
     }
+
+    @media (max-width: 400px) {
+      th, td {
+        padding: 7px 4px;
+        font-size: 0.7rem;
+      }
+      .header {
+        font-size: 1.1rem;
+        padding: 14px 10px 40px 10px;
+      }
+    }
+    
   </style>
 </head>
 <body>
