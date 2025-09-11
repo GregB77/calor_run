@@ -11,32 +11,44 @@
   --header-text: #222;
   --bg-white: #fff;
   --bg-light: #f9f9f9;
-  --border-radius: 15px;
   --chrono-font: 'Consolas', 'Courier New', monospace;
 }
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
-  margin: 20px;
+  margin: 0;
   background: var(--bg-light);
   line-height: 1.4;
   min-height: 100vh;
+  /* Fond dégradé estompé */
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: linear-gradient(0.25turn, #215E99, #E61780);
+  opacity: 0.3;
+  z-index: -1;
 }
 
+/* Barre du chrono pleine largeur */
 .chrono-bg {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto 32px auto;
-  border-radius: var(--border-radius);
+  width: 100vw;
+  min-width: 100vw;
+  margin: 0 0 32px 0;
+  /* Plus de border radius, plus d'ombre, ni bordure */
+  border-radius: 0;
   overflow: hidden;
   position: relative;
-  /* L'image prendra exactement la largeur du tableau */
   background: url('calor.png') center center/cover no-repeat;
   aspect-ratio: 5/1;
   min-height: 120px;
+  box-shadow: none;
+  border: none;
 }
 .chrono-time {
   position: absolute;
@@ -50,27 +62,23 @@ body {
   background: rgba(0,0,0,0.12);
   padding: 0.2em 0.8em;
   border-radius: 0.6em;
-  /* Pour donner du relief sans gêner la lecture */
   user-select: none;
 }
 .chrono-time.paused { opacity: 0.7; }
 
 .table-container {
-  max-width: 1000px;
-  margin: 0 auto 40px auto;
-  border-radius: var(--border-radius);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  width: 100vw;
+  margin: 0 0 40px 0;
   overflow-x: auto;
   background: var(--bg-white);
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   min-width: 800px;
   background: transparent;
-  border-radius: var(--border-radius);
-  overflow: hidden;
 }
 th, td {
   padding: 10px 8px;
@@ -81,23 +89,14 @@ th {
   background: var(--header-bg);
   color: var(--header-text);
   font-weight: bold;
-  border-top: none;
-  border-bottom: 2px solid #fff;
-  border-right: 2px solid #fff; /* Bordure verticale blanche */
+  border: 1px solid #fff; /* Bordure blanche entre colonnes et lignes */
   position: sticky;
   top: 0;
   z-index: 10;
 }
-th:last-child {
-  border-right: none;
-}
 td {
-  border-right: 2px solid #fff; /* Bordure verticale blanche */
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
   background: transparent;
-}
-td:last-child {
-  border-right: none;
 }
 tbody tr:nth-child(odd) { background: #fff; }
 tbody tr:nth-child(even) { background: var(--bg-light); }
@@ -113,19 +112,18 @@ tbody tr:hover { background: #eaf4ff; }
 .error { text-align: center; color: #d32f2f; font-weight: bold; margin: 40px 0; padding: 20px; background: #ffebee; border-radius: 8px; }
 .last-update { text-align: center; color: #666; font-size: 0.9rem; margin-top: 20px; }
 
-@media (max-width: 1200px) {
-  .table-container, .chrono-bg { max-width: 98vw; }
+@media (max-width: 900px) {
   table { min-width: 600px; }
 }
 @media (max-width: 700px) {
-  .table-container, .chrono-bg { max-width: 100vw; border-radius: 0; }
+  .table-container, .chrono-bg { width: 100vw; min-width: 100vw; }
   table { min-width: 400px; }
 }
 /* Dark theme */
 body.dark { background: #121212; color: #eee; }
 body.dark .table-container { background: #222; }
-body.dark th { background: #444; color: #fff; border-bottom: 2px solid #222; border-right: 2px solid #fff; }
-body.dark td { background: transparent; border-right: 2px solid #222; border-bottom: 1px solid #333; }
+body.dark th { background: #444; color: #fff; border: 1px solid #222; }
+body.dark td { background: transparent; border: 1px solid #333; }
 body.dark tbody tr:nth-child(odd) { background: #222; }
 body.dark tbody tr:nth-child(even) { background: #292929; }
 body.dark tbody tr:hover { background: #2a3c4c; }
