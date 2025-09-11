@@ -14,7 +14,7 @@
   --bg-white: #fff;
 }
 
-/* Fond de page dégradé estompé comme participants.html */
+/* Fond de page dégradé estompé */
 body {
   font-family: system-ui, -apple-system, sans-serif;
   margin: 20px;
@@ -34,7 +34,7 @@ body::before {
   z-index: -1;
 }
 
-/* Chronomètre avec image calor.png qui remplit toute la grille */
+/* Chronomètre avec calor.png très visible et sans couleur de fond */
 .chrono-container { 
   text-align: center; 
   margin: 20px 0 30px; 
@@ -43,18 +43,20 @@ body::before {
   color: white; 
   box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
   position: relative;
-  background-image: url('calor.png'), linear-gradient(135deg, #215E99 0%, #E61780 100%);
-  background-repeat: no-repeat, no-repeat;
-  background-position: center center, left top;
-  background-size: cover, cover; /* <-- ICI l'image remplit TOUTE la zone */
-  overflow: hidden;
-  min-height: 180px;
+  background-image: url('calor.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  min-height: 220px;
+  /* Retirer tout fond coloré, laisser juste l'image */
+  background-color: transparent;
 }
 .chrono-container::before {
+  /* Optionnel : pour renforcer la visibilité du texte, on peut assombrir un peu */
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.08); /* très léger assombrissement */
   pointer-events: none;
   z-index: 0;
 }
@@ -69,6 +71,7 @@ body::before {
   align-items: center;
   justify-content: center;
   min-width: 8em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 2px #fff;
 }
 .chrono-time span { margin-left: 0.5em; }
 @media (max-width: 480px) { .chrono-time { font-size: 2rem; } }
@@ -85,10 +88,10 @@ body::before {
 
 /* Tableau */
 .table-container { overflow-x: auto; margin-bottom: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-table { width: 100%; border-collapse: collapse; background: var(--bg-white); min-width: 800px; }
+table { width: 100%; border-collapse: collapse; background: transparent; min-width: 800px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.9rem; }
 th {
-  background: var(--header-bg); /* Fond gris comme participants.html */
+  background: var(--header-bg);
   color: #333;
   font-weight: bold;
   position: sticky;
@@ -104,8 +107,8 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 
 /* Dark theme */
 body.dark { background: #121212; color: #eee; }
-body.dark .chrono-container { background: linear-gradient(135deg, #444 0%, #880066 100%); }
-body.dark table { background: #1e1e1e; color: #eee; }
+body.dark .chrono-container { background: url('calor.png') center center/cover no-repeat; }
+body.dark table { background: transparent; color: #eee; }
 body.dark th { background: #444; color: #fff; }
 body.dark tbody tr:nth-child(odd) { background: #1e1e1e; }
 body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
