@@ -36,21 +36,23 @@ body::before {
   z-index: -1;
 }
 
-/* Chronomètre avec calor.png 100% visible */
+/* Chronomètre avec calor.png à 80% visible, sans style de cadre */
 .chrono-container { 
   text-align: center; 
   margin: 20px 0 30px; 
-  padding: 20px; 
-  border-radius: 15px; 
+  padding: 0; 
   color: white; 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
   position: relative;
   background-image: url('calor.png');
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: cover;
-  overflow: hidden;
+  background-size: 80% auto;
+  overflow: visible;
   min-height: 180px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
 }
 /* Suppression de l'overlay blanc */
 .chrono-container::before { display: none !important; }
@@ -66,9 +68,9 @@ body::before {
   align-items: center;
   justify-content: center;
   min-width: 8em;
-  background: rgba(0,0,0,0.1); /* léger fond pour contraste */
-  border-radius: 0.5em;
-  padding: 0.2em 0.7em;
+  background: none;
+  border-radius: 0;
+  padding: 0;
 }
 .chrono-time span { margin-left: 0; }
 @media (max-width: 480px) { .chrono-time { font-size: 2rem; } }
@@ -104,7 +106,7 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 
 /* Dark theme */
 body.dark { background: #121212; color: #eee; }
-body.dark .chrono-container { background-image: url('calor.png'); background-color: #222; }
+body.dark .chrono-container { background-image: url('calor.png'); background-color: transparent; }
 body.dark table { background: #1e1e1e; color: #eee; }
 body.dark th { background: #444; color: #fff; }
 body.dark tbody tr:nth-child(odd) { background: #1e1e1e; }
