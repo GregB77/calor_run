@@ -39,11 +39,15 @@
       overflow-x: hidden;
     }
 
+    /* Fond de page estompé */
     body::before {
       content: '';
       position: fixed;
-      inset: 0;
-      background: linear-gradient(45deg, var(--primary-blue), var(--primary-pink));
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
       opacity: 0.3;
       z-index: -1;
     }
@@ -53,20 +57,19 @@
       margin: 0 auto;
     }
 
+    /* Titre avec image de fond */
     .header {
       text-align: center;
-      margin-bottom: 30px;
-      padding: 30px 20px;
-      background: var(--bg-white);
-      border-radius: var(--border-radius);
-      box-shadow: 0 4px 12px var(--shadow-light);
-    }
-
-    .header h1 {
+      margin-bottom: 20px;
       color: var(--primary-blue);
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      font-weight: 600;
-      letter-spacing: 0.5px;
+      font-size: 1.3rem;
+      font-weight: normal;
+      padding: 20px 20px 60px 20px;
+      border-radius: 10px;
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
+      background: url('calor.png') left/cover no-repeat;
     }
 
     .controls {
@@ -343,10 +346,6 @@
 
       normalizeString(str) {
         return str.toString().toLowerCase().trim();
-      },
-
-      formatCourse(course) {
-        return `${course} km`;
       }
     };
 
@@ -377,7 +376,7 @@
           <td>${participant.club || '-'}</td>
           <td class="text-center">${participant.genre}</td>
           <td class="text-center">${participant.categorie}</td>
-          <td class="text-center">${utils.formatCourse(participant.course)}</td>
+          <td class="text-center">${participant.course} km</td>
         `;
         fragment.appendChild(row);
       });
@@ -388,8 +387,8 @@
     }
 
     function updateCounter() {
-      const km10Count = AppState.filteredData.filter(p => p.course === "10").length;
-      const km20Count = AppState.filteredData.filter(p => p.course === "20").length;
+      const km10Count = AppState.filteredData.filter(p => p.course == "10").length;
+      const km20Count = AppState.filteredData.filter(p => p.course == "20").length;
       const total = AppState.filteredData.length;
 
       elements.counter.innerHTML = `
@@ -447,9 +446,15 @@
         AppState.filteredData = [...AppState.allData];
       } else {
         AppState.filteredData = AppState.allData.filter(participant => {
-          return Object.values(participant).some(value => 
-            utils.normalizeString(value).includes(term)
-          );
+          return Object.entries(participant).some(([key, value]) => {
+            // Pour la colonne course, on permet la recherche avec "km"
+            if (key === 'course') {
+              const courseWithKm = `${value} km`;
+              return utils.normalizeString(courseWithKm).includes(term) || 
+                     utils.normalizeString(value).includes(term);
+            }
+            return utils.normalizeString(value).includes(term);
+          });
         });
       }
 
