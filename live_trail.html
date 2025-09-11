@@ -5,31 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Calor Run</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
-
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary-blue: #215E99;
+  --primary-pink: #E61780;
+  --header-bg: #e0e0e0;
+  --bg-light: #f9f9f9;
+  --bg-white: #fff;
+}
 
+/* Fond de page dégradé estompé comme participants.html */
 body {
   font-family: system-ui, -apple-system, sans-serif;
   margin: 20px;
-  background: #f9f9f9;
+  background: var(--bg-light);
   line-height: 1.4;
   overflow-x: hidden;
   transition: background 0.3s, color 0.3s;
+  min-height: 100vh;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
+  opacity: 0.3;
+  z-index: -1;
 }
 
-/* Chronomètre */
+/* Chronomètre avec image calor.png */
 .chrono-container { 
   text-align: center; 
   margin: 20px 0 30px; 
   padding: 20px; 
-  background: linear-gradient(135deg, #215E99 0%, #E61780 100%); 
   border-radius: 15px; 
   color: white; 
   box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+  position: relative;
+  background-image: url('calor.png'), linear-gradient(135deg, #215E99 0%, #E61780 100%);
+  background-repeat: no-repeat, no-repeat;
+  background-position: center center, left top;
+  background-size: 150px auto, cover;
+  overflow: hidden;
+  min-height: 180px;
 }
-
+.chrono-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.12);
+  pointer-events: none;
+  z-index: 0;
+}
 .chrono-time {
+  position: relative;
+  z-index: 1;
   font-family: 'Courier New', monospace;
   font-size: 3rem;
   font-weight: bold;
@@ -39,17 +70,8 @@ body {
   justify-content: center;
   min-width: 8em;
 }
-
-.chrono-time span { 
-  margin-left: 0.5em;
-}
-
-@media (max-width: 480px) {
-  .chrono-time {
-    font-size: 2rem;
-  }
-}
-
+.chrono-time span { margin-left: 0.5em; }
+@media (max-width: 480px) { .chrono-time { font-size: 2rem; } }
 .chrono-time.paused { opacity: 0.7; }
 
 /* Loading & compteurs */
@@ -63,11 +85,18 @@ body {
 
 /* Tableau */
 .table-container { overflow-x: auto; margin-bottom: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-table { width: 100%; border-collapse: collapse; background: white; min-width: 800px; }
+table { width: 100%; border-collapse: collapse; background: var(--bg-white); min-width: 800px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.9rem; }
-th { background: linear-gradient(135deg, #215E99 0%, #E61780 100%); color: #fff; font-weight: bold; position: sticky; top: 0; z-index: 10; }
+th {
+  background: var(--header-bg); /* Fond gris comme participants.html */
+  color: #333;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 tbody tr:nth-child(odd) { background: #fff; }
-tbody tr:nth-child(even) { background: #f2f2f2; }
+tbody tr:nth-child(even) { background: var(--bg-light); }
 
 /* Erreurs & dernières mises à jour */
 .error { text-align: center; color: #d32f2f; font-weight: bold; margin: 40px 0; padding: 20px; background: #ffebee; border-radius: 8px; }
@@ -77,7 +106,7 @@ tbody tr:nth-child(even) { background: #f2f2f2; }
 body.dark { background: #121212; color: #eee; }
 body.dark .chrono-container { background: linear-gradient(135deg, #444 0%, #880066 100%); }
 body.dark table { background: #1e1e1e; color: #eee; }
-body.dark th { background: linear-gradient(135deg, #444 0%, #880066 100%); color: #fff; }
+body.dark th { background: #444; color: #fff; }
 body.dark tbody tr:nth-child(odd) { background: #1e1e1e; }
 body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
 </style>
