@@ -137,19 +137,13 @@
       background: var(--header-bg);
       font-weight: bold;
       /*letter-spacing: 0.5px;
-      cursor: pointer;
-      user-select: none;*/
       position: sticky;
       color: #333;
-      top: 0;
-      /* Reserve space for the arrow */
-      padding-right: 32px;
+      top: 0;*/
+      padding-right: 32px; /* Reserve space for the arrow */
     }
 
-    /* Colonnes centrées */
-    .text-center {
-      text-align: center;
-    }
+    .text-center { text-align: center; } /* Colonnes centrées */
 
     /* Indicateur de tri */
     .sort-indicator {
@@ -187,12 +181,6 @@
     tbody tr:nth-child(even) {
       background: var(--bg-light);
     }
-
-    /*tbody tr:hover {
-      background: var(--hover-blue);
-      transform: translateY(-1px);
-      transition: all var(--transition-smooth);
-    }*/
 
     .loading {
       text-align: center;
@@ -274,20 +262,11 @@
       }
     }
 
-    #data-table tbody td {
-      border: 1px solid #ddd;
-      /*padding: 8px;
-      font-size: 0.9rem;*/
-    }
-
+    #data-table tbody td {border: 1px solid #ddd; }
     #data-table tbody tr:nth-child(odd)  { background: #fff; }
     #data-table tbody tr:nth-child(even) { background: #f9f9f9; }
 
-    /* hover sobre sans toucher les entêtes
-    #data-table tbody tr:hover { background: #e9f7ff; } */
-
-    /* --- 2) Séparateurs verticaux BLANCS UNIQUEMENT pour les entêtes --- */
-    /* On place une ligne blanche (pseudo-élément) sur le bord gauche des th ciblés (th:nth-child(3) = séparateur entre 2 et 3, etc.). 
+    /* Séparateurs verticaux BLANCS UNIQUEMENT pour les entêtes ---
     #data-table thead th { position: relative; }
     #data-table thead th:nth-child(2)::before,
     #data-table thead th:nth-child(3)::before,
