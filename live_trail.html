@@ -412,10 +412,14 @@
 
             // Vérification de cohérence et clignotement si erreur
             const expectedTotal = count10 + count20;
+            console.log(`Vérification cohérence: Total=${classement.length}, 10km=${count10}, 20km=${count20}, Attendu=${expectedTotal}`);
+            
             if (classement.length !== expectedTotal) {
                 elements.counterTotal.classList.add('counter-error');
+                console.log('⚠️ Incohérence détectée - Clignotement activé');
             } else {
                 elements.counterTotal.classList.remove('counter-error');
+                console.log('✅ Données cohérentes');
             }
 
             // Mise à jour de l'heure
