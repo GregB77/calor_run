@@ -22,7 +22,7 @@
       line-height:1.5;
       color:#333;
       min-height:100vh;
-      padding:20px;
+      padding:20px 0; /* Padding ajusté */
       overflow-x:hidden;
       background:var(--bg-white);
     }
@@ -32,8 +32,8 @@
       opacity:0.3; z-index:-1;
     }
 
-    /* RETIRER LA LARGEUR MAXIMALE POUR QUE LE CONTENEUR S'ÉTENDE SUR TOUTE LA PAGE */
-    .container { margin:0 auto; }
+    /* Le conteneur ne gère plus le tableau */
+    .container { max-width: var(--max-width); margin:0 auto; padding: 0 20px;}
 
     /* Grille avec image */
     .header {
@@ -71,9 +71,8 @@
 
     /* Tableau large centré avec arrondis et style */
     .table-container {
-      width: 98vw;
-      /* MAX-WIDTH RETIRÉE OU MODIFIÉE POUR PERMETTRE UNE PLUS GRANDE LARGEUR */
-      max-width: 1400px;
+      width: 96vw; /* Utilisez une largeur relative pour s'adapter */
+      max-width: 1400px; /* Largeur maximale pour les grands écrans */
       margin: 0 auto 20px;
       background: var(--bg-white);
       border-radius: var(--border-radius);
@@ -109,13 +108,14 @@
     .loading{ text-align:center; padding:40px; font-size:1.1rem; color:var(--primary-blue); }
 
     @media (max-width:768px){
+      .table-container { width: 98vw; }
       table{ font-size:0.85rem; }
       th, td{ padding:10px 8px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+    <div class="container">
     <div class="header">
       <div class="chrono-time paused" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
     </div>
@@ -129,28 +129,30 @@
       <span>•</span>
       <span>Total : 0</span>
     </div>
+  </div>
 
     <div class="table-container" id="table-container" style="display:none;">
-      <table id="classement">
-        <caption style="position:absolute;left:-9999px;">Classement Live Calor Run</caption>
-        <thead>
-          <tr>
-            <th class="text-center">Dossard</th>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th class="text-center">Temps</th>
-            <th class="text-center">Course</th>
-            <th class="text-center">Scratch</th>
-            <th class="text-center">Genre</th>
-            <th class="text-center">Pos. Genre</th>
-            <th class="text-center">CAT</th>
-            <th class="text-center">Pos. CAT</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <table id="classement">
+      <caption style="position:absolute;left:-9999px;">Classement Live Calor Run</caption>
+      <thead>
+        <tr>
+          <th class="text-center">Dossard</th>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th class="text-center">Temps</th>
+          <th class="text-center">Course</th>
+          <th class="text-center">Scratch</th>
+          <th class="text-center">Genre</th>
+          <th class="text-center">Pos. Genre</th>
+          <th class="text-center">CAT</th>
+          <th class="text-center">Pos. CAT</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
+  <div class="container">
     <p class="last-update" id="last-update" style="display:none;">
       Dernière mise à jour : <span id="update-time">--:--:--</span>
     </p>
