@@ -22,7 +22,7 @@
       line-height:1.5;
       color:#333;
       min-height:100vh;
-      padding:20px 0; /* Padding ajusté */
+      padding:20px 0;
       overflow-x:hidden;
       background:var(--bg-white);
     }
@@ -32,10 +32,8 @@
       opacity:0.3; z-index:-1;
     }
 
-    /* Le conteneur ne gère plus le tableau */
     .container { max-width: var(--max-width); margin:0 auto; padding: 0 20px;}
 
-    /* Grille avec image */
     .header {
       text-align:center;
       margin-bottom:20px;
@@ -49,7 +47,6 @@
       background: url('calor.png') center/contain no-repeat;
     }
 
-    /* Chronomètre */
     .chrono-time {
       font-family: 'Share Tech Mono', monospace;
       font-size: 1.5rem;
@@ -59,7 +56,6 @@
     }
     .chrono-time.paused { opacity:0.7; }
 
-    /* Compteurs */
     .counter-line {
       text-align:center;
       margin-bottom:25px;
@@ -69,10 +65,9 @@
     .counter-10km { color: var(--primary-blue);}
     .counter-20km { color: var(--primary-pink);}
 
-    /* Tableau large centré avec arrondis et style */
     .table-container {
-      width: 96vw; /* Utilisez une largeur relative pour s'adapter */
-      max-width: 1400px; /* Largeur maximale pour les grands écrans */
+      width: 96vw;
+      max-width: 1400px;
       margin: 0 auto 20px;
       background: var(--bg-white);
       border-radius: var(--border-radius);
@@ -115,7 +110,7 @@
   </style>
 </head>
 <body>
-    <div class="container">
+  <div class="container">
     <div class="header">
       <div class="chrono-time paused" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
     </div>
@@ -131,7 +126,7 @@
     </div>
   </div>
 
-    <div class="table-container" id="table-container" style="display:none;">
+  <div class="table-container" id="table-container" style="display:none;">
     <table id="classement">
       <caption style="position:absolute;left:-9999px;">Classement Live Calor Run</caption>
       <thead>
