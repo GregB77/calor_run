@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Scanner Dossards</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      text-align: center; 
+      background: #f9f9f9; 
+    }
+    h1, h2 { 
+      text-align: center; 
+      margin-bottom: 10px; 
+    }
+    #reader { 
+      width: 100%; 
+      max-width: 800px; 
+      margin: 0 auto 20px auto; 
+      border: 3px solid #333; 
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    #current-scan {
+      font-size: 6em;  /* police pour le scan en cours */
+      font-weight: bold;
+      color: #28a745; /* vert vif */
+      margin: 20px 0;
+    }
+    #counter { /* police pour le compteur */
+      font-size: 3em;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #0077cc;
+    }
+    #results { 
+      max-height: 300px; 
+      overflow-y: auto; 
+      padding: 10px; 
+      text-align: center; 
+    }
+    .scan-entry { /* police pour l’historique */
+      margin-bottom: 6px; 
+      font-size: 3em;
+      font-weight: bold; 
+      display: inline-block; 
+      background: #f0f0f0; 
+      padding: 6px 12px; 
+      border-radius: 8px;
+    }
+    .new-scan { 
+      background: #fffa9e; 
+      transition: background 0.8s; 
+    }
+  </style>
+</head>
+<body>
+  <h1 font-size: 6em>Scanner Dossards</h1>
+  <div id="reader"></div>
+  <div id="current-scan">---</div>
+  <div id="counter">Scannés : 0</div>
+  <h2 font-size: 3em>Historique</h2>
+  <div id="results"></div>
+
+  <!-- Bip sonore local -->
+  <audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
+
+  <script>
+    // --- Configuration Firebase ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+      authDomain: "calor-run.firebaseapp.com",
+      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "calor-run",
+      storageBucket: "calor-run.firebasestorage.app",
+      messagingSenderId: "329949291334",
+      appId: "1:329949291334:web:c71ef20268c609cf953b47",
+      measurementId: "G-YVQPW6JGPK"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const scannedCodes = new Set();
+    let lastScan = "";
+    let lastScanTime = 0;
+
+    const beepSound = document.getElementById('beep-sound');
+
+    // --- Mise à jour compteur ---
+    function updateCounter() {
+      document.getElementById("counter").textContent =
+        "Scannés : " + scannedCodes.size;
+    }
+
+    // --- Charger les scans existants ---
+    database.ref('scan_dossards').once('value', snapshot => {
+      snapshot.forEach(childSnapshot => {
+        const code = childSnapshot.key;
+        scannedCodes.add(code);
+        addScanToHistory(code, false);
+      });
+      updateCounter();
+    });
+
+    // --- Envoyer un scan à Firebase ---
+    function sendToFirebase(qrCodeValue) {
+      const now = Date.now();
+      if (qrCodeValue === lastScan && (now - lastScanTime) < 3000) return; // anti-flood
+      lastScan = qrCodeValue;
+      lastScanTime = now;
+
+      if (scannedCodes.has(qrCodeValue)) return; // doublon → ignore
+
+      const entryRef = database.ref('scan_dossards/' + qrCodeValue);
+
+      entryRef.once("value", snapshot => {
+        if (!snapshot.exists()) {
+          entryRef.set({ dateTime: Date.now() }).then(() => { 
+            scannedCodes.add(qrCodeValue);
+            showCurrentScan(qrCodeValue);
+            addScanToHistory(qrCodeValue, true);
+            updateCounter();
+          });
+        }
+      });
+    }
+
+    // --- Afficher scan en cours quelques secondes ---
+    function showCurrentScan(code) {
+      const currentDiv = document.getElementById('current-scan');
+      currentDiv.textContent = code;
+      setTimeout(() => currentDiv.textContent = "---", 2000); // 3s
+    }
+
+    // --- Ajouter au petit historique ---
+    function addScanToHistory(code, notify) {
+      const resultsDiv = document.getElementById('results');
+      const entryDiv = document.createElement('div');
+      entryDiv.className = 'scan-entry';
+      entryDiv.textContent = code;
+      resultsDiv.prepend(entryDiv);
+
+      if (notify) {
+        entryDiv.classList.add('new-scan');
+        setTimeout(() => entryDiv.classList.remove('new-scan'), 800);
+        beepSound.play();
+      }
+    }
+
+    // --- Lancer le scanner ---
+    const html5QrCode = new Html5Qrcode("reader");
+    Html5Qrcode.getCameras().then(cameras => {
+      if (cameras && cameras.length) {
+        const rearCamera = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
+        html5QrCode.start(
+          rearCamera.id,
+          { fps: 10, qrbox: { width: 500, height: 500 } },
+          qrCodeMessage => sendToFirebase(qrCodeMessage),
+          errorMessage => {} // ignore erreurs
+        );
+      }
+    });
+  </script>
+</body>
+</html>
