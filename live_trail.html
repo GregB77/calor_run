@@ -57,8 +57,8 @@
             text-align: center;
             margin-bottom: 5px;
             font-size: 1.3rem;
-            font-weight: bold;
-            padding: 30px 20px 50px 20px;
+            font-weight: normal;
+            padding: 20px 20px 60px 20px;
             border-radius: 10px;
             max-width: var(--max-width);
             margin-left: auto;
@@ -158,11 +158,11 @@
 
         @media (max-width: 768px) {
             .header {
-                margin-bottom: 5px;
+                margin-bottom: 0px;
             }
 
             .counter-line {
-                margin-bottom: 10px;
+                margin-bottom: 5px;
             }
 
             .table-container {
@@ -409,6 +409,14 @@
             elements.counter10km.textContent = `10 km : ${count10}`;
             elements.counter20km.textContent = `20 km : ${count20}`;
             elements.counterTotal.textContent = `Total : ${classement.length}`;
+
+            // Vérification de cohérence et clignotement si erreur
+            const expectedTotal = count10 + count20;
+            if (classement.length !== expectedTotal) {
+                elements.counterTotal.classList.add('counter-error');
+            } else {
+                elements.counterTotal.classList.remove('counter-error');
+            }
 
             // Mise à jour de l'heure
             elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
