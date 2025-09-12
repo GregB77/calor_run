@@ -10,42 +10,52 @@
     :root {
       --primary-blue: #215E99;
       --primary-pink: #E61780;
-      --header-bg: #e0e0e0;
-      --bg-light: #f9f9f9;
+      --bg-overlay: rgba(33, 94, 153, 0.3);
+      --text-dark: #333;
       --bg-white: #fff;
+      --bg-light: #f9f9f9;
+      --header-bg: #e0e0e0;
+      --border-radius: 8px;
+      --shadow-light: rgba(0, 0, 0, 0.1);
+      --shadow-medium: rgba(0, 0, 0, 0.15);
     }
 
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      margin: 20px;
-      background: var(--bg-light);
-      line-height: 1.4;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.5;
+      color: var(--text-dark);
       min-height: 100vh;
+      padding: 20px;
       position: relative;
       overflow-x: hidden;
-      transition: background 0.3s, color 0.3s;
+      background: var(--bg-light);
     }
+
     body::before {
       content: '';
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
       opacity: 0.3;
       z-index: -1;
     }
 
-    .chrono-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Bandeau avec chrono et image */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--primary-blue);
+      font-size: 1.3rem;
+      font-weight: normal;
+      padding: 20px 20px 60px 20px;
+      border-radius: 10px;
+      background: url('calor.png') center/80% no-repeat;
       position: relative;
-      min-height: 180px;
-      background: transparent url('calor.png') no-repeat center/80% auto;
-      color: white;
-      overflow: visible;
     }
 
-    .chrono-container::before { display: none !important; }
     .chrono-time {
       position: relative;
       z-index: 1;
@@ -61,38 +71,88 @@
       color: var(--primary-blue);
       text-align: center;
       margin: 0 auto;
-      border: none;
     }
     .chrono-time.paused { opacity: 0.7; }
     @media (max-width: 480px) { .chrono-time { font-size: 2rem; } }
 
-    .loading { text-align: center; font-size: 1.2rem; color: #666; margin: 40px 0; }
-    .compteurs { text-align: center; margin-bottom: 30px; font-size: clamp(0.9rem, 2.5vw, 1.1rem); font-weight: bold; }
-    .compteur { display: inline-block; margin: 5px 10px; padding: 10px 15px; color: white; border-radius: 5px; min-width: 120px; transition: transform 0.2s; }
-    .compteur:nth-child(1) { background: #215E99; }
-    .compteur:nth-child(2) { background: #E61780; }
+    /* Compteurs */
+    .counter-box {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    .compteur {
+      padding: 10px 16px;
+      border-radius: var(--border-radius);
+      color: white;
+      min-width: 120px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .compteur-10 { background: var(--primary-blue); }
+    .compteur-20 { background: var(--primary-pink); }
 
-    .table-container { overflow-x: auto; margin-bottom: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    table { width: 100%; border-collapse: collapse; background: var(--bg-white); min-width: 800px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.9rem; }
+    /* Tableau */
+    .table-container {
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow-medium);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
     th {
       background: var(--header-bg);
-      color: #333;
       font-weight: bold;
       position: sticky;
       top: 0;
       z-index: 10;
     }
+
     tbody tr:nth-child(odd) { background: #fff; }
     tbody tr:nth-child(even) { background: var(--bg-light); }
 
-    .error { text-align: center; color: #d32f2f; font-weight: bold; margin: 40px 0; padding: 20px; background: #ffebee; border-radius: 8px; }
-    .last-update { text-align: center; color: #666; font-size: 0.9rem; margin-top: 20px; }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.1rem;
+      color: var(--primary-blue);
+    }
+
+    .error {
+      text-align: center;
+      color: #d32f2f;
+      font-weight: bold;
+      margin: 40px 0;
+      padding: 20px;
+      background: #ffebee;
+      border-radius: 8px;
+    }
+
+    .last-update {
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-
-  <div class="chrono-container">
+  <div class="header">
     <div class="chrono-time" id="chrono-time">
       <span id="chrono-text">--:--:--</span>
     </div>
@@ -100,9 +160,9 @@
 
   <div id="loading" class="loading">Connexion en temps réel...</div>
 
-  <div id="compteurs" class="compteurs" style="display:none;">
-    <div class="compteur" id="compteur-10">10km : <span id="count-10">0</span> arrivés</div>
-    <div class="compteur" id="compteur-20">20km : <span id="count-20">0</span> arrivés</div>
+  <div class="counter-box" id="compteurs" style="display:none;">
+    <div class="compteur compteur-10">10 km : <span id="count-10">0</span></div>
+    <div class="compteur compteur-20">20 km : <span id="count-20">0</span></div>
   </div>
 
   <div class="table-container" id="table-container" style="display:none;">
@@ -143,7 +203,6 @@
       updateTime: document.getElementById('update-time')
     };
 
-    // Global state
     let departureTimestamp = null,
         participants = {},
         scans = {},
@@ -206,14 +265,25 @@
     function calculatePositions(classement) {
       const scratchCounter = {}, genreCounter = {}, catCounter = {};
       let count10 = 0, count20 = 0;
-      classement.forEach(p => {
+
+      // On parcourt du premier arrivé (fin) vers le dernier (début)
+      for (let i = classement.length - 1; i >= 0; i--) {
+        const p = classement[i];
         const c = String(p.course).trim();
+
         if (["10", "10km", "10 km"].includes(c)) count10++;
         else if (["20", "20km", "20 km"].includes(c)) count20++;
-        scratchCounter[p.course] = (scratchCounter[p.course] || 0) + 1; p.scratch = scratchCounter[p.course];
-        genreCounter[`${p.course}_${p.genre}`] = (genreCounter[`${p.course}_${p.genre}`] || 0) + 1; p.posGenre = genreCounter[`${p.course}_${p.genre}`];
-        catCounter[`${p.course}_${p.categorie}`] = (catCounter[`${p.course}_${p.categorie}`] || 0) + 1; p.posCat = catCounter[`${p.course}_${p.categorie}`];
-      });
+
+        scratchCounter[p.course] = (scratchCounter[p.course] || 0) + 1;
+        p.scratch = scratchCounter[p.course];
+
+        genreCounter[`${p.course}_${p.genre}`] = (genreCounter[`${p.course}_${p.genre}`] || 0) + 1;
+        p.posGenre = genreCounter[`${p.course}_${p.genre}`];
+
+        catCounter[`${p.course}_${p.categorie}`] = (catCounter[`${p.course}_${p.categorie}`] || 0) + 1;
+        p.posCat = catCounter[`${p.course}_${p.categorie}`];
+      }
+
       return { count10, count20 };
     }
 
@@ -224,7 +294,7 @@
       elements.tbody.appendChild(fragment);
       elements.loading.style.display = 'none';
       elements.error.style.display = 'none';
-      elements.compteurs.style.display = 'block';
+      elements.compteurs.style.display = 'flex';
       elements.tableContainer.style.display = 'block';
       elements.count10.textContent = count10;
       elements.count20.textContent = count20;
@@ -248,7 +318,7 @@
             genre: part.genre || '',
             categorie: part.categorie || ''
           };
-        }).sort((a, b) => b.tempsMs - a.tempsMs); // plus long en haut
+        }).sort((a, b) => b.tempsMs - a.tempsMs); // plus long en haut (dernier arrivé en haut)
         const { count10, count20 } = calculatePositions(classement);
         displayData(classement, count10, count20);
       } catch (e) {
