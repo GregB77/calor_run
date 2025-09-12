@@ -52,7 +52,7 @@
     /* Chronomètre exactement comme avant */
     .chrono-time {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 1.5rem; /* taille identique à l’ancien rendu */
+      font-size: 1.5rem;
       font-variant-numeric: tabular-nums;
       color: var(--primary-blue);
       font-weight: normal;
@@ -69,34 +69,41 @@
     .counter-10km { color: var(--primary-blue);}
     .counter-20km { color: var(--primary-pink);}
 
-    /* Tableau large */
+    /* Tableau large avec style original */
     .table-container {
-      width: 100vw; /* prend toute la largeur de l’écran */
-      margin-left: calc(-50vw + 50%); /* centrage horizontal */
+      width: 95vw;
+      max-width: 1200px;
+      margin: 0 auto 20px auto;
       background: var(--bg-white);
       border-radius: var(--border-radius);
       overflow-x: auto;
       box-shadow: 0 4px 12px var(--shadow-medium);
-      padding:0 10px;
-      margin-bottom:20px;
+      padding: 0 10px;
     }
     table{
-      width:100%;
-      border-collapse:collapse;
-      table-layout:auto;
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
     }
     th, td{
-      padding:12px 10px;
+      padding: 8px 10px;
       text-align:left;
+      border-bottom: 1px solid #ddd;
       word-break: break-word;
     }
-    th.text-center, td.text-center { text-align:center; }
-    tbody tr:nth-child(even){ background:var(--bg-light); }
-    tbody tr:hover{
-      background:var(--hover-blue);
-      transform:translateY(-1px);
-      transition: all 0.3s ease;
+    th {
+      background: #e0e0e0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
+    tbody tr:nth-child(even) {
+      background: var(--bg-light);
+    }
+    th.text-center, td.text-center { text-align: center; }
 
     .loading{ text-align:center; padding:40px; font-size:1.1rem; color:var(--primary-blue); }
 
