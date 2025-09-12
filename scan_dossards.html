@@ -5,6 +5,7 @@
   <title>Scanner Dossards</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
     body { 
@@ -12,10 +13,6 @@
       margin: 20px; 
       text-align: center; 
       background: #f9f9f9; 
-    }
-    h1, h2 { 
-      text-align: center; 
-      margin-bottom: 10px; 
     }
     #reader { 
       width: 100%; 
@@ -25,13 +22,29 @@
       border-radius: 12px;
       overflow: hidden;
     }
+    #zoom-controls {
+      margin: 12px auto 24px auto;
+      width: 320px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    #zoomSlider {
+      width: 220px;
+    }
+    #zoomValue {
+      width: 40px;
+      display:inline-block;
+      text-align:right;
+    }
     #current-scan {
-      font-size: 6em;  /* police pour le scan en cours */
+      font-size: 6em;
       font-weight: bold;
-      color: #28a745; /* vert vif */
+      color: #28a745;
       margin: 20px 0;
     }
-    #counter { /* police pour le compteur */
+    #counter {
       font-size: 3em;
       font-weight: bold;
       margin: 10px 0;
@@ -43,7 +56,7 @@
       padding: 10px; 
       text-align: center; 
     }
-    .scan-entry { /* police pour l’historique */
+    .scan-entry {
       margin-bottom: 6px; 
       font-size: 3em;
       font-weight: bold; 
@@ -59,14 +72,17 @@
   </style>
 </head>
 <body>
-  <h1 font-size: 6em>Scanner Dossards</h1>
+  <h1 font-size="6em">Scanner Dossards</h1>
   <div id="reader"></div>
+  <div id="zoom-controls">
+    <label for="zoomSlider">Zoom&nbsp;</label>
+    <input type="range" id="zoomSlider" min="1" max="4" value="1" step="0.1">
+    <span id="zoomValue">x1.0</span>
+  </div>
   <div id="current-scan">---</div>
   <div id="counter">Scannés : 0</div>
-  <h2 font-size: 3em>Historique</h2>
+  <h2 font-size="3em">Historique</h2>
   <div id="results"></div>
-
-  <!-- Bip sonore local -->
   <audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
 
   <script>
@@ -84,86 +100,159 @@
 
     const app = firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
+    const auth = firebase.auth();
 
     const scannedCodes = new Set();
     let lastScan = "";
     let lastScanTime = 0;
-
     const beepSound = document.getElementById('beep-sound');
 
-    // --- Mise à jour compteur ---
     function updateCounter() {
       document.getElementById("counter").textContent =
         "Scannés : " + scannedCodes.size;
     }
 
-    // --- Charger les scans existants ---
-    database.ref('scan_dossards').once('value', snapshot => {
-      snapshot.forEach(childSnapshot => {
-        const code = childSnapshot.key;
-        scannedCodes.add(code);
-        addScanToHistory(code, false);
+    function startAppAfterAuth() {
+      // Charger l'historique
+      database.ref('scan_dossards').once('value', snapshot => {
+        snapshot.forEach(childSnapshot => {
+          const code = childSnapshot.key;
+          scannedCodes.add(code);
+          addScanToHistory(code, false);
+        });
+        updateCounter();
       });
-      updateCounter();
-    });
 
-    // --- Envoyer un scan à Firebase ---
-    function sendToFirebase(qrCodeValue) {
-      const now = Date.now();
-      if (qrCodeValue === lastScan && (now - lastScanTime) < 3000) return; // anti-flood
-      lastScan = qrCodeValue;
-      lastScanTime = now;
+      function sendToFirebase(qrCodeValue) {
+        const now = Date.now();
+        if (qrCodeValue === lastScan && (now - lastScanTime) < 3000) return; // anti-flood
+        lastScan = qrCodeValue;
+        lastScanTime = now;
+        if (scannedCodes.has(qrCodeValue)) return; // doublon → ignore
 
-      if (scannedCodes.has(qrCodeValue)) return; // doublon → ignore
+        const entryRef = database.ref('scan_dossards/' + qrCodeValue);
 
-      const entryRef = database.ref('scan_dossards/' + qrCodeValue);
+        entryRef.once("value", snapshot => {
+          if (!snapshot.exists()) {
+            entryRef.set({ dateTime: Date.now() }).then(() => { 
+              scannedCodes.add(qrCodeValue);
+              showCurrentScan(qrCodeValue);
+              addScanToHistory(qrCodeValue, true);
+              updateCounter();
+            }).catch(e => {
+              alert("Erreur d'écriture dans la base (auth ?): " + e.message);
+            });
+          }
+        });
+      }
 
-      entryRef.once("value", snapshot => {
-        if (!snapshot.exists()) {
-          entryRef.set({ dateTime: Date.now() }).then(() => { 
-            scannedCodes.add(qrCodeValue);
-            showCurrentScan(qrCodeValue);
-            addScanToHistory(qrCodeValue, true);
-            updateCounter();
+      function showCurrentScan(code) {
+        const currentDiv = document.getElementById('current-scan');
+        currentDiv.textContent = code;
+        setTimeout(() => currentDiv.textContent = "---", 2000);
+      }
+
+      function addScanToHistory(code, notify) {
+        const resultsDiv = document.getElementById('results');
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'scan-entry';
+        entryDiv.textContent = code;
+        resultsDiv.prepend(entryDiv);
+
+        if (notify) {
+          entryDiv.classList.add('new-scan');
+          setTimeout(() => entryDiv.classList.remove('new-scan'), 800);
+          beepSound.play();
+        }
+      }
+
+      // --- Scanner avec zoom dynamique et résolution max ---
+      let html5QrCode;
+      let mediaTrack = null;
+      let minZoom = 1, maxZoom = 1, currentZoom = 1;
+
+      const zoomControls = document.getElementById('zoom-controls');
+      const zoomSlider = document.getElementById('zoomSlider');
+      const zoomValue = document.getElementById('zoomValue');
+
+      function setupZoomControls(track) {
+        try {
+          const capabilities = track.getCapabilities();
+          minZoom = capabilities.zoom?.min || 1;
+          maxZoom = capabilities.zoom?.max || 1;
+          if (maxZoom > minZoom) {
+            zoomSlider.min = minZoom;
+            zoomSlider.max = maxZoom;
+            zoomSlider.step = 0.1;
+            zoomSlider.value = track.getSettings().zoom || minZoom;
+            zoomValue.innerText = 'x' + parseFloat(zoomSlider.value).toFixed(1);
+            zoomControls.style.display = 'flex';
+
+            zoomSlider.oninput = function() {
+              currentZoom = parseFloat(this.value);
+              track.applyConstraints({ advanced: [{ zoom: currentZoom }] });
+              zoomValue.innerText = 'x' + currentZoom.toFixed(1);
+            };
+          } else {
+            zoomControls.style.display = 'none';
+          }
+        } catch(e) {
+          zoomControls.style.display = 'none';
+        }
+      }
+
+      Html5Qrcode.getCameras().then(cameras => {
+        if (cameras && cameras.length) {
+          const rearCamera = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
+          html5QrCode = new Html5Qrcode("reader");
+          // Essaye résolution max + zoom x2
+          const config = {
+            fps: 10,
+            qrbox: { width: 330, height: 330 }, // plus petit pour aider à distance
+            videoConstraints: {
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+              deviceId: rearCamera.id,
+              advanced: [{ zoom: 2 }]
+            }
+          };
+
+          html5QrCode.start(
+            { deviceId: { exact: rearCamera.id } },
+            config,
+            qrCodeMessage => sendToFirebase(qrCodeMessage),
+            errorMessage => {}
+          ).then(() => {
+            // Attendre que la vidéo soit bien lancée pour accéder à la track
+            setTimeout(() => {
+              const video = document.querySelector("#reader video");
+              if (video && video.srcObject) {
+                mediaTrack = video.srcObject.getVideoTracks()[0];
+                setupZoomControls(mediaTrack);
+              }
+            }, 1200);
+          }).catch(err => {
+            // Fallback sans zoom si erreur
+            html5QrCode.start(
+              rearCamera.id,
+              { fps: 10, qrbox: { width: 330, height: 330 }, videoConstraints: { width: { ideal: 1920 }, height: { ideal: 1080 }, deviceId: rearCamera.id } },
+              qrCodeMessage => sendToFirebase(qrCodeMessage),
+              errorMessage => {}
+            );
+            zoomControls.style.display = 'none';
           });
         }
       });
     }
 
-    // --- Afficher scan en cours quelques secondes ---
-    function showCurrentScan(code) {
-      const currentDiv = document.getElementById('current-scan');
-      currentDiv.textContent = code;
-      setTimeout(() => currentDiv.textContent = "---", 2000); // 3s
-    }
-
-    // --- Ajouter au petit historique ---
-    function addScanToHistory(code, notify) {
-      const resultsDiv = document.getElementById('results');
-      const entryDiv = document.createElement('div');
-      entryDiv.className = 'scan-entry';
-      entryDiv.textContent = code;
-      resultsDiv.prepend(entryDiv);
-
-      if (notify) {
-        entryDiv.classList.add('new-scan');
-        setTimeout(() => entryDiv.classList.remove('new-scan'), 800);
-        beepSound.play();
+    // --- Authentification puis lancement app ---
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        startAppAfterAuth();
       }
-    }
-
-    // --- Lancer le scanner ---
-    const html5QrCode = new Html5Qrcode("reader");
-    Html5Qrcode.getCameras().then(cameras => {
-      if (cameras && cameras.length) {
-        const rearCamera = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
-        html5QrCode.start(
-          rearCamera.id,
-          { fps: 10, qrbox: { width: 500, height: 500 } },
-          qrCodeMessage => sendToFirebase(qrCodeMessage),
-          errorMessage => {} // ignore erreurs
-        );
-      }
+    });
+    auth.signInAnonymously().catch(error => {
+      alert("Erreur d'authentification Firebase : " + error.message);
     });
   </script>
 </body>
