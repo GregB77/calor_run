@@ -60,6 +60,7 @@
       background: url('calor.png') center/contain no-repeat;
     }
 
+    /* Chronomètre tel qu’avant (pas de fond blanc) */
     .chrono-time{
       font-family:'Share Tech Mono', monospace;
       font-variant-numeric:tabular-nums;
@@ -69,9 +70,6 @@
       color:var(--primary-blue);
       margin-top: 15px;
       display: inline-block;
-      background: rgba(255,255,255,0.5);
-      padding: 5px 10px;
-      border-radius:5px;
     }
     .chrono-time.paused{ opacity:0.7; }
     @media (max-width:480px){ .chrono-time{ font-size:2rem; } }
@@ -86,33 +84,28 @@
     .counter-10km { color: var(--primary-blue);}
     .counter-20km { color: var(--primary-pink);}
 
-    /* ---- TABLE ---- */
+    /* ---- TABLE améliorée ---- */
     .table-container{
       background:var(--bg-white);
       border-radius:var(--border-radius);
-      overflow:hidden;
+      overflow-x:auto;
       box-shadow:0 4px 12px var(--shadow-medium);
     }
 
-    table{ width:100%; border-collapse:collapse; }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:auto;
+    }
 
     th, td{
-      padding:14px 16px;
+      padding:12px 16px;
       text-align:left;
       font-size:0.95rem;
-    }
-    th{
-      background:var(--header-bg);
-      font-weight:600;
-      text-transform:uppercase;
-      letter-spacing:0.5px;
-      color:#333;
-      position:sticky;
-      top:0;
-      z-index:10;
+      white-space: nowrap;
     }
 
-    .text-center{ text-align:center; }
+    th.text-center, td.text-center { text-align:center; }
 
     tbody tr:nth-child(even){ background:var(--bg-light); }
     tbody tr:hover{
@@ -125,22 +118,14 @@
     .no-results{ text-align:center; padding:40px; color:#666; font-style:italic; }
 
     @media (max-width:768px){
-      body{ padding:10px; }
-      th, td{ padding:10px 8px; }
       table{ font-size:0.85rem; }
-    }
-    @media (max-width:600px){
-      .table-container{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-      table{ min-width:600px; }
-    }
-    @media (max-width:400px){
-      th, td{ padding:7px 4px; font-size:0.7rem; }
+      th, td{ padding:10px 8px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Chronomètre -->
+    <!-- Grille + Chronomètre -->
     <div class="header">
       <div class="chrono-time paused" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
     </div>
