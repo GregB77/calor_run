@@ -115,12 +115,14 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 .last-update { text-align: center; color: #666; font-size: 0.9rem; margin-top: 20px; }
 
 /* Dark theme */
+/* SUPPRESSION du thème sombre et de ses styles liés
 body.dark { background: #121212; color: #eee; }
 body.dark .chrono-container { background-image: url('calor.png'); background-color: transparent; }
 body.dark table { background: #1e1e1e; color: #eee; }
 body.dark th { background: #444; color: #fff; }
 body.dark tbody tr:nth-child(odd) { background: #1e1e1e; }
 body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
+*/
 </style>
 </head>
 <body>
@@ -154,7 +156,6 @@ body.dark tbody tr:nth-child(even) { background: #2a2a2a; }
 
 <p class="last-update" id="last-update" style="display:none;">
   Dernière mise à jour : <span id="update-time">--:--:--</span>
-  · <a href="#" id="theme-toggle">Basculer le thème</a>
 </p>
 
 <!-- Firebase -->
@@ -175,8 +176,8 @@ const elements = {
   tableContainer: document.getElementById('table-container'),
   error: document.getElementById('error'),
   lastUpdate: document.getElementById('last-update'),
-  updateTime: document.getElementById('update-time'),
-  themeToggle: document.getElementById('theme-toggle')
+  updateTime: document.getElementById('update-time')
+  // themeToggle supprimé
 };
 
 let departureTimestamp = null, participants = {}, scans = {}, currentClassement = [], previousCounts = { count10: 0, count20: 0 }, chronoInterval = null;
@@ -233,7 +234,7 @@ function createTableRow(p) {
   const tr = document.createElement('tr');
   // If tempsMs is negative, show "--:--:--" instead of a negative time
   const tempsDisplay = (typeof p.tempsMs === "number" && p.tempsMs < 0) ? "--:--:--" : p.tempsStr;
-  tr.innerHTML = `<td>${p.dossard}</td><td>${p.nom}</td><td>${p.prenom}</td><td>${tempsDisplay}</td><td>${p.course}</td><td>${p.scratch}</td><td>${p.genre}</td><td>${p.posGenre}</td><td>${p.categorie}</td><td>${p.posCat}</td>`;
+  tr.innerHTML = `<td>${p.dossard}</td><td>${p.nom}</td><td>${p.prenom}</td><td>${tempsDisplay}</td><td>${p.course}</td><td>${p.scratch}</td><td>${p.genre}</td><td>${p.posGenre}</td><td>${p.categorie}[...]
   return tr;
 }
 
@@ -274,8 +275,8 @@ function updateClassement() {
   } catch(e){console.error(e);}
 }
 
-// Dark theme toggle
-elements.themeToggle.addEventListener('click', e=>{ e.preventDefault(); document.body.classList.toggle('dark'); });
+// Dark theme toggle supprimé
+// elements.themeToggle.addEventListener('click', e=>{ e.preventDefault(); document.body.classList.toggle('dark'); });
 
 // Firebase listeners
 db.ref('data/depart_course').on('value', snap=>{ departureTimestamp = snap.exists()?new Date(snap.val()).getTime():null; departureTimestamp?startChrono():stopChrono(); updateClassement(); });
