@@ -38,16 +38,12 @@
     }
 
     body::before{
-      content:'';
-      position:fixed; top:0; left:0; width:100%; height:100%;
+      content:''; position:fixed; top:0; left:0; width:100%; height:100%;
       background:linear-gradient(0.25turn,var(--primary-blue),var(--primary-pink));
       opacity:0.3; z-index:-1;
     }
 
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-    }
+    .container { max-width: var(--max-width); margin: 0 auto; }
 
     /* Titre avec image de fond */
     .header {
@@ -61,7 +57,7 @@
       max-width: var(--max-width);
       margin-left: auto;
       margin-right: auto;
-      background: url('calor.png') left/cover no-repeat;
+      background: url('calor.png') center/contain no-repeat;
     }
 
     .chrono-time{
@@ -71,19 +67,22 @@
       font-weight:bold;
       letter-spacing:0.1em;
       color:var(--primary-blue);
+      margin-top: 15px;
+      display: inline-block;
+      background: rgba(255,255,255,0.5);
+      padding: 5px 10px;
+      border-radius:5px;
     }
     .chrono-time.paused{ opacity:0.7; }
     @media (max-width:480px){ .chrono-time{ font-size:2rem; } }
 
-    /* ---- COMPTEURS (identiques à participants) ---- */
+    /* ---- COMPTEURS ---- */
     .counter-line {
       text-align: center;
       margin-bottom: 25px;
       font-size: 1rem;
     }
-    .counter-line span {
-      margin: 0 6px;
-    }
+    .counter-line span { margin: 0 6px; }
     .counter-10km { color: var(--primary-blue);}
     .counter-20km { color: var(--primary-pink);}
 
@@ -141,21 +140,23 @@
 </head>
 <body>
   <div class="container">
-    <div class="header" id="chrono-time"><span id="chrono-text">--:--:--</span>
-      <!--<div class="chrono-time" id="chrono-time"><span id="chrono-text">--:--:--</span></div>*/-->
+    <!-- Chronomètre -->
+    <div class="header">
+      <div class="chrono-time paused" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
     </div>
 
     <div id="loading" class="loading">Connexion en temps réel...</div>
 
-    <!-- Compteurs (ligne simple comme participants) -->
+    <!-- Compteurs -->
     <div id="compteurs" class="counter-line" style="display:none;">
-        <span class="counter-10km">10 km : 0</span>
-        <span>•</span>
-        <span class="counter-20km">20 km : 0</span>
-        <span>•</span>
-        <span>Total : 0</span>
-      </div>
+      <span class="counter-10km">10 km : 0</span>
+      <span>•</span>
+      <span class="counter-20km">20 km : 0</span>
+      <span>•</span>
+      <span>Total : 0</span>
+    </div>
 
+    <!-- Table -->
     <div class="table-container" id="table-container" style="display:none;">
       <table id="classement">
         <caption style="position:absolute;left:-9999px;">Classement Live Calor Run</caption>
@@ -192,9 +193,6 @@
       chronoText: document.getElementById('chrono-text'),
       loading: document.getElementById('loading'),
       compteurs: document.getElementById('compteurs'),
-      count10: document.getElementById('count-10'),
-      count20: document.getElementById('count-20'),
-      countTotal: document.getElementById('count-total'),
       tbody: document.querySelector('#classement tbody'),
       tableContainer: document.getElementById('table-container'),
       lastUpdate: document.getElementById('last-update'),
@@ -297,9 +295,11 @@
       elements.compteurs.style.display = 'block';
       elements.tableContainer.style.display = 'block';
 
-      elements.count10.textContent = count10;
-      elements.count20.textContent = count20;
-      elements.countTotal.textContent = classement.length;
+      // Mise à jour compteurs
+      elements.compteurs.querySelector('.counter-10km').textContent = `10 km : ${count10}`;
+      elements.compteurs.querySelector('.counter-20km').textContent = `20 km : ${count20}`;
+      elements.compteurs.querySelector('span:last-child').textContent = `Total : ${classement.length}`;
+
       elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
       elements.lastUpdate.style.display = 'block';
     }
