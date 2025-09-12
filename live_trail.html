@@ -52,10 +52,15 @@ body::before {
   border-radius: 0;
   box-shadow: none;
   background-color: transparent;
+  /* Flex pour centrage vertical et horizontal du chrono */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-/* Suppression de l'overlay blanc */
-.chrono-container::before { display: none !important; }
 
+/* Suppression de l'overlay blanc si existant */
+.chrono-container::before { display: none !important; }
+  
 .chrono-time {
   position: relative;
   z-index: 1;
@@ -68,9 +73,14 @@ body::before {
   align-items: center;
   justify-content: center;
   min-width: 8em;
-  background: none;
-  border-radius: 0;
-  padding: 0;
+  background: rgba(255,255,255,0.5);
+  color : #222;
+  padding: 16px 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  text-align: center;
+  border: none;
+  margin: 0 auto;
 }
 .chrono-time span { margin-left: 0; }
 @media (max-width: 480px) { .chrono-time { font-size: 2rem; } }
