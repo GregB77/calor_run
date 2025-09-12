@@ -1,194 +1,189 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Live Calor Run</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary-blue: #215E99;
-      --primary-pink: #E61780;
-      --bg-overlay: rgba(33, 94, 153, 0.3);
-      --text-dark: #333;
-      --bg-white: #fff;
-      --bg-light: #f9f9f9;
-      --header-bg: #e0e0e0;
-      --border-radius: 8px;
-      --shadow-light: rgba(0, 0, 0, 0.1);
-      --shadow-medium: rgba(0, 0, 0, 0.15);
+    :root{
+      --primary-blue:#215E99;
+      --primary-pink:#E61780;
+      --bg-overlay: rgba(33,94,153,0.3);
+      --text-dark:#333;
+      --bg-white:#fff;
+      --bg-light:#f9f9f9;
+      --border-light:#ccc;
+      --hover-blue:#e9f7ff;
+      --shadow-light: rgba(0,0,0,0.1);
+      --shadow-medium: rgba(0,0,0,0.15);
+      --header-bg:#e0e0e0;
+      --transition-smooth:0.3s ease;
+      --border-radius:8px;
+      --max-width:1000px;
     }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.5;
-      color: var(--text-dark);
-      min-height: 100vh;
-      padding: 20px;
-      position: relative;
-      overflow-x: hidden;
-      background: var(--bg-light);
+    *{box-sizing:border-box;margin:0;padding:0;}
+
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height:1.5;
+      color:var(--text-dark);
+      min-height:100vh;
+      padding:20px;
+      position:relative;
+      overflow-x:hidden;
+      background:var(--bg-white);
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
-      opacity: 0.3;
-      z-index: -1;
+    body::before{
+      content:'';
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:linear-gradient(0.25turn,var(--primary-blue),var(--primary-pink));
+      opacity:0.3; z-index:-1;
     }
 
-    /* Bandeau avec chrono et image */
-    .header {
+    .container{ max-width:var(--max-width); margin:0 auto; }
+
+    /* ---- HEADER ---- */
+    .header{
+      text-align:center;
+      margin-bottom:20px;
+      color:var(--primary-blue);
+      font-size:1.3rem;
+      font-weight:normal;
+      padding:20px 20px 60px 20px;
+      border-radius:10px;
+      max-width:var(--max-width);
+      margin-left:auto; margin-right:auto;
+      background: url('calor.png') left/cover no-repeat;
+      position:relative;
+    }
+
+    .chrono-time{
+      font-family:'Share Tech Mono', monospace;
+      font-variant-numeric:tabular-nums;
+      font-size:2.5rem;
+      font-weight:bold;
+      letter-spacing:0.1em;
+      color:var(--primary-blue);
+    }
+    .chrono-time.paused{ opacity:0.7; }
+    @media (max-width:480px){ .chrono-time{ font-size:2rem; } }
+
+    /* ---- COMPTEURS (identiques à participants) ---- */
+    .counter-line {
       text-align: center;
-      margin-bottom: 20px;
-      color: var(--primary-blue);
-      font-size: 1.3rem;
-      font-weight: normal;
-      padding: 20px 20px 60px 20px;
-      border-radius: 10px;
-      background: url('calor.png') center/80% no-repeat;
-      position: relative;
-    }
-
-    .chrono-time {
-      position: relative;
-      z-index: 1;
-      font-family: 'Share Tech Mono', monospace;
-      font-variant-numeric: tabular-nums;
-      font-size: 2.5rem;
-      font-weight: bold;
-      letter-spacing: 0.1em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 8em;
-      color: var(--primary-blue);
-      text-align: center;
-      margin: 0 auto;
-    }
-    .chrono-time.paused { opacity: 0.7; }
-    @media (max-width: 480px) { .chrono-time { font-size: 2rem; } }
-
-    /* Compteurs */
-    .counter-box {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
       margin-bottom: 25px;
-      flex-wrap: wrap;
+      font-size: 1rem;
     }
-    .compteur {
-      padding: 10px 16px;
-      border-radius: var(--border-radius);
-      color: white;
-      min-width: 120px;
-      text-align: center;
-      font-weight: bold;
+    .counter-line span {
+      margin: 0 6px;
     }
-    .compteur-10 { background: var(--primary-blue); }
-    .compteur-20 { background: var(--primary-pink); }
+    .counter-10km { color: var(--primary-blue); font-weight: 600; }
+    .counter-20km { color: var(--primary-pink); font-weight: 600; }
 
-    /* Tableau */
-    .table-container {
-      background: var(--bg-white);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow-medium);
+    /* ---- TABLE ---- */
+    .table-container{
+      background:var(--bg-white);
+      border-radius:var(--border-radius);
+      overflow:hidden;
+      box-shadow:0 4px 12px var(--shadow-medium);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 800px;
+    table{ width:100%; border-collapse:collapse; }
+
+    th, td{
+      padding:14px 16px;
+      text-align:left;
+      font-size:0.95rem;
+    }
+    th{
+      background:var(--header-bg);
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      color:#333;
+      position:sticky;
+      top:0;
+      z-index:10;
     }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-      font-size: 0.9rem;
+    .text-center{ text-align:center; }
+
+    tbody tr:nth-child(even){ background:var(--bg-light); }
+    tbody tr:hover{
+      background:var(--hover-blue);
+      transform:translateY(-1px);
+      transition:all var(--transition-smooth);
     }
 
-    th {
-      background: var(--header-bg);
-      font-weight: bold;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    .loading{ text-align:center; padding:40px; font-size:1.1rem; color:var(--primary-blue); }
+    .no-results{ text-align:center; padding:40px; color:#666; font-style:italic; }
+
+    @media (max-width:768px){
+      body{ padding:10px; }
+      th, td{ padding:10px 8px; }
+      table{ font-size:0.85rem; }
     }
-
-    tbody tr:nth-child(odd) { background: #fff; }
-    tbody tr:nth-child(even) { background: var(--bg-light); }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1rem;
-      color: var(--primary-blue);
+    @media (max-width:600px){
+      .table-container{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+      table{ min-width:600px; }
     }
-
-    .error {
-      text-align: center;
-      color: #d32f2f;
-      font-weight: bold;
-      margin: 40px 0;
-      padding: 20px;
-      background: #ffebee;
-      border-radius: 8px;
-    }
-
-    .last-update {
-      text-align: center;
-      color: #666;
-      font-size: 0.9rem;
-      margin-top: 20px;
+    @media (max-width:400px){
+      th, td{ padding:7px 4px; font-size:0.7rem; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="chrono-time" id="chrono-time">
-      <span id="chrono-text">--:--:--</span>
+  <div class="container">
+    <div class="header">
+      <div class="chrono-time" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
     </div>
+
+    <div id="loading" class="loading">Connexion en temps réel...</div>
+
+    <!-- Compteurs (ligne simple comme participants) -->
+    <div id="compteurs" class="counter-line" style="display:none;">
+      <span class="counter-10km">10 km : <strong id="count-10">0</strong></span>
+      •
+      <span class="counter-20km">20 km : <strong id="count-20">0</strong></span>
+      •
+      <span>Total : <strong id="count-total">0</strong></span>
+    </div>
+
+    <div class="table-container" id="table-container" style="display:none;">
+      <table id="classement">
+        <caption style="position:absolute;left:-9999px;">Classement Live Calor Run</caption>
+        <thead>
+          <tr>
+            <th class="text-center">Dossard</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th class="text-center">Temps</th>
+            <th class="text-center">Course</th>
+            <th class="text-center">Scratch</th>
+            <th class="text-center">Genre</th>
+            <th class="text-center">Pos. Genre</th>
+            <th class="text-center">CAT</th>
+            <th class="text-center">Pos. CAT</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <p class="last-update" id="last-update" style="display:none;">
+      Dernière mise à jour : <span id="update-time">--:--:--</span>
+    </p>
   </div>
-
-  <div id="loading" class="loading">Connexion en temps réel...</div>
-
-  <div class="counter-box" id="compteurs" style="display:none;">
-    <div class="compteur compteur-10">10 km : <span id="count-10">0</span></div>
-    <div class="compteur compteur-20">20 km : <span id="count-20">0</span></div>
-  </div>
-
-  <div class="table-container" id="table-container" style="display:none;">
-    <table id="classement">
-      <thead>
-        <tr>
-          <th>Dossard</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Course</th>
-          <th>Scratch</th><th>Genre</th><th>Pos. Genre</th><th>CAT</th><th>Pos. CAT</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <div id="error" class="error" style="display:none;"></div>
-
-  <p class="last-update" id="last-update" style="display:none;">
-    Dernière mise à jour : <span id="update-time">--:--:--</span>
-  </p>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    // Elements
     const elements = {
       chronoTime: document.getElementById('chrono-time'),
       chronoText: document.getElementById('chrono-text'),
@@ -196,19 +191,15 @@
       compteurs: document.getElementById('compteurs'),
       count10: document.getElementById('count-10'),
       count20: document.getElementById('count-20'),
+      countTotal: document.getElementById('count-total'),
       tbody: document.querySelector('#classement tbody'),
       tableContainer: document.getElementById('table-container'),
-      error: document.getElementById('error'),
       lastUpdate: document.getElementById('last-update'),
       updateTime: document.getElementById('update-time')
     };
 
-    let departureTimestamp = null,
-        participants = {},
-        scans = {},
-        chronoInterval = null;
+    let departureTimestamp = null, participants = {}, scans = {}, chronoInterval = null;
 
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
       authDomain: "calor-run.firebaseapp.com",
@@ -222,20 +213,18 @@
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Utils
-    function formatTime(ms) {
-      const sec = Math.floor(ms / 1000);
-      const h = String(Math.floor(sec / 3600)).padStart(2, '0');
-      const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
-      const s = String(sec % 60).padStart(2, '0');
+    function formatTime(ms){
+      const sec = Math.floor(ms/1000);
+      const h = String(Math.floor(sec/3600)).padStart(2,'0');
+      const m = String(Math.floor((sec%3600)/60)).padStart(2,'0');
+      const s = String(sec%60).padStart(2,'0');
       return `${h}:${m}:${s}`;
     }
 
-    // Chrono
-    function startChrono() {
+    function startChrono(){
       clearInterval(chronoInterval);
-      if (!departureTimestamp) {
-        elements.chronoText.textContent = "--:--:--";
+      if(!departureTimestamp){
+        elements.chronoText.textContent="--:--:--";
         elements.chronoTime.classList.add('paused');
         return;
       }
@@ -248,31 +237,40 @@
       update();
       chronoInterval = setInterval(update, 1000);
     }
-    function stopChrono() {
+    function stopChrono(){
       clearInterval(chronoInterval);
-      elements.chronoText.textContent = "--:--:--";
+      elements.chronoText.textContent="--:--:--";
       elements.chronoTime.classList.add('paused');
     }
 
-    // Tableau
-    function createTableRow(p) {
+    function createTableRow(p){
       const tr = document.createElement('tr');
       const tempsDisplay = (typeof p.tempsMs === "number" && p.tempsMs < 0) ? "--:--:--" : p.tempsStr;
-      tr.innerHTML = `<td>${p.dossard}</td><td>${p.nom}</td><td>${p.prenom}</td><td>${tempsDisplay}</td><td>${p.course}</td><td>${p.scratch}</td><td>${p.genre}</td><td>${p.posGenre}</td><td>${p.categorie}</td><td>${p.posCat}</td>`;
+      tr.innerHTML = `
+        <td class="text-center">${p.dossard}</td>
+        <td>${p.nom}</td>
+        <td>${p.prenom}</td>
+        <td class="text-center">${tempsDisplay}</td>
+        <td class="text-center">${p.course}</td>
+        <td class="text-center">${p.scratch}</td>
+        <td class="text-center">${p.genre || ''}</td>
+        <td class="text-center">${p.posGenre}</td>
+        <td class="text-center">${p.categorie || ''}</td>
+        <td class="text-center">${p.posCat}</td>
+      `;
       return tr;
     }
 
-    function calculatePositions(classement) {
+    function calculatePositions(classement){
       const scratchCounter = {}, genreCounter = {}, catCounter = {};
       let count10 = 0, count20 = 0;
 
-      // On parcourt du premier arrivé (fin) vers le dernier (début)
-      for (let i = classement.length - 1; i >= 0; i--) {
+      for(let i = classement.length - 1; i >= 0; i--){
         const p = classement[i];
         const c = String(p.course).trim();
 
-        if (["10", "10km", "10 km"].includes(c)) count10++;
-        else if (["20", "20km", "20 km"].includes(c)) count20++;
+        if (["10","10km","10 km"].includes(c)) count10++;
+        else if (["20","20km","20 km"].includes(c)) count20++;
 
         scratchCounter[p.course] = (scratchCounter[p.course] || 0) + 1;
         p.scratch = scratchCounter[p.course];
@@ -283,28 +281,29 @@
         catCounter[`${p.course}_${p.categorie}`] = (catCounter[`${p.course}_${p.categorie}`] || 0) + 1;
         p.posCat = catCounter[`${p.course}_${p.categorie}`];
       }
-
       return { count10, count20 };
     }
 
-    function displayData(classement, count10, count20) {
-      const fragment = document.createDocumentFragment();
-      classement.forEach(p => fragment.appendChild(createTableRow(p)));
+    function displayData(classement, count10, count20){
+      const frag = document.createDocumentFragment();
+      classement.forEach(p => frag.appendChild(createTableRow(p)));
       elements.tbody.innerHTML = '';
-      elements.tbody.appendChild(fragment);
+      elements.tbody.appendChild(frag);
+
       elements.loading.style.display = 'none';
-      elements.error.style.display = 'none';
-      elements.compteurs.style.display = 'flex';
+      elements.compteurs.style.display = 'block';
       elements.tableContainer.style.display = 'block';
+
       elements.count10.textContent = count10;
       elements.count20.textContent = count20;
+      elements.countTotal.textContent = classement.length;
       elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
       elements.lastUpdate.style.display = 'block';
     }
 
-    function updateClassement() {
+    function updateClassement(){
       if (!departureTimestamp || Object.keys(scans).length === 0) return;
-      try {
+      try{
         let classement = Object.keys(scans).map(dossard => {
           const scan = scans[dossard], part = participants[dossard] || {};
           const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
@@ -318,15 +317,13 @@
             genre: part.genre || '',
             categorie: part.categorie || ''
           };
-        }).sort((a, b) => b.tempsMs - a.tempsMs); // plus long en haut (dernier arrivé en haut)
+        }).sort((a,b) => b.tempsMs - a.tempsMs);
+
         const { count10, count20 } = calculatePositions(classement);
         displayData(classement, count10, count20);
-      } catch (e) {
-        console.error(e);
-      }
+      }catch(e){ console.error(e); }
     }
 
-    // Firebase listeners
     db.ref('data/depart_course').on('value', snap => {
       departureTimestamp = snap.exists() ? new Date(snap.val()).getTime() : null;
       departureTimestamp ? startChrono() : stopChrono();
