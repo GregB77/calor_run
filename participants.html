@@ -273,19 +273,17 @@
       }
     }
 
-    /* --- 1) Aspect des lignes (tbody) : comme live_trail --- */
     #data-table tbody td {
       border: 1px solid #ddd;
       padding: 8px;
-      text-align: center;
       font-size: 0.9rem;
     }
 
     #data-table tbody tr:nth-child(odd)  { background: #fff; }
     #data-table tbody tr:nth-child(even) { background: #f9f9f9; }
 
-    /* hover sobre sans toucher les entêtes */
-    #data-table tbody tr:hover { background: #e9f7ff; }
+    /* hover sobre sans toucher les entêtes
+    #data-table tbody tr:hover { background: #e9f7ff; } */
 
     /* --- 2) Séparateurs verticaux BLANCS UNIQUEMENT pour les entêtes --- */
     /* On place une ligne blanche (pseudo-élément) sur le bord gauche des th ciblés (th:nth-child(3) = séparateur entre 2 et 3, etc.). */
@@ -300,9 +298,9 @@
       content: "";
       position: absolute;
       left: 0;
-      top: 10%;
-      bottom: 10%;
-      width: 2px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
       background: #fff;
       pointer-events: none;
       z-index: 5;
