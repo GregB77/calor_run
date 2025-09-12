@@ -55,7 +55,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             font-size: 1.3rem;
             font-weight: normal;
             padding: 20px 20px 60px 20px;
@@ -94,6 +94,18 @@
 
         .counter-20km {
             color: var(--primary-pink);
+        }
+
+        /* ✅ Correction clignotement parasite : style pour erreurs */
+        .counter-error {
+            color: red;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.4; }
         }
 
         .table-container {
@@ -158,11 +170,11 @@
 
         @media (max-width: 768px) {
             .header {
-                margin-bottom: 8px;
+                margin-bottom: 0px;
             }
 
             .counter-line {
-                margin-bottom: 12px;
+                margin-bottom: 5px;
             }
 
             .table-container {
@@ -203,7 +215,6 @@
 
     <div class="table-container hidden" id="table-container">
         <table id="classement">
-            <caption class="sr-only">Classement Live Calor Run</caption>
             <thead>
                 <tr>
                     <th class="text-center">Dossard</th>
@@ -233,7 +244,6 @@
     <script>
         'use strict';
 
-        // Configuration et initialisation
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
             authDomain: "calor-run.firebaseapp.com",
@@ -254,7 +264,6 @@
             '20 km': '20km'
         };
 
-        // Cache des éléments DOM
         const elements = {
             chronoTime: document.getElementById('chrono-time'),
             chronoText: document.getElementById('chrono-text'),
@@ -269,71 +278,47 @@
             counterTotal: null
         };
 
-        // Initialisation des références aux compteurs
         elements.counter10km = elements.compteurs.querySelector('.counter-10km');
         elements.counter20km = elements.compteurs.querySelector('.counter-20km');
         elements.counterTotal = elements.compteurs.querySelector('span:last-child');
 
-        // Variables d'état
         let departureTimestamp = null;
         let participants = {};
         let scans = {};
         let chronoInterval = null;
 
-        // Initialisation Firebase
         const app = firebase.initializeApp(FIREBASE_CONFIG);
         const db = firebase.database();
 
-        /**
-         * Formate un temps en millisecondes en HH:MM:SS
-         */
         function formatTime(ms) {
             const totalSeconds = Math.floor(Math.abs(ms) / 1000);
             const hours = Math.floor(totalSeconds / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
-
             return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
-        /**
-         * Démarre ou met à jour le chronomètre
-         */
         function startChrono() {
             clearInterval(chronoInterval);
-            
             if (!departureTimestamp) {
                 elements.chronoText.textContent = "--:--:--";
                 elements.chronoTime.classList.add('paused');
                 return;
             }
-
             elements.chronoTime.classList.remove('paused');
-            
             const updateChrono = () => {
                 const elapsed = Date.now() - departureTimestamp;
                 const isNegative = elapsed < 0;
-                
-                elements.chronoText.textContent = isNegative 
-                    ? `-${formatTime(elapsed)}` 
-                    : formatTime(elapsed);
-                
+                elements.chronoText.textContent = isNegative ? `-${formatTime(elapsed)}` : formatTime(elapsed);
                 elements.chronoTime.classList.toggle('paused', isNegative);
             };
-
             updateChrono();
             chronoInterval = setInterval(updateChrono, 1000);
         }
 
-        /**
-         * Crée une ligne de tableau pour un participant
-         */
         function createTableRow(participant) {
             const tr = document.createElement('tr');
-            const tempsDisplay = (typeof participant.tempsMs === "number" && participant.tempsMs < 0) 
-                ? "--:--:--" 
-                : participant.tempsStr;
-
+            const tempsDisplay = (typeof participant.tempsMs === "number" && participant.tempsMs < 0) ? "--:--:--" : participant.tempsStr;
             tr.innerHTML = `
                 <td class="text-center">${participant.dossard}</td>
                 <td>${participant.nom}</td>
@@ -346,79 +331,51 @@
                 <td class="text-center">${participant.categorie || ''}</td>
                 <td class="text-center">${participant.posCat}</td>
             `;
-            
             return tr;
         }
 
-        /**
-         * Calcule les positions pour chaque participant
-         */
         function calculatePositions(classement) {
             const scratchCounter = {};
             const genreCounter = {};
             const catCounter = {};
             let count10 = 0;
             let count20 = 0;
-
-            // Parcours en ordre inverse pour calculer les positions
             for (let i = classement.length - 1; i >= 0; i--) {
                 const participant = classement[i];
                 const courseNormalized = COURSE_ALIASES[String(participant.course).trim()] || participant.course;
-
-                // Comptage par distance
                 if (courseNormalized === '10km') count10++;
                 else if (courseNormalized === '20km') count20++;
-
-                // Position scratch (général par course)
                 const scratchKey = participant.course;
                 scratchCounter[scratchKey] = (scratchCounter[scratchKey] || 0) + 1;
                 participant.scratch = scratchCounter[scratchKey];
-
-                // Position par genre
                 const genreKey = `${participant.course}_${participant.genre}`;
                 genreCounter[genreKey] = (genreCounter[genreKey] || 0) + 1;
                 participant.posGenre = genreCounter[genreKey];
-
-                // Position par catégorie
                 const catKey = `${participant.course}_${participant.categorie}`;
                 catCounter[catKey] = (catCounter[catKey] || 0) + 1;
                 participant.posCat = catCounter[catKey];
             }
-
             return { count10, count20 };
         }
 
-        /**
-         * Affiche les données dans le tableau
-         */
         function displayData(classement, count10, count20) {
-            // Utilisation d'un DocumentFragment pour de meilleures performances
             const fragment = document.createDocumentFragment();
             classement.forEach(participant => {
                 fragment.appendChild(createTableRow(participant));
             });
-
             elements.tbody.innerHTML = '';
             elements.tbody.appendChild(fragment);
-
-            // Mise à jour de l'affichage
             elements.loading.classList.add('hidden');
             elements.compteurs.classList.remove('hidden');
             elements.tableContainer.classList.remove('hidden');
-
-            // Mise à jour des compteurs
             elements.counter10km.textContent = `10 km : ${count10}`;
             elements.counter20km.textContent = `20 km : ${count20}`;
             elements.counterTotal.textContent = `Total : ${classement.length}`;
-
-            // Vérification de cohérence directement sur les valeurs affichées
             const displayedTotal = classement.length;
             const displayed10km = count10;
             const displayed20km = count20;
             const expectedTotal = displayed10km + displayed20km;
-            
             console.log(`Compteurs: 10km=${displayed10km}, 20km=${displayed20km}, Total=${displayedTotal}, Attendu=${expectedTotal}`);
-            
             if (displayedTotal !== expectedTotal) {
                 elements.counterTotal.classList.add('counter-error');
                 console.log('⚠️ Incohérence: Total ≠ (10km + 20km) - Clignotement activé');
@@ -426,27 +383,19 @@
                 elements.counterTotal.classList.remove('counter-error');
                 console.log('✅ Cohérent: Total = (10km + 20km)');
             }
-
-            // Mise à jour de l'heure
             elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
             elements.lastUpdate.classList.remove('hidden');
         }
 
-        /**
-         * Met à jour le classement complet
-         */
         function updateClassement() {
             if (!departureTimestamp || Object.keys(scans).length === 0) {
                 return;
             }
-
             try {
-                // Construction du classement
                 const classement = Object.keys(scans).map(dossard => {
                     const scan = scans[dossard];
                     const participant = participants[dossard] || {};
                     const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
-
                     return {
                         dossard,
                         nom: participant.nom || '',
@@ -457,28 +406,21 @@
                         genre: participant.genre || '',
                         categorie: participant.categorie || ''
                     };
-                }).sort((a, b) => b.tempsMs - a.tempsMs); // Tri par temps décroissant
-
+                }).sort((a, b) => b.tempsMs - a.tempsMs);
                 const { count10, count20 } = calculatePositions(classement);
                 displayData(classement, count10, count20);
-
             } catch (error) {
                 console.error('Erreur lors de la mise à jour du classement:', error);
             }
         }
 
-        // Écouteurs Firebase
         db.ref('data/depart_course').on('value', snapshot => {
-            departureTimestamp = snapshot.exists() 
-                ? new Date(snapshot.val()).getTime() 
-                : null;
-            
+            departureTimestamp = snapshot.exists() ? new Date(snapshot.val()).getTime() : null;
             if (departureTimestamp) {
                 startChrono();
             } else {
                 elements.chronoTime.classList.add('paused');
             }
-            
             updateClassement();
         });
 
@@ -492,7 +434,6 @@
             updateClassement();
         });
 
-        // Nettoyage à la fermeture de la page
         window.addEventListener('beforeunload', () => {
             if (chronoInterval) {
                 clearInterval(chronoInterval);
