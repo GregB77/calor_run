@@ -57,8 +57,8 @@
             text-align: center;
             margin-bottom: 5px;
             font-size: 1.3rem;
-            font-weight: normal;
-            padding: 20px 20px 60px 20px;
+            font-weight: bold;
+            padding: 30px 20px 50px 20px;
             border-radius: 10px;
             max-width: var(--max-width);
             margin-left: auto;
@@ -157,6 +157,14 @@
         }
 
         @media (max-width: 768px) {
+            .header {
+                margin-bottom: 5px;
+            }
+
+            .counter-line {
+                margin-bottom: 10px;
+            }
+
             .table-container {
                 width: 98vw;
                 overflow-x: auto;
@@ -195,6 +203,7 @@
 
     <div class="table-container hidden" id="table-container">
         <table id="classement">
+            <caption class="sr-only">Classement Live Calor Run</caption>
             <thead>
                 <tr>
                     <th class="text-center">Dossard</th>
