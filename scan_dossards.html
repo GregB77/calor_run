@@ -22,12 +22,17 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 70vh;
+      height: 65vh;
+    }
+
+    #reader video {
+      object-fit: cover;
+      transform: translateY(-3vh);
     }
 
     #current-scan {
       position: absolute;
-      top: 72vh;
+      top: 66vh;
       left: 0;
       right: 0;
       font-size: 3em;
@@ -185,6 +190,7 @@
               fps: 30,
               qrbox: { width: 300, height: 300 },
               disableFlip: true,
+              aspectRatio: 1.0,
               videoConstraints: {
                 width: { ideal: 1920 },
                 height: { ideal: 1080 },
