@@ -55,7 +55,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             font-size: 1.3rem;
             font-weight: normal;
             padding: 20px 20px 60px 20px;
@@ -158,11 +158,11 @@
 
         @media (max-width: 768px) {
             .header {
-                margin-bottom: 0px;
+                margin-bottom: 8px;
             }
 
             .counter-line {
-                margin-bottom: 5px;
+                margin-bottom: 12px;
             }
 
             .table-container {
@@ -203,6 +203,7 @@
 
     <div class="table-container hidden" id="table-container">
         <table id="classement">
+            <caption class="sr-only">Classement Live Calor Run</caption>
             <thead>
                 <tr>
                     <th class="text-center">Dossard</th>
@@ -410,16 +411,20 @@
             elements.counter20km.textContent = `20 km : ${count20}`;
             elements.counterTotal.textContent = `Total : ${classement.length}`;
 
-            // Vérification de cohérence et clignotement si erreur
-            const expectedTotal = count10 + count20;
-            console.log(`Vérification cohérence: Total=${classement.length}, 10km=${count10}, 20km=${count20}, Attendu=${expectedTotal}`);
+            // Vérification de cohérence directement sur les valeurs affichées
+            const displayedTotal = classement.length;
+            const displayed10km = count10;
+            const displayed20km = count20;
+            const expectedTotal = displayed10km + displayed20km;
             
-            if (classement.length !== expectedTotal) {
+            console.log(`Compteurs: 10km=${displayed10km}, 20km=${displayed20km}, Total=${displayedTotal}, Attendu=${expectedTotal}`);
+            
+            if (displayedTotal !== expectedTotal) {
                 elements.counterTotal.classList.add('counter-error');
-                console.log('⚠️ Incohérence détectée - Clignotement activé');
+                console.log('⚠️ Incohérence: Total ≠ (10km + 20km) - Clignotement activé');
             } else {
                 elements.counterTotal.classList.remove('counter-error');
-                console.log('✅ Données cohérentes');
+                console.log('✅ Cohérent: Total = (10km + 20km)');
             }
 
             // Mise à jour de l'heure
