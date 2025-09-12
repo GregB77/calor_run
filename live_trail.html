@@ -60,7 +60,7 @@
       background: url('calor.png') center/contain no-repeat;
     }
 
-    /* Chronomètre tel qu’avant (pas de fond blanc) */
+    /* Chronomètre exactement comme avant */
     .chrono-time{
       font-family:'Share Tech Mono', monospace;
       font-variant-numeric:tabular-nums;
@@ -68,8 +68,6 @@
       font-weight:bold;
       letter-spacing:0.1em;
       color:var(--primary-blue);
-      margin-top: 15px;
-      display: inline-block;
     }
     .chrono-time.paused{ opacity:0.7; }
     @media (max-width:480px){ .chrono-time{ font-size:2rem; } }
@@ -95,14 +93,14 @@
     table{
       width:100%;
       border-collapse:collapse;
-      table-layout:auto;
+      table-layout:fixed;
     }
 
     th, td{
-      padding:12px 16px;
-      text-align:left;
+      padding:12px 10px;
       font-size:0.95rem;
-      white-space: nowrap;
+      text-align:left;
+      word-break: break-word;
     }
 
     th.text-center, td.text-center { text-align:center; }
@@ -127,7 +125,9 @@
   <div class="container">
     <!-- Grille + Chronomètre -->
     <div class="header">
-      <div class="chrono-time paused" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
+      <div class="chrono-time paused" id="chrono-time">
+        <span id="chrono-text">--:--:--</span>
+      </div>
     </div>
 
     <div id="loading" class="loading">Connexion en temps réel...</div>
@@ -280,7 +280,6 @@
       elements.compteurs.style.display = 'block';
       elements.tableContainer.style.display = 'block';
 
-      // Mise à jour compteurs
       elements.compteurs.querySelector('.counter-10km').textContent = `10 km : ${count10}`;
       elements.compteurs.querySelector('.counter-20km').textContent = `20 km : ${count20}`;
       elements.compteurs.querySelector('span:last-child').textContent = `Total : ${classement.length}`;
