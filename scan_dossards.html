@@ -18,13 +18,16 @@
     }
 
     #reader {
-      width: 100vw;
-      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70vh;
     }
 
     #current-scan {
       position: absolute;
-      top: 10px;
+      top: 72vh;
       left: 0;
       right: 0;
       font-size: 3em;
@@ -43,8 +46,6 @@
       text-align: center;
       background: rgba(255,255,255,0.2);
       padding: 10px;
-      cursor: pointer;
-      text-decoration: underline;
     }
 
     #results {
@@ -84,7 +85,7 @@
 <body>
   <div id="reader"></div>
   <div id="current-scan">---</div>
-  <div id="counter">Scannés : 0</div>
+  <div id="counter">SCANS : 0</div>
   <div id="results">
     <button id="back-button">Retour</button>
     <div id="history-list"></div>
@@ -126,7 +127,7 @@
     };
 
     function updateCounter() {
-      counterDiv.textContent = "Scannés : " + scannedCodes.size;
+      counterDiv.textContent = "SCANS : " + scannedCodes.size;
     }
 
     function showCurrentScan(code) {
