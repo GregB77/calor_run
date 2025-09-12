@@ -1,302 +1,301 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Calor Run</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --primary-blue:#215E99;
-      --primary-pink:#E61780;
-      --bg-white:#fff;
-      --bg-light:#f9f9f9;
-      --shadow-medium: rgba(0,0,0,0.15);
-      --border-radius:8px;
-      --max-width:1000px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Calor Run</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --primary-blue:#215E99;
+            --primary-pink:#E61780;
+            --bg-white:#fff;
+            --bg-light:#f9f9f9;
+            --shadow-medium: rgba(0,0,0,0.15);
+            --border-radius:8px;
+            --max-width:1000px;
+        }
 
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height:1.5;
-      color:#333;
-      min-height:100vh;
-      padding:20px 0;
-      overflow-x:hidden;
-      background:var(--bg-white);
-    }
-    body::before{
-      content:''; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:linear-gradient(0.25turn,var(--primary-blue),var(--primary-pink));
-      opacity:0.3; z-index:-1;
-    }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height:1.5;
+            color:#333;
+            min-height:100vh;
+            padding:20px 0;
+            overflow-x:hidden;
+            background:var(--bg-white);
+        }
+        body::before{
+            content:''; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:linear-gradient(0.25turn,var(--primary-blue),var(--primary-pink));
+            opacity:0.3; z-index:-1;
+        }
 
-    .container { max-width: var(--max-width); margin:0 auto; padding: 0 20px;}
+        .container { max-width: var(--max-width); margin:0 auto; padding: 0 20px;}
 
-    .header {
-      text-align:center;
-      margin-bottom:20px;
-      font-size:1.3rem;
-      font-weight:normal;
-      padding:20px 20px 60px 20px;
-      border-radius:10px;
-      max-width:var(--max-width);
-      margin-left:auto;
-      margin-right:auto;
-      background: url('calor.png') center/contain no-repeat;
-    }
+        .header {
+            text-align:center;
+            margin-bottom:20px;
+            font-size:1.3rem;
+            font-weight:normal;
+            padding:20px 20px 60px 20px;
+            border-radius:10px;
+            max-width:var(--max-width);
+            margin-left:auto;
+            margin-right:auto;
+            background: url('calor.png') center/contain no-repeat;
+        }
 
-    .chrono-time {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1.5rem;
-      font-variant-numeric: tabular-nums;
-      color: var(--primary-blue);
-      font-weight: normal;
-    }
-    .chrono-time.paused { opacity:0.7; }
+        .chrono-time {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.5rem;
+            font-variant-numeric: tabular-nums;
+            color: var(--primary-blue);
+            font-weight: normal;
+        }
+        .chrono-time.paused { opacity:0.7; }
 
-    .counter-line {
-      text-align:center;
-      margin-bottom:25px;
-      font-size:1rem;
-    }
-    .counter-line span { margin: 0 6px; }
-    .counter-10km { color: var(--primary-blue);}
-    .counter-20km { color: var(--primary-pink);}
+        .counter-line {
+            text-align:center;
+            margin-bottom:25px;
+            font-size:1rem;
+        }
+        .counter-line span { margin: 0 6px; }
+        .counter-10km { color: var(--primary-blue);}
+        .counter-20km { color: var(--primary-pink);}
 
-    .table-container {
-      width: 96vw;
-      max-width: 1400px;
-      margin: 0 auto 20px;
-      background: var(--bg-white);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow-medium);
-      padding: 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: auto;
-    }
-    th, td {
-      padding: 8px 10px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-      word-break: break-word;
-    }
-    th {
-      background: #e0e0e0;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    tbody tr:nth-child(even) {
-      background: var(--bg-light);
-    }
-    th.text-center, td.text-center { text-align: center; }
+        .table-container {
+            width: 96vw;
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--shadow-medium);
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-break: break-word;
+        }
+        th {
+            background: #e0e0e0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        tbody tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+        th.text-center, td.text-center { text-align: center; }
 
-    .loading{ text-align:center; padding:40px; font-size:1.1rem; color:var(--primary-blue); }
+        .loading{ text-align:center; padding:40px; font-size:1.1rem; color:var(--primary-blue); }
 
-    @media (max-width:768px){
-      .table-container {
-        width: 98vw;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-      table {
-        width: auto;
-        font-size: 0.85rem;
-      }
-      th, td {
-        padding: 10px 8px;
-        white-space: nowrap;
-      }
-    }
-  </style>
+        @media (max-width:768px){
+            .table-container {
+                width: 98vw;
+                overflow-x: auto;
+            }
+            table {
+                width: auto;
+                font-size: 0.85rem;
+            }
+            th, td {
+                padding: 10px 8px;
+                white-space: nowrap;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="chrono-time paused" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
-    </div>
+    <div class="container">
+        <div class="header">
+            <div class="chrono-time paused" id="chrono-time"><span id="chrono-text">--:--:--</span></div>
+        </div>
 
-    <div id="loading" class="loading">Connexion en temps réel...</div>
+        <div id="loading" class="loading">Connexion en temps réel...</div>
 
-    <div id="compteurs" class="counter-line" style="display:none;">
-      <span class="counter-10km">10 km : 0</span>
-      <span>•</span>
-      <span class="counter-20km">20 km : 0</span>
-      <span>•</span>
-      <span>Total : 0</span>
-    </div>
-  </div>
+        <div id="compteurs" class="counter-line" style="display:none;">
+            <span class="counter-10km">10 km : 0</span>
+            <span>•</span>
+            <span class="counter-20km">20 km : 0</span>
+            <span>•</span>
+            <span>Total : 0</span>
+        </div>
+    </div>
 
-  <div class="table-container" id="table-container" style="display:none;">
-    <table id="classement">
-      <caption style="position:absolute;left:-9999px;">Classement Live Calor Run</caption>
-      <thead>
-        <tr>
-          <th class="text-center">Dossard</th>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th class="text-center">Temps</th>
-          <th class="text-center">Course</th>
-          <th class="text-center">Scratch</th>
-          <th class="text-center">Genre</th>
-          <th class="text-center">Pos. Genre</th>
-          <th class="text-center">CAT</th>
-          <th class="text-center">Pos. CAT</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    <div class="table-container" id="table-container" style="display:none;">
+        <table id="classement">
+            <caption style="position:absolute;left:-9999px;">Classement Live Calor Run</caption>
+            <thead>
+                <tr>
+                    <th class="text-center">Dossard</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th class="text-center">Temps</th>
+                    <th class="text-center">Course</th>
+                    <th class="text-center">Scratch</th>
+                    <th class="text-center">Genre</th>
+                    <th class="text-center">Pos. Genre</th>
+                    <th class="text-center">CAT</th>
+                    <th class="text-center">Pos. CAT</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 
-  <div class="container">
-    <p class="last-update" id="last-update" style="display:none;">
-      Dernière mise à jour : <span id="update-time">--:--:--</span>
-    </p>
-  </div>
+    <div class="container">
+        <p class="last-update" id="last-update" style="display:none;">
+            Dernière mise à jour : <span id="update-time">--:--:--</span>
+        </p>
+    </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script>
-    const elements = {
-      chronoTime: document.getElementById('chrono-time'),
-      chronoText: document.getElementById('chrono-text'),
-      loading: document.getElementById('loading'),
-      compteurs: document.getElementById('compteurs'),
-      tbody: document.querySelector('#classement tbody'),
-      tableContainer: document.getElementById('table-container'),
-      lastUpdate: document.getElementById('last-update'),
-      updateTime: document.getElementById('update-time')
-    };
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script>
+        const elements = {
+            chronoTime: document.getElementById('chrono-time'),
+            chronoText: document.getElementById('chrono-text'),
+            loading: document.getElementById('loading'),
+            compteurs: document.getElementById('compteurs'),
+            tbody: document.querySelector('#classement tbody'),
+            tableContainer: document.getElementById('table-container'),
+            lastUpdate: document.getElementById('last-update'),
+            updateTime: document.getElementById('update-time')
+        };
 
-    let departureTimestamp = null, participants = {}, scans = {}, chronoInterval = null;
+        let departureTimestamp = null, participants = {}, scans = {}, chronoInterval = null;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.firebasestorage.app",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47",
-      measurementId: "G-YVQPW6JGPK"
-    };
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+            authDomain: "calor-run.firebaseapp.com",
+            databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "calor-run",
+            storageBucket: "calor-run.firebasestorage.app",
+            messagingSenderId: "329949291334",
+            appId: "1:329949291334:web:c71ef20268c609cf953b47",
+            measurementId: "G-YVQPW6JGPK"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    function formatTime(ms){
-      const sec = Math.floor(ms/1000);
-      const h = String(Math.floor(sec/3600)).padStart(2,'0');
-      const m = String(Math.floor((sec%3600)/60)).padStart(2,'0');
-      const s = String(sec%60).padStart(2,'0');
-      return `${h}:${m}:${s}`;
-    }
+        function formatTime(ms){
+            const sec = Math.floor(ms/1000);
+            const h = String(Math.floor(sec/3600)).padStart(2,'0');
+            const m = String(Math.floor((sec%3600)/60)).padStart(2,'0');
+            const s = String(sec%60).padStart(2,'0');
+            return `${h}:${m}:${s}`;
+        }
 
-    function startChrono(){
-      clearInterval(chronoInterval);
-      if(!departureTimestamp){
-        elements.chronoText.textContent="--:--:--";
-        elements.chronoTime.classList.add('paused');
-        return;
-      }
-      elements.chronoTime.classList.remove('paused');
-      const update = () => {
-        const elapsed = Date.now() - departureTimestamp;
-        elements.chronoText.textContent = elapsed < 0 ? `-${formatTime(Math.abs(elapsed))}` : formatTime(elapsed);
-        elements.chronoTime.classList.toggle('paused', elapsed < 0);
-      };
-      update();
-      chronoInterval = setInterval(update,1000);
-    }
+        function startChrono(){
+            clearInterval(chronoInterval);
+            if(!departureTimestamp){
+                elements.chronoText.textContent="--:--:--";
+                elements.chronoTime.classList.add('paused');
+                return;
+            }
+            elements.chronoTime.classList.remove('paused');
+            const update = () => {
+                const elapsed = Date.now() - departureTimestamp;
+                elements.chronoText.textContent = elapsed < 0 ? `-${formatTime(Math.abs(elapsed))}` : formatTime(elapsed);
+                elements.chronoTime.classList.toggle('paused', elapsed < 0);
+            };
+            update();
+            chronoInterval = setInterval(update,1000);
+        }
 
-    function createTableRow(p){
-      const tr = document.createElement('tr');
-      const tempsDisplay = (typeof p.tempsMs === "number" && p.tempsMs < 0) ? "--:--:--" : p.tempsStr;
-      tr.innerHTML = `
-        <td class="text-center">${p.dossard}</td>
-        <td>${p.nom}</td>
-        <td>${p.prenom}</td>
-        <td class="text-center">${tempsDisplay}</td>
-        <td class="text-center">${p.course}</td>
-        <td class="text-center">${p.scratch}</td>
-        <td class="text-center">${p.genre||''}</td>
-        <td class="text-center">${p.posGenre}</td>
-        <td class="text-center">${p.categorie||''}</td>
-        <td class="text-center">${p.posCat}</td>
-      `;
-      return tr;
-    }
+        function createTableRow(p){
+            const tr = document.createElement('tr');
+            const tempsDisplay = (typeof p.tempsMs === "number" && p.tempsMs < 0) ? "--:--:--" : p.tempsStr;
+            tr.innerHTML = `
+                <td class="text-center">${p.dossard}</td>
+                <td>${p.nom}</td>
+                <td>${p.prenom}</td>
+                <td class="text-center">${tempsDisplay}</td>
+                <td class="text-center">${p.course}</td>
+                <td class="text-center">${p.scratch}</td>
+                <td class="text-center">${p.genre||''}</td>
+                <td class="text-center">${p.posGenre}</td>
+                <td class="text-center">${p.categorie||''}</td>
+                <td class="text-center">${p.posCat}</td>
+            `;
+            return tr;
+        }
 
-    function calculatePositions(classement){
-      const scratchCounter = {}, genreCounter = {}, catCounter = {};
-      let count10=0,count20=0;
-      for(let i=classement.length-1;i>=0;i--){
-        const p=classement[i]; const c=String(p.course).trim();
-        if(["10","10km","10 km"].includes(c)) count10++;
-        else if(["20","20km","20 km"].includes(c)) count20++;
-        scratchCounter[p.course]=(scratchCounter[p.course]||0)+1; p.scratch=scratchCounter[p.course];
-        genreCounter[`${p.course}_${p.genre}`]=(genreCounter[`${p.course}_${p.genre}`]||0)+1; p.posGenre=genreCounter[`${p.course}_${p.genre}`];
-        catCounter[`${p.course}_${p.categorie}`]=(catCounter[`${p.course}_${p.categorie}`]||0)+1; p.posCat=catCounter[`${p.course}_${p.categorie}`];
-      }
-      return {count10,count20};
-    }
+        function calculatePositions(classement){
+            const scratchCounter = {}, genreCounter = {}, catCounter = {};
+            let count10=0,count20=0;
+            for(let i=classement.length-1;i>=0;i--){
+                const p=classement[i]; const c=String(p.course).trim();
+                if(["10","10km","10 km"].includes(c)) count10++;
+                else if(["20","20km","20 km"].includes(c)) count20++;
+                scratchCounter[p.course]=(scratchCounter[p.course]||0)+1; p.scratch=scratchCounter[p.course];
+                genreCounter[`${p.course}_${p.genre}`]=(genreCounter[`${p.course}_${p.genre}`]||0)+1; p.posGenre=genreCounter[`${p.course}_${p.genre}`];
+                catCounter[`${p.course}_${p.categorie}`]=(catCounter[`${p.course}_${p.categorie}`]||0)+1; p.posCat=catCounter[`${p.course}_${p.categorie}`];
+            }
+            return {count10,count20};
+        }
 
-    function displayData(classement,count10,count20){
-      const frag=document.createDocumentFragment();
-      classement.forEach(p=>frag.appendChild(createTableRow(p)));
-      elements.tbody.innerHTML='';
-      elements.tbody.appendChild(frag);
+        function displayData(classement,count10,count20){
+            const frag=document.createDocumentFragment();
+            classement.forEach(p=>frag.appendChild(createTableRow(p)));
+            elements.tbody.innerHTML='';
+            elements.tbody.appendChild(frag);
 
-      elements.loading.style.display='none';
-      elements.compteurs.style.display='block';
-      elements.tableContainer.style.display='block';
+            elements.loading.style.display='none';
+            elements.compteurs.style.display='block';
+            elements.tableContainer.style.display='block';
 
-      elements.compteurs.querySelector('.counter-10km').textContent=`10 km : ${count10}`;
-      elements.compteurs.querySelector('.counter-20km').textContent=`20 km : ${count20}`;
-      elements.compteurs.querySelector('span:last-child').textContent=`Total : ${classement.length}`;
-      elements.updateTime.textContent=new Date().toLocaleTimeString('fr-FR');
-      elements.lastUpdate.style.display='block';
-    }
+            elements.compteurs.querySelector('.counter-10km').textContent=`10 km : ${count10}`;
+            elements.compteurs.querySelector('.counter-20km').textContent=`20 km : ${count20}`;
+            elements.compteurs.querySelector('span:last-child').textContent=`Total : ${classement.length}`;
+            elements.updateTime.textContent=new Date().toLocaleTimeString('fr-FR');
+            elements.lastUpdate.style.display='block';
+        }
 
-    function updateClassement(){
-      if(!departureTimestamp || Object.keys(scans).length===0) return;
-      try{
-        let classement=Object.keys(scans).map(dossard=>{
-          const scan=scans[dossard], part=participants[dossard]||{};
-          const tempsMs=new Date(scan.dateTime).getTime()-departureTimestamp;
-          return {
-            dossard,
-            nom: part.nom||'',
-            prenom: part.prenom||'',
-            tempsMs,
-            tempsStr: formatTime(tempsMs),
-            course: part.course||'',
-            genre: part.genre||'',
-            categorie: part.categorie||''
-          };
-        }).sort((a,b)=>b.tempsMs-a.tempsMs);
-        const {count10,count20}=calculatePositions(classement);
-        displayData(classement,count10,count20);
-      }catch(e){console.error(e);}
-    }
+        function updateClassement(){
+            if(!departureTimestamp || Object.keys(scans).length===0) return;
+            try{
+                let classement=Object.keys(scans).map(dossard=>{
+                    const scan=scans[dossard], part=participants[dossard]||{};
+                    const tempsMs=new Date(scan.dateTime).getTime()-departureTimestamp;
+                    return {
+                        dossard,
+                        nom: part.nom||'',
+                        prenom: part.prenom||'',
+                        tempsMs,
+                        tempsStr: formatTime(tempsMs),
+                        course: part.course||'',
+                        genre: part.genre||'',
+                        categorie: part.categorie||''
+                    };
+                }).sort((a,b)=>b.tempsMs-a.tempsMs);
+                const {count10,count20}=calculatePositions(classement);
+                displayData(classement,count10,count20);
+            }catch(e){console.error(e);}
+        }
 
-    db.ref('data/depart_course').on('value',snap=>{
-      departureTimestamp=snap.exists()?new Date(snap.val()).getTime():null;
-      departureTimestamp?startChrono():elements.chronoTime.classList.add('paused');
-      updateClassement();
-    });
-    db.ref('participants').on('value',snap=>{participants=snap.val()||{}; updateClassement();});
-    db.ref('scan_dossards').on('value',snap=>{scans=snap.val()||{}; updateClassement();});
+        db.ref('data/depart_course').on('value',snap=>{
+            departureTimestamp=snap.exists()?new Date(snap.val()).getTime():null;
+            departureTimestamp?startChrono():elements.chronoTime.classList.add('paused');
+            updateClassement();
+        });
+        db.ref('participants').on('value',snap=>{participants=snap.val()||{}; updateClassement();});
+        db.ref('scan_dossards').on('value',snap=>{scans=snap.val()||{}; updateClassement();});
 
-    window.addEventListener('beforeunload',()=>{clearInterval(chronoInterval);});
-  </script>
+        window.addEventListener('beforeunload',()=>{clearInterval(chronoInterval);});
+    </script>
 </body>
 </html>
