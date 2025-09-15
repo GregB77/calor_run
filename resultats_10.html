@@ -196,7 +196,6 @@ tbody tr:nth-child(even) {
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script>
-  // 🔐 Configuration Firebase
   const FIREBASE_CONFIG = {
     apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
     authDomain: "calor-run.firebaseapp.com",
@@ -209,14 +208,12 @@ tbody tr:nth-child(even) {
   };
   firebase.initializeApp(FIREBASE_CONFIG);
 
-  // 🔗 Références Firebase
   const db = {
     depart: firebase.database().ref('data/depart_course'),
     participants: firebase.database().ref('participants'),
     scans: firebase.database().ref('scan_dossards')
   };
 
-  // 🎯 Sélecteurs DOM
   const el = {
     tbody: document.getElementById('tbody'),
     table: document.getElementById('table-container'),
@@ -226,11 +223,9 @@ tbody tr:nth-child(even) {
     time: document.getElementById('update-time')
   };
 
-  // 📦 Données
   let participants = {}, scans = {}, departure = null;
   const tableRows = new Map();
 
-  // ⏱️ Formatage du temps
   const formatTime = ms => {
     const s = Math.floor(ms / 1000);
     const h = Math.floor(s / 3600);
@@ -239,7 +234,6 @@ tbody tr:nth-child(even) {
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
-  // 🧮 Fonction principale d'affichage
   const render = () => {
     if (!departure) return;
 
@@ -287,7 +281,6 @@ tbody tr:nth-child(even) {
     el.time.textContent = new Date().toLocaleTimeString('fr-FR');
   };
 
-  // 🔍 Recherche dynamique
   el.search.addEventListener('input', e => {
     const term = e.target.value.toLowerCase();
     tableRows.forEach(tr => {
@@ -295,7 +288,6 @@ tbody tr:nth-child(even) {
     });
   });
 
-  // 🔁 Écoute Firebase avec gestion d'erreur
   const safeListener = (ref, callback) => {
     ref.on('value', snapshot => {
       try {
