@@ -80,7 +80,8 @@ body::before {
 }
 
 .table-container {
-  max-width: var(--max-width);
+  width: 95%;
+  max-width: 950px;
   overflow-x: auto;
   margin: 0 auto 20px;
   background: var(--bg-white);
@@ -121,7 +122,12 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 .hidden { display: none; }
 
 @media(max-width:768px){
-  .search-counter-container { justify-content: center; }
+  .search-counter-container {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  #counter { margin-top: 10px; }
   table { font-size: 0.85rem; }
   th, td { padding: 6px 8px; }
 }
@@ -204,7 +210,6 @@ const formatTime = ms => {
 const render = () => {
   if (!departure) return;
 
-  // Filtrage participants 10KM
   const data = Object.entries(scans).map(([id, s]) => {
     const p = participants[id];
     if (!p || p.course !== 10) return null;
@@ -212,14 +217,11 @@ const render = () => {
     return {...p, tempsMs: t, tempsStr: formatTime(t)};
   }).filter(Boolean);
 
-  // Total participants
   const total = Object.values(participants).filter(p => p.course === 10).length;
   el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-  // Tri par temps
   data.sort((a,b) => a.tempsMs - b.tempsMs);
 
-  // Calcul positions Scratch / Genre / Cat
   const genreLast = {}, catLast = {};
   tableRows.clear();
   const frag = document.createDocumentFragment();
