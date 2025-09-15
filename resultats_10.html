@@ -42,7 +42,7 @@ body::before {
   margin-bottom:20px;
   color: var(--primary-blue);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size:1.8rem;
+  font-size:1.3rem;
   font-weight:bold;
   padding:40px 20px;
   border-radius:10px;
@@ -173,7 +173,8 @@ function updateTable(participants, scans, departureTimestamp){
   let classement = Object.keys(scans).map(dossard=>{
     const scan = scans[dossard];
     const p = participants[dossard]||{};
-    if(!COURSE_10KM.includes((p.course||'').trim())) return null;
+    const courseStr = String(p.course||'').trim();
+    if(!COURSE_10KM.includes(courseStr)) return null;
     const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
     return {...p, tempsMs, tempsStr: tempsMs<0?"--:--:--":formatTime(tempsMs)};
   }).filter(Boolean);
