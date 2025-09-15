@@ -1,332 +1,439 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Résultats 10 KM - Calor Run</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary-blue: #215E99;
-      --primary-pink: #E61780;
-      --bg-white: #fff;
-      --bg-light: #f9f9f9;
-      --shadow-medium: rgba(0, 0, 0, 0.15);
-      --border-radius: 8px;
-      --max-width: 1000px;
-      --text-dark: #333;
-      --border-light: #ddd;
-      --header-bg: #e0e0e0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Calor Run</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #215E99;
+            --primary-pink: #E61780;
+            --bg-white: #fff;
+            --bg-light: #f9f9f9;
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --border-radius: 8px;
+            --max-width: 1000px;
+            --text-dark: #333;
+            --border-light: #ddd;
+            --header-bg: #e0e0e0;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.5;
-      color: var(--text-dark);
-      min-height: 100vh;
-      padding: 20px 0;
-      overflow-x: hidden;
-    }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.5;
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px 0;
+            overflow-x: hidden;
+        }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
-      opacity: 0.3;
-      z-index: -1;
-    }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
+            opacity: 0.3;
+            z-index: -1;
+        }
 
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-    }
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
 
-    .header {
-      text-align: center;
-      margin-bottom: 5px;
-      color: var(--primary-blue);
-      font-size: 1.8rem;
-      font-weight: bold;
-      padding: 40px 20px;
-      border-radius: 10px;
-      max-width: var(--max-width);
-      margin-left: auto;
-      margin-right: auto;
-      background: url('calor.png') center/contain no-repeat;
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 5px;
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            font-weight: normal;
+            padding: 20px 20px 60px 20px;
+            border-radius: 10px;
+            max-width: var(--max-width);
+            margin-left: auto;
+            margin-right: auto;
+            background: url('calor.png') center/contain no-repeat;
+        }
 
-    .chrono-time {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1.6rem;
-      font-weight: bold;
-    }
+        .chrono-time {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.3rem;
+            font-variant-numeric: tabular-nums;
+            font-weight: bold;
+        }
 
-    .table-container {
-      width: 96vw;
-      max-width: 1400px;
-      margin: 0 auto 20px;
-      background: var(--bg-white);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow-medium);
-      padding: 0;
-    }
+        .chrono-time.paused {
+            opacity: 0.7;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: auto;
-    }
+        .counter-line {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
 
-    th, td {
-      padding: 8px 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-light);
-      word-break: break-word;
-    }
+        .counter-line span {
+            margin: 0 6px;
+        }
 
-    th {
-      background: var(--header-bg);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+        .counter-10km {
+            color: var(--primary-blue);
+        }
 
-    tbody tr:nth-child(even) {
-      background: var(--bg-light);
-    }
+        .counter-20km {
+            color: var(--primary-pink);
+        }
 
-    .text-center {
-      text-align: center;
-    }
+        .counter-error {
+            animation: blinker 2s linear infinite;
+            color: red;
+        }
+        
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1rem;
-      color: var(--primary-blue);
-    }
+        .table-container {
+            width: 96vw;
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--shadow-medium);
+            padding: 0;
+        }
 
-    .last-update {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 0.9rem;
-      color: var(--text-dark);
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
 
-    .hidden {
-      display: none;
-    }
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+            word-break: break-word;
+        }
 
-    @media (max-width: 768px) {
-      .header {
-        margin-bottom: 0px;
-      }
+        th {
+            background: var(--header-bg);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
 
-      .table-container {
-        width: 98vw;
-        overflow-x: auto;
-      }
-      
-      table {
-        width: auto;
-        font-size: 0.85rem;
-      }
-      
-      th, td {
-        padding: 10px 8px;
-        white-space: nowrap;
-      }
-    }
-  </style>
+        tbody tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+        }
+
+        .last-update {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                margin-bottom: 0px;
+            }
+
+            .counter-line {
+                margin-bottom: 5px;
+            }
+
+            .table-container {
+                width: 98vw;
+                overflow-x: auto;
+            }
+            
+            table {
+                width: auto;
+                font-size: 0.85rem;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                white-space: nowrap;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="chrono-time">RÉSULTATS 10 KM</div>
+    <div class="container">
+        <div class="header">
+            <div class="chrono-time paused" id="chrono-time">
+                <span id="chrono-text">--:--:--</span>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">Connexion en temps réel...</div>
+
+        <div id="compteurs" class="counter-line hidden">
+            <span class="counter-10km">10 km : 0</span>
+            <span>•</span>
+            <span class="counter-20km">20 km : 0</span>
+            <span>•</span>
+            <span>Total : 0</span>
+        </div>
     </div>
-    <div id="loading" class="loading">Connexion en temps réel...</div>
-  </div>
 
-  <div class="table-container hidden" id="table-container">
-    <table id="classement">
-      <thead>
-        <tr>
-          <th class="text-center">Dossard</th>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th class="text-center">Temps</th>
-          <th class="text-center">Scratch</th>
-          <th class="text-center">Genre</th>
-          <th class="text-center">Pos. Genre</th>
-          <th class="text-center">CAT</th>
-          <th class="text-center">Pos. CAT</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    <div class="table-container hidden" id="table-container">
+        <table id="classement">
+            <thead>
+                <tr>
+                    <th class="text-center">Dossard</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th class="text-center">Temps</th>
+                    <th class="text-center">Course</th>
+                    <th class="text-center">Scratch</th>
+                    <th class="text-center">Genre</th>
+                    <th class="text-center">Pos. Genre</th>
+                    <th class="text-center">CAT</th>
+                    <th class="text-center">Pos. CAT</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 
-  <div class="container">
-    <p class="last-update hidden" id="last-update">
-      Dernière mise à jour : <span id="update-time">--:--:--</span>
-    </p>
-  </div>
+    <div class="container">
+        <p class="last-update hidden" id="last-update">
+            Dernière mise à jour : <span id="update-time">--:--:--</span>
+        </p>
+    </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script>
-    'use strict';
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script>
+        'use strict';
 
-    const FIREBASE_CONFIG = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.firebasestorage.app",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47",
-      measurementId: "G-YVQPW6JGPK"
-    };
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+            authDomain: "calor-run.firebaseapp.com",
+            databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "calor-run",
+            storageBucket: "calor-run.firebasestorage.app",
+            messagingSenderId: "329949291334",
+            appId: "1:329949291334:web:c71ef20268c609cf953b47",
+            measurementId: "G-YVQPW6JGPK"
+        };
 
-    const COURSE_ALIASES = {
-      '10': '10km',
-      '10km': '10km',
-      '10 km': '10km',
-      '20': '20km',
-      '20km': '20km',
-      '20 km': '20km'
-    };
+        const COURSE_ALIASES = {
+            '10': '10km',
+            '10km': '10km',
+            '10 km': '10km',
+            '20': '20km',
+            '20km': '20km',
+            '20 km': '20km'
+        };
 
-    const elements = {
-      loading: document.getElementById('loading'),
-      tbody: document.querySelector('#classement tbody'),
-      tableContainer: document.getElementById('table-container'),
-      lastUpdate: document.getElementById('last-update'),
-      updateTime: document.getElementById('update-time'),
-    };
+        const elements = {
+            chronoTime: document.getElementById('chrono-time'),
+            chronoText: document.getElementById('chrono-text'),
+            loading: document.getElementById('loading'),
+            compteurs: document.getElementById('compteurs'),
+            tbody: document.querySelector('#classement tbody'),
+            tableContainer: document.getElementById('table-container'),
+            lastUpdate: document.getElementById('last-update'),
+            updateTime: document.getElementById('update-time'),
+            counter10km: null,
+            counter20km: null,
+            counterTotal: null
+        };
 
-    let departureTimestamp = null;
-    let participants = {};
-    let scans = {};
+        elements.counter10km = elements.compteurs.querySelector('.counter-10km');
+        elements.counter20km = elements.compteurs.querySelector('.counter-20km');
+        elements.counterTotal = elements.compteurs.querySelector('span:last-child');
 
-    const app = firebase.initializeApp(FIREBASE_CONFIG);
-    const db = firebase.database();
+        let departureTimestamp = null;
+        let participants = {};
+        let scans = {};
+        let chronoInterval = null;
 
-    function formatTime(ms) {
-      const totalSeconds = Math.floor(Math.abs(ms) / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
+        const app = firebase.initializeApp(FIREBASE_CONFIG);
+        const db = firebase.database();
 
-    function createTableRow(participant) {
-      const tr = document.createElement('tr');
-      const tempsDisplay = (typeof participant.tempsMs === "number" && participant.tempsMs < 0) ? "--:--:--" : participant.tempsStr;
-      tr.innerHTML = `
-        <td class="text-center">${participant.dossard}</td>
-        <td>${participant.nom}</td>
-        <td>${participant.prenom}</td>
-        <td class="text-center">${tempsDisplay}</td>
-        <td class="text-center">${participant.scratch}</td>
-        <td class="text-center">${participant.genre || ''}</td>
-        <td class="text-center">${participant.posGenre}</td>
-        <td class="text-center">${participant.categorie || ''}</td>
-        <td class="text-center">${participant.posCat}</td>
-      `;
-      return tr;
-    }
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(Math.abs(ms) / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
 
-    function calculatePositions(classement) {
-      const scratchCounter = {};
-      const genreCounter = {};
-      const catCounter = {};
-      for (let i = classement.length - 1; i >= 0; i--) {
-        const participant = classement[i];
-        const scratchKey = '10km';
-        scratchCounter[scratchKey] = (scratchCounter[scratchKey] || 0) + 1;
-        participant.scratch = scratchCounter[scratchKey];
-        const genreKey = `10km_${participant.genre}`;
-        genreCounter[genreKey] = (genreCounter[genreKey] || 0) + 1;
-        participant.posGenre = genreCounter[genreKey];
-        const catKey = `10km_${participant.categorie}`;
-        catCounter[catKey] = (catCounter[catKey] || 0) + 1;
-        participant.posCat = catCounter[catKey];
-      }
-    }
+        function startChrono() {
+            clearInterval(chronoInterval);
+            if (!departureTimestamp) {
+                elements.chronoText.textContent = "--:--:--";
+                elements.chronoTime.classList.add('paused');
+                return;
+            }
+            elements.chronoTime.classList.remove('paused');
+            const updateChrono = () => {
+                const elapsed = Date.now() - departureTimestamp;
+                const isNegative = elapsed < 0;
+                elements.chronoText.textContent = isNegative ? `-${formatTime(elapsed)}` : formatTime(elapsed);
+                elements.chronoTime.classList.toggle('paused', isNegative);
+            };
+            updateChrono();
+            chronoInterval = setInterval(updateChrono, 1000);
+        }
 
-    function displayData(classement) {
-      const fragment = document.createDocumentFragment();
-      classement.forEach(participant => {
-        fragment.appendChild(createTableRow(participant));
-      });
-      elements.tbody.innerHTML = '';
-      elements.tbody.appendChild(fragment);
-      elements.loading.classList.add('hidden');
-      elements.tableContainer.classList.remove('hidden');
-      elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
-      elements.lastUpdate.classList.remove('hidden');
-    }
+        function createTableRow(participant) {
+            const tr = document.createElement('tr');
+            const tempsDisplay = (typeof participant.tempsMs === "number" && participant.tempsMs < 0) ? "--:--:--" : participant.tempsStr;
+            tr.innerHTML = `
+                <td class="text-center">${participant.dossard}</td>
+                <td>${participant.nom}</td>
+                <td>${participant.prenom}</td>
+                <td class="text-center">${tempsDisplay}</td>
+                <td class="text-center">${participant.course}</td>
+                <td class="text-center">${participant.scratch}</td>
+                <td class="text-center">${participant.genre || ''}</td>
+                <td class="text-center">${participant.posGenre}</td>
+                <td class="text-center">${participant.categorie || ''}</td>
+                <td class="text-center">${participant.posCat}</td>
+            `;
+            return tr;
+        }
 
-    function updateClassement() {
-      if (!departureTimestamp || Object.keys(scans).length === 0) {
-        return;
-      }
-      try {
-        const classement = Object.keys(scans).map(dossard => {
-          const scan = scans[dossard];
-          const participant = participants[dossard] || {};
-          const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
-          const courseNormalized = COURSE_ALIASES[String(participant.course).trim()] || participant.course;
-          return {
-            dossard,
-            nom: participant.nom || '',
-            prenom: participant.prenom || '',
-            tempsMs,
-            tempsStr: formatTime(tempsMs),
-            course: courseNormalized,
-            genre: participant.genre || '',
-            categorie: participant.categorie || ''
-          };
-        })
-        .filter(p => p.course === '10km') // ✅ filtrage uniquement 10 km
-        .sort((a, b) => b.tempsMs - a.tempsMs);
+        function calculatePositions(classement) {
+            const scratchCounter = {};
+            const genreCounter = {};
+            const catCounter = {};
+            let count10 = 0;
+            let count20 = 0;
+            for (let i = classement.length - 1; i >= 0; i--) {
+                const participant = classement[i];
+                const courseNormalized = COURSE_ALIASES[String(participant.course).trim()] || participant.course;
+                if (courseNormalized === '10km') count10++;
+                else if (courseNormalized === '20km') count20++;
+                const scratchKey = participant.course;
+                scratchCounter[scratchKey] = (scratchCounter[scratchKey] || 0) + 1;
+                participant.scratch = scratchCounter[scratchKey];
+                const genreKey = `${participant.course}_${participant.genre}`;
+                genreCounter[genreKey] = (genreCounter[genreKey] || 0) + 1;
+                participant.posGenre = genreCounter[genreKey];
+                const catKey = `${participant.course}_${participant.categorie}`;
+                catCounter[catKey] = (catCounter[catKey] || 0) + 1;
+                participant.posCat = catCounter[catKey];
+            }
+            return { count10, count20 };
+        }
 
-        calculatePositions(classement);
-        displayData(classement);
-      } catch (error) {
-        console.error('Erreur lors de la mise à jour du classement:', error);
-      }
-    }
+        function displayData(classement, count10, count20) {
+            const fragment = document.createDocumentFragment();
+            classement.forEach(participant => {
+                fragment.appendChild(createTableRow(participant));
+            });
+            elements.tbody.innerHTML = '';
+            elements.tbody.appendChild(fragment);
+            elements.loading.classList.add('hidden');
+            elements.compteurs.classList.remove('hidden');
+            elements.tableContainer.classList.remove('hidden');
+            elements.counter10km.textContent = `10 km : ${count10}`;
+            elements.counter20km.textContent = `20 km : ${count20}`;
+            elements.counterTotal.textContent = `Total : ${classement.length}`;
+            const displayedTotal = classement.length;
+            const displayed10km = count10;
+            const displayed20km = count20;
+            const expectedTotal = displayed10km + displayed20km;
+            console.log(`Compteurs: 10km=${displayed10km}, 20km=${displayed20km}, Total=${displayedTotal}, Attendu=${expectedTotal}`);
+            if (displayedTotal !== expectedTotal) {
+                elements.counterTotal.classList.add('counter-error');
+                console.log('⚠️ Incohérence: Total ≠ (10km + 20km) - Clignotement activé');
+            } else {
+                elements.counterTotal.classList.remove('counter-error');
+                console.log('✅ Cohérent: Total = (10km + 20km)');
+            }
+            elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
+            elements.lastUpdate.classList.remove('hidden');
+        }
 
-    db.ref('data/depart_course').on('value', snapshot => {
-      departureTimestamp = snapshot.exists() ? new Date(snapshot.val()).getTime() : null;
-      updateClassement();
-    });
+        function updateClassement() {
+            if (!departureTimestamp || Object.keys(scans).length === 0) {
+                return;
+            }
+            try {
+                const classement = Object.keys(scans).map(dossard => {
+                    const scan = scans[dossard];
+                    const participant = participants[dossard] || {};
+                    const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
+                    return {
+                        dossard,
+                        nom: participant.nom || '',
+                        prenom: participant.prenom || '',
+                        tempsMs,
+                        tempsStr: formatTime(tempsMs),
+                        course: participant.course || '',
+                        genre: participant.genre || '',
+                        categorie: participant.categorie || ''
+                    };
+                }).sort((a, b) => b.tempsMs - a.tempsMs);
+                const { count10, count20 } = calculatePositions(classement);
+                displayData(classement, count10, count20);
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour du classement:', error);
+            }
+        }
 
-    db.ref('participants').on('value', snapshot => {
-      participants = snapshot.val() || {};
-      updateClassement();
-    });
+        db.ref('data/depart_course').on('value', snapshot => {
+            departureTimestamp = snapshot.exists() ? new Date(snapshot.val()).getTime() : null;
+            if (departureTimestamp) {
+                startChrono();
+            } else {
+                elements.chronoTime.classList.add('paused');
+            }
+            updateClassement();
+        });
 
-    db.ref('scan_dossards').on('value', snapshot => {
-      scans = snapshot.val() || {};
-      updateClassement();
-    });
-  </script>
+        db.ref('participants').on('value', snapshot => {
+            participants = snapshot.val() || {};
+            updateClassement();
+        });
+
+        db.ref('scan_dossards').on('value', snapshot => {
+            scans = snapshot.val() || {};
+            updateClassement();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (chronoInterval) {
+                clearInterval(chronoInterval);
+            }
+        });
+    </script>
 </body>
 </html>
