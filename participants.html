@@ -81,37 +81,38 @@
       flex: 1;
       min-width: 250px;
     }
-
+    
     #search {
       width: 100%;
-      padding: 6px 6;
-      background: transparent !important;          /* fond transparent */
-      background-color: transparent !important;
-      border: 0 !important;                        /* supprime toutes les bordures */
-      border-bottom: 2px solid var(--border-light) !important; /* seule bordure du bas */
-      border-radius: 0 !important;                 /* pas d'arrondis */
-      box-shadow: none !important;                 /* annule ombres UA */
-      -webkit-appearance: none;                    /* annule apparence navigateur */
-      -moz-appearance: none;
-      appearance: none;
-      outline: none;                               /* pas de contour par défaut */
+      padding: 12px 0;
+      background: transparent;
+      border: none;                                /* pas de bordures */
+      border-bottom: 2px solid var(--border-light);/* bordure grise par défaut */
+      border-radius: 0;
       font-size: 1rem;
       color: var(--text-dark);
-      transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+      box-shadow: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      outline: none;
+      transition: border-color var(--transition-smooth);
     }
-
+    
+    /* Placeholder lisible */
     #search::placeholder {
-      color: rgba(0,0,0,0.45);                      /* Placeholder plus discret */
+      color: rgba(0, 0, 0, 0.45);
       opacity: 1;
     }
     
+    /* Focus : bordure bleue */
     #search:focus {
+      border-bottom-color: var(--primary-blue);
       outline: none;
       box-shadow: none;
-      border-bottom-color: var(--primary-blue);
     }
-
-    /* Cas où le navigateur applique un fond lors de l'autoremplissage */
+    
+    /* Gestion du fond jaune de l’autofill Chrome */
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
