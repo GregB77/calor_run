@@ -142,12 +142,28 @@ tbody tr:nth-child(even) {
   display: none;
 }
 
+button {
+  cursor: pointer;
+  background: var(--primary-blue);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-left: 4px;
+}
+
+button.active {
+  background: var(--accent-pink);
+}
+
 @media(max-width: 768px) {
   .header {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
   }
   .search-counter-container {
     justify-content: center;
+    flex-direction: column;
+    gap: 8px;
   }
   table {
     font-size: 0.85rem;
@@ -165,6 +181,11 @@ tbody tr:nth-child(even) {
   <div class="search-counter-container">
     <input type="text" id="search" placeholder="Rechercher par nom, prénom..." autocomplete="off">
     <div id="counter">Arrivées : 0 / 0</div>
+    <div>
+      <button id="sort-scratch" class="active">Scratch</button>
+      <button id="sort-genre">Genre</button>
+      <button id="sort-cat">Catégorie</button>
+    </div>
   </div>
 </div>
 
@@ -198,137 +219,162 @@ tbody tr:nth-child(even) {
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script>
-  const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-    authDomain: "calor-run.firebaseapp.com",
-    databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "calor-run",
-    storageBucket: "calor-run.appspot.com",
-    messagingSenderId: "329949291334",
-    appId: "1:329949291334:web:c71ef20268c609cf953b47",
-    measurementId: "G-YVQPW6JGPK"
-  };
-  firebase.initializeApp(FIREBASE_CONFIG);
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+  authDomain: "calor-run.firebaseapp.com",
+  databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "calor-run",
+  storageBucket: "calor-run.appspot.com",
+  messagingSenderId: "329949291334",
+  appId: "1:329949291334:web:c71ef20268c609cf953b47",
+  measurementId: "G-YVQPW6JGPK"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
 
-  const db = {
-    depart: firebase.database().ref('data/depart_course'),
-    participants: firebase.database().ref('participants'),
-    scans: firebase.database().ref('scan_dossards')
-  };
+const db = {
+  depart: firebase.database().ref('data/depart_course'),
+  participants: firebase.database().ref('participants'),
+  scans: firebase.database().ref('scan_dossards')
+};
 
-  const el = {
-    tbody: document.getElementById('tbody'),
-    table: document.getElementById('table-container'),
-    search: document.getElementById('search'),
-    counter: document.getElementById('counter'),
-    last: document.getElementById('last-update'),
-    time: document.getElementById('update-time')
-  };
+const el = {
+  tbody: document.getElementById('tbody'),
+  table: document.getElementById('table-container'),
+  search: document.getElementById('search'),
+  counter: document.getElementById('counter'),
+  last: document.getElementById('last-update'),
+  time: document.getElementById('update-time'),
+  btnScratch: document.getElementById('sort-scratch'),
+  btnGenre: document.getElementById('sort-genre'),
+  btnCat: document.getElementById('sort-cat')
+};
 
-  let participants = {}, scans = {}, departure = null;
-  const tableRows = new Map();
+let participants = {}, scans = {}, departure = null;
+const tableRows = new Map();
+let currentSort = 'scratch'; // scratch par défaut
 
-  const formatTime = ms => {
-    const s = Math.floor(ms / 1000);
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  };
+const formatTime = ms => {
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+};
 
-  const render = () => {
-    if (!departure) return;
+// Tri visuel selon le bouton
+const sortData = (data) => {
+  if(currentSort==='scratch'){
+    data.sort((a,b)=>a.tempsMs-b.tempsMs);
+  } else if(currentSort==='genre'){
+    data.sort((a,b)=>(a.genre||'').localeCompare(b.genre||'') || a.tempsMs-b.tempsMs);
+  } else if(currentSort==='cat'){
+    data.sort((a,b)=>(a.categorie||'').localeCompare(b.categorie||'') || a.tempsMs-b.tempsMs);
+  }
+};
 
-    const data = Object.entries(scans).map(([id, scan]) => {
-      const p = participants[id];
-      if (!p || p.course !== 10) return null;
-      const t = new Date(scan.dateTime).getTime() - departure;
-      return { ...p, tempsMs: t, tempsStr: formatTime(t) };
-    }).filter(Boolean);
+const render = () => {
+  if(!departure) return;
 
-    const total = Object.values(participants).filter(p => p.course === 10).length;
-    el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
+  const data = Object.entries(scans).map(([id, scan]) => {
+    const p = participants[id];
+    if(!p || p.course!==10) return null;
+    const t = new Date(scan.dateTime).getTime() - departure;
+    return {...p, tempsMs:t, tempsStr:formatTime(t)};
+  }).filter(Boolean);
 
-    // Tri scratch global
-    data.sort((a, b) => a.tempsMs - b.tempsMs);
+  const total = Object.values(participants).filter(p=>p.course===10).length;
+  el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-    // Classements séparés
-    const classementGenre = {};
-    const classementCat = {};
-
-    data.forEach((p, i) => {
-      p.scratch = i + 1;
-
-      // Genre
-      if (!classementGenre[p.genre]) classementGenre[p.genre] = 0;
-      classementGenre[p.genre]++;
-      p.posGenre = classementGenre[p.genre];
-
-      // Catégorie
-      if (!classementCat[p.categorie]) classementCat[p.categorie] = 0;
-      classementCat[p.categorie]++;
-      p.posCat = classementCat[p.categorie];
-    });
-
-    // Génération du tableau
-    tableRows.clear();
-    const frag = document.createDocumentFragment();
-
-    data.forEach(p => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="text-center">${p.dossard}</td>
-        <td>${p.nom}</td>
-        <td>${p.prenom}</td>
-        <td class="text-center">${p.tempsStr}</td>
-        <td class="text-center">${p.scratch}</td>
-        <td class="text-center">${p.genre || ''}</td>
-        <td class="text-center">${p.posGenre}</td>
-        <td class="text-center">${p.categorie || ''}</td>
-        <td class="text-center">${p.posCat}</td>
-      `;
-      frag.appendChild(tr);
-      tableRows.set(tr, tr);
-    });
-
-    el.tbody.innerHTML = '';
-    el.tbody.appendChild(frag);
-    el.table.classList.remove('hidden');
-    el.last.classList.remove('hidden');
-    el.time.textContent = new Date().toLocaleTimeString('fr-FR');
-  };
-
-  el.search.addEventListener('input', e => {
-    const term = e.target.value.toLowerCase();
-    tableRows.forEach(tr => {
-      tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
-    });
+  // Classement scratch pour calcul des positions
+  const scratchData = [...data].sort((a,b)=>a.tempsMs-b.tempsMs);
+  const genreCount = {}, catCount = {};
+  scratchData.forEach((p,i)=>{
+    p.scratch=i+1;
+    genreCount[p.genre] = (genreCount[p.genre]||0)+1;
+    p.posGenre = genreCount[p.genre];
+    catCount[p.categorie] = (catCount[p.categorie]||0)+1;
+    p.posCat = catCount[p.categorie];
   });
 
-  const safeListener = (ref, callback) => {
-    ref.on('value', snapshot => {
-      try {
-        callback(snapshot);
-      } catch (err) {
-        console.error('Erreur Firebase :', err);
-      }
-    });
-  };
+  // Tri visuel selon le bouton
+  sortData(data);
 
-  safeListener(db.depart, snap => {
-    departure = snap.exists() ? new Date(snap.val()).getTime() : null;
-    render();
+  // Construction du tableau
+  tableRows.clear();
+  const frag = document.createDocumentFragment();
+  data.forEach(p=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td class="text-center">${p.dossard}</td>
+      <td>${p.nom}</td>
+      <td>${p.prenom}</td>
+      <td class="text-center">${p.tempsStr}</td>
+      <td class="text-center">${p.scratch}</td>
+      <td class="text-center">${p.genre||''}</td>
+      <td class="text-center">${p.posGenre}</td>
+      <td class="text-center">${p.categorie||''}</td>
+      <td class="text-center">${p.posCat}</td>
+    `;
+    frag.appendChild(tr);
+    tableRows.set(tr,tr);
   });
 
-  safeListener(db.participants, snap => {
-    participants = snap.val() || {};
-    render();
-  });
+  el.tbody.innerHTML='';
+  el.tbody.appendChild(frag);
+  el.table.classList.remove('hidden');
+  el.last.classList.remove('hidden');
+  el.time.textContent=new Date().toLocaleTimeString('fr-FR');
+};
 
-  safeListener(db.scans, snap => {
-    scans = snap.val() || {};
-    render();
+// Recherche
+el.search.addEventListener('input',e=>{
+  const term = e.target.value.toLowerCase();
+  tableRows.forEach(tr=>{
+    tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
   });
+});
+
+// Boutons de tri
+const setActiveButton = (btn)=>{
+  [el.btnScratch, el.btnGenre, el.btnCat].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+};
+
+el.btnScratch.addEventListener('click',()=>{
+  currentSort='scratch';
+  setActiveButton(el.btnScratch);
+  render();
+});
+el.btnGenre.addEventListener('click',()=>{
+  currentSort='genre';
+  setActiveButton(el.btnGenre);
+  render();
+});
+el.btnCat.addEventListener('click',()=>{
+  currentSort='cat';
+  setActiveButton(el.btnCat);
+  render();
+});
+
+// Firebase
+const safeListener = (ref,callback)=>{
+  ref.on('value', snapshot=>{
+    try{ callback(snapshot); } catch(err){ console.error('Erreur Firebase :', err); }
+  });
+};
+
+safeListener(db.depart, snap=>{
+  departure = snap.exists() ? new Date(snap.val()).getTime() : null;
+  render();
+});
+safeListener(db.participants, snap=>{
+  participants = snap.val()||{};
+  render();
+});
+safeListener(db.scans, snap=>{
+  scans = snap.val()||{};
+  render();
+});
 </script>
 </body>
 </html>
