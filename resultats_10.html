@@ -1,557 +1,320 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Participants Calor Run</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♀️</text></svg>">
-  <style>
-    :root {
-      --primary-blue: #215E99;
-      --primary-pink: #E61780;
-      --bg-overlay: rgba(33, 94, 153, 0.3);
-      --text-dark: #333;
-      --bg-white: #fff;
-      --bg-light: #f9f9f9;
-      --border-light: #ccc;
-      --hover-blue: #e9f7ff;
-      --shadow-light: rgba(0, 0, 0, 0.1);
-      --shadow-medium: rgba(0, 0, 0, 0.15);
-      --header-bg: #e0e0e0;
-      --transition-smooth: 0.3s ease;
-      --border-radius: 8px;
-      --max-width: 1000px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résultats 10 KM Calor Run</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏅</text></svg>">
+<style>
+:root {
+  --primary-blue: #215E99;
+  --accent-pink: #E61780;
+  --bg-white: #fff;
+  --bg-light: #f9f9f9;
+  --shadow: rgba(0,0,0,0.15);
+  --radius: 8px;
+  --max-width: 1000px;
+  --text-dark: #333;
+  --border-light: #ddd;
+  --header-bg: #e0e0e0;
+}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.5;
-      color: var(--text-dark);
-      min-height: 100vh;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+}
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
-      opacity: 0.3;
-      z-index: -1;
-    }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(0.25turn, var(--primary-blue), var(--accent-pink));
+  opacity: 0.3;
+  z-index: -1;
+}
 
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-    }
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
 
-    .header {
-      text-align: center;
-      margin-bottom: 5px;
-      color: var(--primary-blue);
-      font-size: 1.3rem;
-      font-weight: normal;
-      padding: 20px 20px 60px 20px;
-      border-radius: 10px;
-      max-width: var(--max-width);
-      margin-left: auto;
-      margin-right: auto;
-      background: url('calor.png') center/contain no-repeat;
-    }
+.header {
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--primary-blue);
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 20px 20px 60px;
+  background: url('calor.png') center/contain no-repeat;
+}
 
-    .search-counter {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
+.search-counter-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
-    #search {
-      flex: 1 1 200px;
-      max-width: 300px;
-      padding: 6px 12px;
-      border: none;
-      border-bottom: 1px solid #888;
-      background: transparent;
-      color: var(--text-dark);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.3s;
-    }
+#search {
+  flex: 1 1 200px;
+  max-width: 300px;
+  padding: 6px 12px;
+  border: none;
+  border-bottom: 1px solid #888;
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+#search:focus {
+  border-bottom-color: var(--primary-blue);
+}
 
-    #search:focus {
-      border-bottom-color: var(--primary-blue);
-    }
+#counter {
+  font-weight: bold;
+  color: var(--primary-blue);
+  white-space: nowrap;
+}
 
-    .counter-10km {
-      color: var(--primary-blue);
-    }
+.table-container {
+  max-width: var(--max-width);
+  overflow-x: auto;
+  margin: 0 auto 20px;
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px var(--shadow);
+}
 
-    .counter-20km {
-      color: var(--primary-pink);
-    }
-    
-    #counter {
-      display: flex;
-      gap: 10px;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
 
-    .table-container {
-      background: var(--bg-white);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow-medium);
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+th, td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+  white-space: nowrap;
+}
 
-    th, td {
-      padding: 8px 8px;
-      text-align: left;
-      font-size: 0.95rem;
-    }
+th {
+  background: var(--header-bg);
+  font-weight: 600;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
-    th {
-      background: var(--header-bg);
-      font-weight: bold;
-      position: sticky;
-      color: #333;
-      top: 0;
-      z-index: 10;
-      padding-right: 32px;
-    }
+tbody tr:nth-child(even) {
+  background: var(--bg-light);
+}
 
-    .text-center {
-      text-align: center;
-    }
+.text-center {
+  text-align: center;
+}
 
-    .sort-indicator {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0;
-      height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-bottom: 6px solid rgba(0, 0, 0, 0.4);
-      opacity: 0.5;
-      transition: all var(--transition-smooth);
-      pointer-events: none;
-    }
+.loading, .last-update {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 1rem;
+}
 
-    th.sorted .sort-indicator {
-      opacity: 1;
-      border-bottom-color: var(--primary-blue);
-    }
+.last-update {
+  font-size: 0.9rem;
+  margin-top: 20px;
+}
 
-    th.sorted.desc .sort-indicator {
-      transform: translateY(-50%) rotate(180deg);
-    }
+.hidden {
+  display: none;
+}
 
-    .header-label {
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
-
-    tbody tr:nth-child(even) {
-      background: var(--bg-light);
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1rem;
-      color: var(--primary-blue);
-    }
-
-    .no-results {
-      text-align: center;
-      padding: 40px;
-      color: #666;
-      font-style: italic;
-    }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-      
-      th, td {
-        padding: 10px 8px;
-      }
-      
-      th {
-        padding-right: 26px;
-      }
-      
-      table {
-        font-size: 0.85rem;
-        min-width: 600px; /* Ajout pour le défilement horizontal */
-      }
-      
-      .table-container {
-        overflow-x: auto; /* Ajout pour le défilement horizontal */
-        -webkit-overflow-scrolling: touch; /* Optimisation pour iOS */
-      }
-
-      .search-counter {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-      }
-
-      #search {
-        width: 100%;
-        max-width: none;
-      }
-      
-      #counter {
-        width: 100%;
-        justify-content: space-between;
-        gap: 0;
-        flex-wrap: nowrap;
-      }
-      
-      #counter span {
-        flex: 1;
-        text-align: center;
-      }
-    }
-    
-    #data-table th,
-    #data-table td {
-      border: 1px solid #ddd;
-    }
-    
-    #data-table tbody tr:nth-child(odd) {
-      background: #fff;
-    }
-    
-    #data-table tbody tr:nth-child(even) {
-      background: #f9f9f9;
-    }
-  </style>
+@media(max-width: 768px) {
+  .header {
+  margin-bottom: 5px;
+  }
+  .search-counter-container {
+    justify-content: center;
+  }
+  table {
+    font-size: 0.85rem;
+  }
+  th, td {
+    padding: 6px 8px;
+  }
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">PARTICIPANTS CALOR RUN</div>
-    <div class="search-counter">
-      <input type="text" id="search" placeholder="Rechercher par nom, prénom, club..." autocomplete="off">
-      <div id="counter">
-        <span class="counter-10km">10 km : 0</span>
-        <span>•</span>
-        <span class="counter-20km">20 km : 0</span>
-        <span>•</span>
-        <span>Total : 0</span>
-      </div>
-    </div>
-    <div class="table-container">
-      <table id="data-table">
-        <caption style="position:absolute;left:-9999px;">Liste des participants à la Calor Run</caption>
-        <thead>
-          <tr>
-            <th data-column="dossard" class="text-center" scope="col" aria-sort="none">
-              <span class="header-label">Dossard</span>
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="nom" scope="col" aria-sort="none">
-              <span class="header-label">Nom</span>
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="prenom" scope="col" aria-sort="none">
-              <span class="header-label">Prénom</span>
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="club" scope="col" aria-sort="none">
-              <span class="header-label">Club</span>
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="genre" class="text-center" scope="col" aria-sort="none">
-              <span class="header-label">Genre</span>
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="categorie" class="text-center" scope="col" aria-sort="none">
-              <span class="header-label">Catégorie</span>
-              <span class="sort-indicator"></span>
-            </th>
-            <th data-column="course" class="text-center" scope="col" aria-sort="none">
-              <span class="header-label">Course</span>
-              <span class="sort-indicator"></span>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="table-body">
-          <tr>
-            <td colspan="7" class="loading">Chargement des données...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
+<div class="container">
+  <div class="header">RÉSULTATS 10 KM CALOR RUN</div>
+  <div class="search-counter-container">
+    <input type="text" id="search" placeholder="Rechercher par nom, prénom..." autocomplete="off">
+    <div id="counter">Arrivées : 0 / 0</div>
   </div>
+</div>
 
-  <noscript>
-    <div style="background: #fbeee0; color: #880000; padding: 16px; border-radius: 8px; text-align: center;">
-      JavaScript doit être activé pour afficher la liste des participants.
-    </div>
-  </noscript>
+<div class="table-container hidden" id="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th class="text-center">Dossard</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th class="text-center">Temps</th>
+        <th class="text-center">Scratch</th>
+        <th class="text-center">Genre</th>
+        <th class="text-center">Pos. Genre</th>
+        <th class="text-center">Cat</th>
+        <th class="text-center">Pos. Cat</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr><td colspan="9" class="loading">Connexion en temps réel...</td></tr>
+    </tbody>
+  </table>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+<div class="container">
+  <p class="last-update hidden" id="last-update">
+    Dernière mise à jour : <span id="update-time">--:--:--</span>
+  </p>
+</div>
 
-    // Configuration Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.firebasestorage.app",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47",
-      measurementId: "G-YVQPW6JGPK"
-    };
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+    authDomain: "calor-run.firebaseapp.com",
+    databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "calor-run",
+    storageBucket: "calor-run.appspot.com",
+    messagingSenderId: "329949291334",
+    appId: "1:329949291334:web:c71ef20268c609cf953b47",
+    measurementId: "G-YVQPW6JGPK"
+  };
+  firebase.initializeApp(FIREBASE_CONFIG);
 
-    // Initialisation Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const dbRef = ref(db, "participants");
+  const db = {
+    depart: firebase.database().ref('data/depart_course'),
+    participants: firebase.database().ref('participants'),
+    scans: firebase.database().ref('scan_dossards')
+  };
 
-    // État de l'application
-    const AppState = {
-      allData: [],
-      filteredData: [],
-      currentSort: { column: 'dossard', direction: 'asc' },
-      isLoading: true
-    };
+  const el = {
+    tbody: document.getElementById('tbody'),
+    table: document.getElementById('table-container'),
+    search: document.getElementById('search'),
+    counter: document.getElementById('counter'),
+    last: document.getElementById('last-update'),
+    time: document.getElementById('update-time')
+  };
 
-    // Éléments DOM
-    const elements = {
-      tbody: document.getElementById("table-body"),
-      searchInput: document.getElementById("search"),
-      counter: document.getElementById("counter"),
-      headers: document.querySelectorAll("th[data-column]")
-    };
+  let participants = {}, scans = {}, departure = null;
+  const tableRows = new Map();
 
-    // Utilitaires
-    const utils = {
-      debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-          const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-          };
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-        };
-      },
-      // Accent-insensitive normalization for search
-      normalizeString(str) {
-        return str
-          .toString()
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .trim();
-      }
-    };
+  const formatTime = ms => {
+    const s = Math.floor(ms / 1000);
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  };
 
-    // Fonctions de rendu
-    function renderTable() {
-      if (AppState.isLoading) return;
+  const render = () => {
+    if (!departure) return;
 
-      if (AppState.filteredData.length === 0) {
-        elements.tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="no-results">
-              ${AppState.allData.length === 0 ? 'Aucune donnée disponible' : 'Aucun résultat trouvé'}
-            </td>
-          </tr>
-        `;
-        updateCounter();
-        return;
-      }
+    const data = Object.entries(scans).map(([id, scan]) => {
+      const p = participants[id];
+      if (!p || p.course !== 10) return null;
+      const t = new Date(scan.dateTime).getTime() - departure;
+      return { ...p, tempsMs: t, tempsStr: formatTime(t) };
+    }).filter(Boolean);
 
-      const fragment = document.createDocumentFragment();
+    const total = Object.values(participants).filter(p => p.course === 10).length;
+    el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-      AppState.filteredData.forEach(participant => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td class="text-center">${participant.dossard}</td>
-          <td>${participant.nom}</td>
-          <td>${participant.prenom}</td>
-          <td>${participant.club || '-'}</td>
-          <td class="text-center">${participant.genre}</td>
-          <td class="text-center">${participant.categorie}</td>
-          <td class="text-center">${participant.course} km</td>
-        `;
-        fragment.appendChild(row);
-      });
+    data.sort((a, b) => a.tempsMs - b.tempsMs);
 
-      elements.tbody.innerHTML = '';
-      elements.tbody.appendChild(fragment);
-      updateCounter();
-    }
+    const genreCount = {}, catCount = {};
+    tableRows.clear();
+    const frag = document.createDocumentFragment();
 
-    function updateCounter() {
-      const km10Count = AppState.filteredData.filter(p => p.course == "10").length;
-      const km20Count = AppState.filteredData.filter(p => p.course == "20").length;
-      const total = AppState.filteredData.length;
+    data.forEach((p, i) => {
+      p.scratch = i + 1;
+      p.posGenre = ++genreCount[p.genre] || 1;
+      p.posCat = ++catCount[p.categorie] || 1;
 
-      elements.counter.innerHTML = `
-        <span class="counter-10km">10 km : ${km10Count}</span>
-        <span>•</span>
-        <span class="counter-20km">20 km : ${km20Count}</span>
-        <span>•</span>
-        <span>Total : ${total}</span>
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="text-center">${p.dossard}</td>
+        <td>${p.nom}</td>
+        <td>${p.prenom}</td>
+        <td class="text-center">${p.tempsStr}</td>
+        <td class="text-center">${p.scratch}</td>
+        <td class="text-center">${p.genre || ''}</td>
+        <td class="text-center">${p.posGenre}</td>
+        <td class="text-center">${p.categorie || ''}</td>
+        <td class="text-center">${p.posCat}</td>
       `;
-    }
-
-    // Accessibility: update aria-sort attribute
-    function updateSortIndicators() {
-      elements.headers.forEach(header => {
-        header.classList.remove('sorted', 'asc', 'desc');
-        header.setAttribute('aria-sort', 'none');
-        if (header.dataset.column === AppState.currentSort.column) {
-          header.classList.add('sorted', AppState.currentSort.direction);
-          header.setAttribute(
-            'aria-sort',
-            AppState.currentSort.direction === 'asc' ? 'ascending' : 'descending'
-          );
-        }
-      });
-    }
-
-    // Fonctions de logique métier
-    function sortData(column, direction = null) {
-      if (!direction) {
-        direction = AppState.currentSort.column === column && AppState.currentSort.direction === 'asc' ? 'desc' : 'asc';
-      }
-
-      AppState.currentSort = { column, direction };
-
-      AppState.filteredData.sort((a, b) => {
-        let valueA = a[column];
-        let valueB = b[column];
-
-        // Gestion des valeurs numériques
-        if (!isNaN(valueA) && !isNaN(valueB)) {
-          valueA = Number(valueA);
-          valueB = Number(valueB);
-        } else {
-          valueA = utils.normalizeString(valueA);
-          valueB = utils.normalizeString(valueB);
-        }
-
-        if (valueA < valueB) return direction === 'asc' ? -1 : 1;
-        if (valueA > valueB) return direction === 'asc' ? 1 : -1;
-        return 0;
-      });
-
-      updateSortIndicators();
-      renderTable();
-    }
-
-    function filterData(searchTerm) {
-      const term = utils.normalizeString(searchTerm);
-
-      if (!term) {
-        AppState.filteredData = [...AppState.allData];
-      } else {
-        AppState.filteredData = AppState.allData.filter(participant => {
-          return Object.entries(participant).some(([key, value]) => {
-            // Pour la colonne course, on permet la recherche avec "km"
-            if (key === 'course') {
-              const courseWithKm = `${value} km`;
-              return utils.normalizeString(courseWithKm).includes(term) ||
-                   utils.normalizeString(value).includes(term);
-            }
-            return utils.normalizeString(value).includes(term);
-          });
-        });
-      }
-
-      sortData(AppState.currentSort.column, AppState.currentSort.direction);
-    }
-
-    // Gestionnaires d'événements
-    const debouncedFilter = utils.debounce((searchTerm) => {
-      filterData(searchTerm);
-    }, 300);
-
-    elements.searchInput.addEventListener("input", (e) => {
-      debouncedFilter(e.target.value);
+      frag.appendChild(tr);
+      tableRows.set(tr, tr);
     });
 
-    elements.headers.forEach(header => {
-      header.addEventListener("click", () => {
-        sortData(header.dataset.column);
-      });
+    el.tbody.innerHTML = '';
+    el.tbody.appendChild(frag);
+    el.table.classList.remove('hidden');
+    el.last.classList.remove('hidden');
+    el.time.textContent = new Date().toLocaleTimeString('fr-FR');
+  };
+
+  el.search.addEventListener('input', e => {
+    const term = e.target.value.toLowerCase();
+    tableRows.forEach(tr => {
+      tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
     });
+  });
 
-    // Initialisation des données Firebase
-    function initializeData() {
-      const unsubscribe = onValue(dbRef, (snapshot) => {
-        const data = snapshot.val();
+  const safeListener = (ref, callback) => {
+    ref.on('value', snapshot => {
+      try {
+        callback(snapshot);
+      } catch (err) {
+        console.error('Erreur Firebase :', err);
+      }
+    });
+  };
 
-        if (data) {
-          AppState.allData = Object.values(data).map(participant => ({
-            dossard: participant.dossard || '',
-            nom: participant.nom || '',
-            prenom: participant.prenom || '',
-            club: participant.club || '',
-            genre: participant.genre || '',
-            categorie: participant.categorie || '',
-            course: participant.course || ''
-          }));
+  safeListener(db.depart, snap => {
+    departure = snap.exists() ? new Date(snap.val()).getTime() : null;
+    render();
+  });
 
-          AppState.filteredData = [...AppState.allData];
-          AppState.isLoading = false;
+  safeListener(db.participants, snap => {
+    participants = snap.val() || {};
+    render();
+  });
 
-          sortData('dossard', 'asc');
-        } else {
-          AppState.allData = [];
-          AppState.filteredData = [];
-          AppState.isLoading = false;
-          renderTable();
-        }
-      }, (error) => {
-        console.error("Erreur lors du chargement des données:", error);
-        AppState.isLoading = false;
-        elements.tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="no-results">
-              Erreur lors du chargement des données
-            </td>
-          </tr>
-        `;
-      });
-
-      // Nettoyage lors du déchargement de la page (Firebase v9+ modular API)
-      window.addEventListener('beforeunload', () => {
-        off(dbRef);
-      });
-    }
-
-    // Démarrage de l'application
-    initializeData();
-  </script>
+  safeListener(db.scans, snap => {
+    scans = snap.val() || {};
+    render();
+  });
+</script>
 </body>
 </html>
