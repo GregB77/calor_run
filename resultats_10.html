@@ -17,7 +17,7 @@
   --header-bg: #e0e0e0;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin:0; padding:0; }
 
 body {
   font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
@@ -52,7 +52,8 @@ body::before {
 .search-counter-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between; /* barre à gauche, compteur à droite */
+  align-items: center;
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -79,8 +80,8 @@ body::before {
 }
 
 .table-container {
-  /* width: 95%; */
-  max-width: 1000px;
+  width: 95%;
+  max-width: 950px;
   overflow-x: auto;
   margin: 0 auto 20px;
   background: var(--bg-white);
@@ -91,7 +92,7 @@ body::before {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px; /* scroll horizontal si trop petit */
+  min-width: 700px;
 }
 
 th, td {
@@ -121,6 +122,7 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 .hidden { display: none; }
 
 @media(max-width:768px){
+  .search-counter-container { justify-content: center; }
   table { font-size: 0.85rem; }
   th, td { padding: 6px 8px; }
 }
@@ -196,58 +198,54 @@ const el = {
 let participants = {}, scans = {}, departure = null, tableRows = new Map();
 
 const formatTime = ms => {
-  const s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  const s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
 };
 
 const render = () => {
   if (!departure) return;
 
-  const data = Object.entries(scans).map(([id, s]) => {
-    const p = participants[id]; if (!p) return null;
-    const courseStr = String(p.course || '').trim();
-    if (!['10','10km','10 km'].includes(courseStr)) return null;
-
+  const data = Object.entries(scans).map(([id, s])=>{
+    const p = participants[id]; 
+    if (!p || p.course !== 10) return null; // simplification
     const t = new Date(s.dateTime).getTime() - departure;
-    return { ...p, tempsMs: t, tempsStr: t < 0 ? "--:--:--" : formatTime(t) };
+    return {...p, tempsMs: t, tempsStr: formatTime(t)}; // suppression du test temps négatif
   }).filter(Boolean);
 
-  const total = Object.values(participants).filter(p =>
-    ['10','10km','10 km'].includes(String(p.course || '').trim())
-  ).length;
+  const total = Object.values(participants).filter(p => p.course === 10).length;
 
   el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-  data.sort((a,b) => a.tempsMs - b.tempsMs);
+  data.sort((a,b)=>a.tempsMs-b.tempsMs);
 
-  const genreCount = {}, catCount = {};
+  const genreCount={}, catCount={};
   tableRows.clear();
-  const frag = document.createDocumentFragment();
+  const frag=document.createDocumentFragment();
 
-  for (const p of data) {
-    genreCount[p.genre] = (genreCount[p.genre] || 0) + 1;
-    catCount[p.categorie] = (catCount[p.categorie] || 0) + 1;
-    p.scratch = data.indexOf(p)+1;
-    p.posGenre = genreCount[p.genre];
-    p.posCat = catCount[p.categorie];
+  data.forEach((p,i)=>{
+    genreCount[p.genre]=(genreCount[p.genre]||0)+1;
+    catCount[p.categorie]=(catCount[p.categorie]||0)+1;
+    p.scratch=i+1;
+    p.posGenre=genreCount[p.genre];
+    p.posCat=catCount[p.categorie];
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
       <td class="text-center">${p.dossard}</td>
       <td>${p.nom}</td>
       <td>${p.prenom}</td>
       <td class="text-center">${p.tempsStr}</td>
       <td class="text-center">${p.scratch}</td>
-      <td class="text-center">${p.genre || ''}</td>
+      <td class="text-center">${p.genre||''}</td>
       <td class="text-center">${p.posGenre}</td>
-      <td class="text-center">${p.categorie || ''}</td>
+      <td class="text-center">${p.categorie||''}</td>
       <td class="text-center">${p.posCat}</td>
     `;
     frag.appendChild(tr);
     tableRows.set(tr,tr);
-  }
+  });
 
-  el.tbody.innerHTML = '';
+  el.tbody.innerHTML='';
   el.tbody.appendChild(frag);
   el.table.classList.remove('hidden');
   el.last.classList.remove('hidden');
@@ -255,15 +253,15 @@ const render = () => {
 };
 
 // Recherche
-el.search.addEventListener('input', e => {
+el.search.addEventListener('input', e=>{
   const term = e.target.value.toLowerCase();
-  tableRows.forEach(tr => tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none');
+  tableRows.forEach(tr=>tr.style.display=tr.textContent.toLowerCase().includes(term)?'':'none');
 });
 
 // Firebase listeners
-db.depart.on('value', s => { departure = s.exists() ? new Date(s.val()).getTime() : null; render(); });
-db.participants.on('value', s => { participants = s.val()||{}; render(); });
-db.scans.on('value', s => { scans = s.val()||{}; render(); });
+db.depart.on('value', s=>{departure=s.exists()?new Date(s.val()).getTime():null; render();});
+db.participants.on('value', s=>{participants=s.val()||{}; render();});
+db.scans.on('value', s=>{scans=s.val()||{}; render();});
 </script>
 </body>
 </html>
