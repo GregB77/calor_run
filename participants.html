@@ -84,27 +84,43 @@
 
     #search {
       width: 100%;
-      padding: 12px 0;
-      background: transparent; 
-      border: none; /* Enlève la bordure */
-      border-bottom: 2px solid var(--border-light); /* Garde une bordure du bas pour la lisibilité */
-      border-radius: 0; /* Enlève les coins arrondis */
-      color: var(--text-dark);    
-      font-size: 1rem;
-      transition: border-color var(--transition-smooth);
-      /* Fin de l'ajout */
+      padding: 6px 6;
+      background: transparent !important;          /* fond transparent */
+      background-color: transparent !important;
+      border: 0 !important;                        /* supprime toutes les bordures */
+      border-bottom: 2px solid var(--border-light) !important; /* seule bordure du bas */
+      border-radius: 0 !important;                 /* pas d'arrondis */
+      box-shadow: none !important;                 /* annule ombres UA */
+      -webkit-appearance: none;                    /* annule apparence navigateur */
+      -moz-appearance: none;
+      appearance: none;
+      outline: none;                               /* pas de contour par défaut */
+      font-size: 1rem;
+      color: var(--text-dark);
+      transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
     }
 
     #search::placeholder {
-      color: #999;                      /* Placeholder plus discret */
+      color: rgba(0,0,0,0.45);                      /* Placeholder plus discret */
       opacity: 1;
     }
     
     #search:focus {
       outline: none;
+      box-shadow: none;
       border-bottom-color: var(--primary-blue);
     }
 
+    /* Cas où le navigateur applique un fond lors de l'autoremplissage */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+      box-shadow: 0 0 0 1000px transparent inset !important;
+      -webkit-text-fill-color: var(--text-dark) !important;
+    }
+    
     .counter-box {
       display: flex;
       align-items: center;
