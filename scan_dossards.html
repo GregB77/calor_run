@@ -16,75 +16,30 @@
       color: #fff;
       overflow: hidden;
     }
-
-    #reader {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 30vh;
-    }
-
-    #reader video {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-    }
-
+    #reader { position: absolute; top: 0; left: 0; right: 0; bottom: 30vh; }
+    #reader video { object-fit: cover; width: 100%; height: 100%; }
     #current-scan {
-      position: absolute;
-      bottom: 28vh;
-      left: 0;
-      right: 0;
-      font-size: 3em;
-      font-weight: bold;
-      text-align: center;
-      background: rgba(0,0,0,0.6);
-      padding: 10px;
+      position: absolute; bottom: 28vh; left: 0; right: 0;
+      font-size: 3em; font-weight: bold; text-align: center;
+      background: rgba(0,0,0,0.6); padding: 10px;
     }
-
     #counter {
-      position: absolute;
-      bottom: 10px;
-      left: 0;
-      right: 0;
-      font-size: 2em;
-      text-align: center;
-      background: rgba(255,255,255,0.2);
-      padding: 10px;
+      position: absolute; bottom: 10px; left: 0; right: 0;
+      font-size: 2em; text-align: center; background: rgba(255,255,255,0.2); padding: 10px;
     }
-
     #results {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      padding: 20px;
-      text-align: center;
-      overflow-y: auto;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9); display: none; padding: 20px;
+      text-align: center; overflow-y: auto;
     }
-
     #back-button {
-      background: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      background: #28a745; color: white; border: none;
+      padding: 10px 20px; font-size: 1.2em; border-radius: 8px; margin-bottom: 20px;
     }
-
     #history-list .scan-entry {
-      font-size: 2em;
-      margin: 10px auto;
-      background: #fff;
-      color: #000;
-      padding: 10px 20px;
-      border-radius: 6px;
-      display: inline-block;
+      font-size: 2em; margin: 10px auto;
+      background: #fff; color: #000; padding: 10px 20px;
+      border-radius: 6px; display: inline-block;
     }
   </style>
 </head>
@@ -116,56 +71,40 @@
     const scannedCodes = new Set();
     let lastScan = "";
     let lastScanTime = 0;
+    let maxDossard; // valeur récupérée depuis Firebase
     const beepSound = document.getElementById('beep-sound');
-
     const currentScanDiv = document.getElementById('current-scan');
     const counterDiv = document.getElementById('counter');
     const resultsDiv = document.getElementById('results');
     const backButton = document.getElementById('back-button');
     const historyList = document.getElementById('history-list');
 
-    counterDiv.onclick = () => {
-      resultsDiv.style.display = 'block';
-    };
-
-    backButton.onclick = () => {
-      resultsDiv.style.display = 'none';
-    };
-
-    function updateCounter() {
-      counterDiv.textContent = "SCANS : " + scannedCodes.size;
-    }
-
-    function showCurrentScan(code) {
-      currentScanDiv.textContent = code;
-      navigator.vibrate?.(100);
-      setTimeout(() => currentScanDiv.textContent = "---", 2000);
-    }
-
-    function addScanToHistory(code) {
-      const entry = document.createElement('div');
-      entry.className = 'scan-entry';
-      entry.textContent = code;
-      historyList.prepend(entry);
-    }
+    counterDiv.onclick = () => { resultsDiv.style.display = 'block'; };
+    backButton.onclick = () => { resultsDiv.style.display = 'none'; };
 
     function sendToFirebase(code) {
       const now = Date.now();
-      if (code === lastScan && (now - lastScanTime) < 3000) return;
-      if (scannedCodes.has(code)) return;
+      const codeInt = parseInt(code, 10);
+      if (!maxDossard || isNaN(codeInt) || codeInt < 1 || codeInt > maxDossard) return;
+      if (scannedCodes.has(code) || (code === lastScan && (now - lastScanTime) < 3000)) return;
 
       lastScan = code;
       lastScanTime = now;
 
       const ref = database.ref('scan_dossards/' + code);
-      ref.once("value", snapshot => {
-        if (!snapshot.exists()) {
+      ref.once("value", snap => {
+        if (!snap.exists()) {
           ref.set({ dateTime: now }).then(() => {
             scannedCodes.add(code);
-            showCurrentScan(code);
-            addScanToHistory(code);
-            updateCounter();
+            currentScanDiv.textContent = code;
+            historyList.prepend(Object.assign(document.createElement('div'), {
+              className: 'scan-entry',
+              textContent: code
+            }));
+            counterDiv.textContent = "SCANS : " + scannedCodes.size;
             beepSound.play();
+            navigator.vibrate?.(100);
+            setTimeout(() => currentScanDiv.textContent = "---", 2000);
           });
         }
       });
@@ -174,44 +113,39 @@
     function startApp() {
       database.ref('scan_dossards').once('value', snapshot => {
         snapshot.forEach(child => {
-          const code = child.key;
-          scannedCodes.add(code);
-          addScanToHistory(code);
+          scannedCodes.add(child.key);
+          historyList.prepend(Object.assign(document.createElement('div'), {
+            className: 'scan-entry',
+            textContent: child.key
+          }));
         });
-        updateCounter();
+        counterDiv.textContent = "SCANS : " + scannedCodes.size;
       });
 
       Html5Qrcode.getCameras().then(cameras => {
-        if (cameras.length) {
-          const rear = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
-          const qr = new Html5Qrcode("reader");
-          qr.start(
-            { deviceId: { exact: rear.id } },
-            {
-              fps: 30,
-              qrbox: { width: 300, height: 300 },
-              disableFlip: true,
-              aspectRatio: 1.0,
-              videoConstraints: {
-                width: { ideal: 1920 },
-                height: { ideal: 1080 },
-                deviceId: rear.id
-              }
-            },
-            sendToFirebase,
-            () => {}
-          );
-        }
+        if (!cameras.length) return;
+        const rear = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
+        const qr = new Html5Qrcode("reader");
+        qr.start(
+          { deviceId: { exact: rear.id } },
+          { fps: 30, qrbox: { width: 300, height: 300 }, disableFlip: true, aspectRatio: 1.0 },
+          sendToFirebase,
+          () => {}
+        );
       });
     }
 
-    auth.onAuthStateChanged(user => {
-      if (user) startApp();
+    // Récupère la valeur maximale autorisée depuis Firebase
+    database.ref('data/participants').once('value', snapshot => {
+      const val = snapshot.val();
+      if (val && !isNaN(parseInt(val, 10))) {
+        maxDossard = parseInt(val, 10);
+        console.log("Nombre maximum de dossards :", maxDossard);
+      }
     });
 
-    auth.signInAnonymously().catch(err => {
-      alert("Erreur d'authentification : " + err.message);
-    });
+    auth.onAuthStateChanged(user => { if (user) startApp(); });
+    auth.signInAnonymously().catch(err => alert("Erreur d'authentification : " + err.message));
   </script>
 </body>
 </html>
