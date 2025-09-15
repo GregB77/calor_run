@@ -18,9 +18,7 @@
   --border-light: #ddd;
   --header-bg: #e0e0e0;
 }
-
 * { box-sizing: border-box; margin:0; padding:0; }
-
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
@@ -29,7 +27,6 @@ body {
   padding: 20px;
   position: relative;
 }
-
 body::before {
   content:'';
   position: fixed;
@@ -38,9 +35,7 @@ body::before {
   opacity:0.3;
   z-index:-1;
 }
-
 .container { max-width: var(--max-width); margin:0 auto; }
-
 .header {
   text-align:center;
   margin-bottom:10px;
@@ -50,7 +45,6 @@ body::before {
   padding:20px 20px 60px;
   background:url('calor.png') center/contain no-repeat;
 }
-
 .search-counter-container {
   display:flex;
   flex-wrap:wrap;
@@ -59,7 +53,6 @@ body::before {
   gap:10px;
   margin-bottom:20px;
 }
-
 #search {
   flex: 1 1 200px;
   max-width: 300px;
@@ -73,11 +66,7 @@ body::before {
   transition:border-color 0.3s;
 }
 #search:focus { border-bottom-color: var(--primary-blue); }
-
 #counter { font-weight:bold; color:var(--primary-blue); white-space:nowrap; }
-
-select { padding:4px 6px; border-radius:4px; border:1px solid #888; }
-
 .table-container {
   max-width: var(--max-width);
   overflow-x:auto;
@@ -86,20 +75,17 @@ select { padding:4px 6px; border-radius:4px; border:1px solid #888; }
   border-radius: var(--radius);
   box-shadow: 0 4px 12px var(--shadow);
 }
-
 table {
   width:100%;
   border-collapse: collapse;
   min-width:700px;
 }
-
 th, td {
   padding:6px 8px;
   border-bottom:1px solid var(--border-light);
   text-align:left;
   white-space: nowrap;
 }
-
 th {
   background: var(--header-bg);
   font-weight:600;
@@ -107,21 +93,11 @@ th {
   top:0;
   z-index:10;
 }
-
 tbody tr:nth-child(even){ background: var(--bg-light); }
-
 .text-center { text-align:center; }
-
-.loading, .last-update {
-  text-align:center;
-  padding:20px 0;
-  font-size:1rem;
-}
-
+.loading, .last-update { text-align:center; padding:20px 0; font-size:1rem; }
 .last-update { font-size:0.9rem; margin-top:20px; }
-
 .hidden { display:none; }
-
 @media(max-width:768px){
   .header { margin-bottom:5px; }
   .search-counter-container { justify-content:center; flex-direction:column; gap:8px; }
@@ -135,33 +111,8 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
 <div class="container">
   <div class="header">RÉSULTATS 10 KM CALOR RUN</div>
   <div class="search-counter-container">
-    <input type="text" id="search" placeholder="Rechercher par nom, prénom..." autocomplete="off">
+    <input type="text" id="search" placeholder="Rechercher par nom, prénom ou filtre (ex: HM1)" autocomplete="off">
     <div id="counter">Arrivées : 0 / 0</div>
-    <!-- Filtres -->
-    <select id="filter-genre">
-      <option value="">Tous Genres</option>
-      <option value="H">H</option>
-      <option value="F">F</option>
-    </select>
-
-    <select id="filter-cat">
-      <option value="">Toutes Catégories</option>
-      <option value="CA">CA</option>
-      <option value="JU">JU</option>
-      <option value="ES">ES</option>
-      <option value="SE">SE</option>
-      <option value="M0">M0</option>
-      <option value="M1">M1</option>
-      <option value="M2">M2</option>
-      <option value="M3">M3</option>
-      <option value="M4">M4</option>
-      <option value="M5">M5</option>
-      <option value="M6">M6</option>
-      <option value="M7">M7</option>
-      <option value="M8">M8</option>
-      <option value="M9">M9</option>
-      <option value="M10">M10</option>
-    </select>
   </div>
 </div>
 
@@ -219,9 +170,7 @@ const el = {
   search: document.getElementById('search'),
   counter: document.getElementById('counter'),
   last: document.getElementById('last-update'),
-  time: document.getElementById('update-time'),
-  filterGenre: document.getElementById('filter-genre'),
-  filterCat: document.getElementById('filter-cat')
+  time: document.getElementById('update-time')
 };
 
 let participants = {}, scans = {}, departure = null;
@@ -233,12 +182,6 @@ const formatTime = ms => {
   const m = Math.floor((s%3600)/60);
   const sec = s%60;
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-};
-
-const applyFilters = (data) => {
-  const genre = el.filterGenre.value;
-  const cat = el.filterCat.value;
-  return data.filter(p => (!genre || p.genre===genre) && (!cat || p.categorie===cat));
 };
 
 const render = () => {
@@ -257,22 +200,22 @@ const render = () => {
   // Tri scratch
   data.sort((a,b)=>a.tempsMs-b.tempsMs);
 
-  // Classements
-  const classementGenre = {}, classementCat = {};
+  // Classements genre et catégorie par genre
+  const classementGenre = {};
+  const classementCat = {}; // clé = genre_categorie
   data.forEach((p,i)=>{
-    p.scratch=i+1;
+    p.scratch = i+1;
     classementGenre[p.genre] = (classementGenre[p.genre]||0)+1;
     p.posGenre = classementGenre[p.genre];
-    classementCat[p.categorie] = (classementCat[p.categorie]||0)+1;
-    p.posCat = classementCat[p.categorie];
+    const catKey = `${p.genre}_${p.categorie}`;
+    classementCat[catKey] = (classementCat[catKey]||0)+1;
+    p.posCat = classementCat[catKey];
   });
-
-  const filteredData = applyFilters(data);
 
   // Génération tableau
   tableRows.clear();
   const frag = document.createDocumentFragment();
-  filteredData.forEach(p=>{
+  data.forEach(p=>{
     const tr = document.createElement('tr');
     tr.innerHTML=`
       <td class="text-center">${p.dossard}</td>
@@ -288,7 +231,6 @@ const render = () => {
     frag.appendChild(tr);
     tableRows.set(tr,tr);
   });
-
   el.tbody.innerHTML='';
   el.tbody.appendChild(frag);
   el.table.classList.remove('hidden');
@@ -296,23 +238,36 @@ const render = () => {
   el.time.textContent=new Date().toLocaleTimeString('fr-FR');
 };
 
-// Recherche
+// Recherche intelligente (nom/prénom ou filtre genre+cat)
 el.search.addEventListener('input', e=>{
-  const term = e.target.value.toLowerCase();
-  tableRows.forEach(tr=>{ tr.style.display = tr.textContent.toLowerCase().includes(term)?'':'none'; });
-});
+  const term = e.target.value.toLowerCase().trim();
+  let genreFilter='', catFilter='', nameFilter=term;
 
-// Filtres
-el.filterGenre.addEventListener('change', render);
-el.filterCat.addEventListener('change', render);
+  if (/^(h|f)([a-z0-9]+)$/i.test(term)){
+    const match = term.match(/^(h|f)([a-z0-9]+)$/i);
+    genreFilter = match[1].toUpperCase();
+    catFilter = match[2].toUpperCase();
+    nameFilter = '';
+  }
+
+  tableRows.forEach(tr=>{
+    const text = tr.textContent.toLowerCase();
+    const pGenre = tr.children[5].textContent.toUpperCase();
+    const pCat = tr.children[7].textContent.toUpperCase();
+    let show = true;
+    if (genreFilter) show = pGenre===genreFilter;
+    if (show && catFilter) show = pCat===catFilter;
+    if (show && nameFilter) show = text.includes(nameFilter);
+    tr.style.display = show?'':'none';
+  });
+});
 
 // Firebase
 const safeListener = (ref, callback) => {
-  ref.on('value', snapshot => {
+  ref.on('value', snapshot=>{
     try{ callback(snapshot); } catch(err){ console.error('Erreur Firebase :', err); }
   });
 };
-
 safeListener(db.depart, snap => { departure = snap.exists()?new Date(snap.val()).getTime():null; render(); });
 safeListener(db.participants, snap => { participants = snap.val()||{}; render(); });
 safeListener(db.scans, snap => { scans = snap.val()||{}; render(); });
