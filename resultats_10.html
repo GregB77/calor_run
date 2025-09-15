@@ -114,7 +114,6 @@ th, td {
 th {
   background: var(--header-bg);
   font-weight: 600;
-  text-transform: uppercase;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -139,10 +138,13 @@ th.sortable {
   opacity: 0.5;
   transition: transform 0.3s, opacity 0.3s;
 }
+
+/* Modification ici pour que la flèche devienne bleue */
 th.sorted .sort-indicator {
   opacity: 1;
   border-bottom-color: var(--primary-blue);
 }
+
 th.sorted.desc .sort-indicator {
   transform: translateY(-50%) rotate(180deg);
 }
@@ -311,9 +313,9 @@ tbody tr:nth-child(even) {
 
     const frag = document.createDocumentFragment();
     if (filteredResults.length === 0) {
-      frag.innerHTML = `<tr><td colspan="9" class="loading">Aucun résultat trouvé</td></tr>`;
-      el.tbody.innerHTML = '';
-      el.tbody.appendChild(frag);
+      const row = document.createElement('tr');
+      row.innerHTML = `<td colspan="9" class="loading">Aucun résultat trouvé</td>`;
+      frag.appendChild(row);
     } else {
       filteredResults.forEach(p => {
         const tr = document.createElement('tr');
@@ -330,9 +332,10 @@ tbody tr:nth-child(even) {
         `;
         frag.appendChild(tr);
       });
-      el.tbody.innerHTML = '';
-      el.tbody.appendChild(frag);
     }
+    
+    el.tbody.innerHTML = '';
+    el.tbody.appendChild(frag);
   };
 
   const refreshData = () => {
