@@ -249,17 +249,32 @@ tbody tr:nth-child(even) {
     const total = Object.values(participants).filter(p => p.course === 10).length;
     el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
+    // Tri scratch global
     data.sort((a, b) => a.tempsMs - b.tempsMs);
 
-    const genreCount = {}, catCount = {};
-    tableRows.clear();
-    const frag = document.createDocumentFragment();
+    // Classements séparés
+    const classementGenre = {};
+    const classementCat = {};
 
     data.forEach((p, i) => {
       p.scratch = i + 1;
-      p.posGenre = ++genreCount[p.genre] || 1;
-      p.posCat = ++catCount[p.categorie] || 1;
 
+      // Genre
+      if (!classementGenre[p.genre]) classementGenre[p.genre] = 0;
+      classementGenre[p.genre]++;
+      p.posGenre = classementGenre[p.genre];
+
+      // Catégorie
+      if (!classementCat[p.categorie]) classementCat[p.categorie] = 0;
+      classementCat[p.categorie]++;
+      p.posCat = classementCat[p.categorie];
+    });
+
+    // Génération du tableau
+    tableRows.clear();
+    const frag = document.createDocumentFragment();
+
+    data.forEach(p => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td class="text-center">${p.dossard}</td>
