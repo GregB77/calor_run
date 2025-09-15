@@ -68,14 +68,14 @@
       margin-right: auto;
       background: url('calor.png') center/contain no-repeat;
     }
-    
+
     .search-counter {
       display: flex;
-      justify-content: space-between; /* recherche à gauche, compteur à droite */
+      justify-content: space-between;
       align-items: center;
       gap: 10px;
       margin-bottom: 20px;
-      flex-wrap: wrap; /* pour passer à la ligne sur petit écran */
+      flex-wrap: wrap;
     }
 
     #search {
@@ -90,19 +90,23 @@
       outline: none;
       transition: border-color 0.3s;
     }
-    
+
     #search:focus {
       border-bottom-color: var(--primary-blue);
     }
 
-    /*#counter {
-      font-weight: bold;
+    .counter-10km {
       color: var(--primary-blue);
-      white-space: nowrap;
-    }*/
+    }
+
+    .counter-20km {
+      color: var(--primary-pink);
+    }
     
-    .counter-10km { color: var(--primary-blue); }
-    .counter-20km { color: var(--primary-pink); }
+    #counter {
+      display: flex;
+      gap: 10px;
+    }
 
     .table-container {
       background: var(--bg-white);
@@ -110,7 +114,7 @@
       overflow: hidden;
       box-shadow: 0 4px 12px var(--shadow-medium);
     }
-
+    
     table {
       width: 100%;
       border-collapse: collapse;
@@ -129,12 +133,13 @@
       color: #333;
       top: 0;
       z-index: 10;
-      padding-right: 32px; /* Reserve space for the arrow */
+      padding-right: 32px;
     }
 
-    .text-center { text-align: center; } /* Colonnes centrées */
+    .text-center {
+      text-align: center;
+    }
 
-    /* Indicateur de tri */
     .sort-indicator {
       position: absolute;
       right: 12px;
@@ -148,7 +153,6 @@
       opacity: 0.5;
       transition: all var(--transition-smooth);
       pointer-events: none;
-      /* Ensures arrow doesn't overlap text visually */
     }
 
     th.sorted .sort-indicator {
@@ -160,7 +164,6 @@
       transform: translateY(-50%) rotate(180deg);
     }
 
-    /* Optional: wrap header text for spacing (see HTML below) */
     .header-label {
       display: inline-block;
       vertical-align: middle;
@@ -185,7 +188,6 @@
       font-style: italic;
     }
 
-    /* Responsive: reduce padding for th/td on mobile */
     @media (max-width: 768px) {
       body {
         padding: 10px;
@@ -201,11 +203,17 @@
       
       table {
         font-size: 0.85rem;
+        min-width: 600px;
       }
       
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
       .search-counter {
         flex-direction: column;
-        align-items: center; /* Aligne la recherche et les compteurs au centre */
+        align-items: center;
         gap: 15px;
       }
 
@@ -214,16 +222,18 @@
         max-width: none;
       }
       
+      /* New and improved counter styles for mobile */
       #counter {
-        width: 100%;
-        justify-content: space-between;
-        gap: 0;
-        flex-wrap: nowrap;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap; /* Ensures counters stay on one line */
+        gap: 10px; /* Provides consistent spacing */
       }
       
       #counter span {
-        flex: 1;
-        text-align: center;
+        flex-shrink: 0; /* Prevents text from shrinking */
+        white-space: nowrap; /* Prevents text from wrapping */
       }
     }
     
@@ -239,13 +249,6 @@
     #data-table tbody tr:nth-child(even) {
       background: #f9f9f9;
     }
-    
-    #data-table th,
-    #data-table td { border: 1px solid #ddd; }
-    /*#data-table tbody td {border: 1px solid #ddd; }*/
-    #data-table tbody tr:nth-child(odd)  { background: #fff; }
-    #data-table tbody tr:nth-child(even) { background: #f9f9f9; }
-  
   </style>
 </head>
 <body>
@@ -479,8 +482,8 @@
             // Pour la colonne course, on permet la recherche avec "km"
             if (key === 'course') {
               const courseWithKm = `${value} km`;
-              return utils.normalizeString(courseWithKm).includes(term) || 
-                     utils.normalizeString(value).includes(term);
+              return utils.normalizeString(courseWithKm).includes(term) ||
+                   utils.normalizeString(value).includes(term);
             }
             return utils.normalizeString(value).includes(term);
           });
