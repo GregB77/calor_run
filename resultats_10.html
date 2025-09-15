@@ -1,239 +1,242 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Résultats 10 KM - Calor Run</title>
-  <style>
-    :root {
-      --primary-blue: #215E99;
-      --primary-pink: #E61780;
-      --bg-white: #fff;
-      --bg-light: #f9f9f9;
-      --shadow-medium: rgba(0,0,0,0.15);
-      --border-radius: 8px;
-      --max-width: 1000px;
-      --text-dark: #333;
-      --border-light: #ddd;
-      --header-bg: #e0e0e0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résultats 10 KM - Calor Run</title>
+<style>
+:root {
+  --primary-blue: #215E99;
+  --bg-white: #fff;
+  --bg-light: #f9f9f9;
+  --shadow-medium: rgba(0,0,0,0.15);
+  --border-radius: 8px;
+  --max-width: 1000px;
+  --text-dark: #333;
+  --border-light: #ddd;
+  --header-bg: #e0e0e0;
+}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin:0; padding:0; }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.5;
-      color: var(--text-dark);
-      min-height: 100vh;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+}
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
-      opacity: 0.3;
-      z-index: -1;
-    }
+body::before {
+  content:'';
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background: linear-gradient(0.25turn, var(--primary-blue), #E61780);
+  opacity:0.3; z-index:-1;
+}
 
-    .container { max-width: var(--max-width); margin: 0 auto; }
+.container { max-width: var(--max-width); margin:0 auto; }
 
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-      color: var(--primary-blue);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 1.3rem;
-      font-weight: bold;
-      padding: 20px 20px 60px 20px;
-      border-radius: 10px;
-      background: url('calor.png') center/contain no-repeat;
-    }
+.header {
+  text-align:center;
+  margin-bottom:20px;
+  color: var(--primary-blue);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size:1.8rem;
+  font-weight:bold;
+  padding:40px 20px;
+  border-radius:10px;
+  background: url('calor.png') center/contain no-repeat;
+}
 
-    .table-container {
-      width: 96vw;
-      max-width: 1400px;
-      margin: 0 auto 20px;
-      background: var(--bg-white);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow-medium);
-    }
+.table-container {
+  width: 96vw;
+  max-width:1400px;
+  margin:0 auto 20px;
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
+  overflow:hidden;
+  box-shadow:0 4px 12px var(--shadow-medium);
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+table { width:100%; border-collapse:collapse; }
 
-    th, td {
-      padding: 8px 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-light);
-      word-break: break-word;
-    }
+th, td {
+  padding:8px 10px;
+  text-align:left;
+  border-bottom:1px solid var(--border-light);
+  word-break:break-word;
+}
 
-    th {
-      background: var(--header-bg);
-      font-weight: 600;
-      text-transform: uppercase;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+th {
+  background: var(--header-bg);
+  font-weight:600;
+  text-transform:uppercase;
+  position: sticky;
+  top:0;
+  z-index:10;
+}
 
-    tbody tr:nth-child(even) { background: var(--bg-light); }
+tbody tr:nth-child(even) { background: var(--bg-light); }
 
-    .text-center { text-align: center; }
+.text-center { text-align:center; }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1rem;
-      color: var(--primary-blue);
-    }
+.loading {
+  text-align:center;
+  padding:40px;
+  font-size:1.1rem;
+  color: var(--primary-blue);
+}
 
-    .last-update {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 0.9rem;
-      color: var(--text-dark);
-    }
+.last-update {
+  text-align:center;
+  margin-top:20px;
+  font-size:0.9rem;
+  color: var(--text-dark);
+}
 
-    @media (max-width: 768px) {
-      .table-container { width: 98vw; overflow-x: auto; }
-      table { font-size: 0.85rem; }
-      th, td { padding: 10px 8px; white-space: nowrap; }
-    }
-  </style>
+@media(max-width:768px){
+  .table-container{ width:98vw; overflow-x:auto; }
+  table{ font-size:0.85rem; }
+  th, td{ padding:10px 8px; white-space:nowrap; }
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">RÉSULTATS 10 KM</div>
-    <div id="loading" class="loading">Connexion en temps réel...</div>
-  </div>
+<div class="container">
+  <div class="header">RÉSULTATS 10 KM</div>
+  <div id="loading" class="loading">Connexion en temps réel...</div>
+</div>
 
-  <div class="table-container hidden" id="table-container">
-    <table id="classement">
-      <thead>
-        <tr>
-          <th class="text-center">Dossard</th>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th class="text-center">Temps</th>
-          <th class="text-center">Genre</th>
-          <th class="text-center">CAT</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+<div class="table-container hidden" id="table-container">
+  <table id="classement">
+    <thead>
+      <tr>
+        <th class="text-center">Dossard</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th class="text-center">Temps</th>
+        <th class="text-center">Scratch</th>
+        <th class="text-center">Genre</th>
+        <th class="text-center">Pos. Genre</th>
+        <th class="text-center">CAT</th>
+        <th class="text-center">Pos. CAT</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
-  <div class="container">
-    <p class="last-update hidden" id="last-update">
-      Dernière mise à jour : <span id="update-time">--:--:--</span>
-    </p>
-  </div>
+<div class="container">
+  <p class="last-update hidden" id="last-update">
+    Dernière mise à jour : <span id="update-time">--:--:--</span>
+  </p>
+</div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script>
-    const FIREBASE_CONFIG = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.firebasedstorage.app",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47",
-      measurementId: "G-YVQPW6JGPK"
-    };
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+  authDomain: "calor-run.firebaseapp.com",
+  databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "calor-run",
+  storageBucket: "calor-run.firebasedstorage.app",
+  messagingSenderId: "329949291334",
+  appId: "1:329949291334:web:c71ef20268c609cf953b47",
+  measurementId: "G-YVQPW6JGPK"
+};
 
-    const elements = {
-      loading: document.getElementById('loading'),
-      tbody: document.querySelector('#classement tbody'),
-      tableContainer: document.getElementById('table-container'),
-      lastUpdate: document.getElementById('last-update'),
-      updateTime: document.getElementById('update-time')
-    };
+const COURSE_10KM = ['10','10km','10 km'];
+const elements = {
+  loading: document.getElementById('loading'),
+  tbody: document.querySelector('#classement tbody'),
+  tableContainer: document.getElementById('table-container'),
+  lastUpdate: document.getElementById('last-update'),
+  updateTime: document.getElementById('update-time')
+};
 
-    const app = firebase.initializeApp(FIREBASE_CONFIG);
-    const db = firebase.database();
+const app = firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebase.database();
 
-    const COURSE_10KM = ['10', '10km', '10 km'];
+function formatTime(ms){
+  const totalSeconds = Math.floor(ms/1000);
+  const h=Math.floor(totalSeconds/3600);
+  const m=Math.floor((totalSeconds%3600)/60);
+  const s=totalSeconds%60;
+  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
 
-    function formatTime(ms) {
-      const totalSeconds = Math.floor(ms / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-      return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-    }
+function updateTable(participants, scans, departureTimestamp){
+  if(!departureTimestamp || !participants || !scans) return;
 
-    function createRow(p) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="text-center">${p.dossard}</td>
-        <td>${p.nom}</td>
-        <td>${p.prenom}</td>
-        <td class="text-center">${p.tempsStr}</td>
-        <td class="text-center">${p.genre || ''}</td>
-        <td class="text-center">${p.categorie || ''}</td>
-      `;
-      return tr;
-    }
+  let classement = Object.keys(scans).map(dossard=>{
+    const scan = scans[dossard];
+    const p = participants[dossard]||{};
+    if(!COURSE_10KM.includes((p.course||'').trim())) return null;
+    const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
+    return {...p, tempsMs, tempsStr: tempsMs<0?"--:--:--":formatTime(tempsMs)};
+  }).filter(Boolean);
 
-    function updateTable(participants, scans, departureTimestamp) {
-      if (!departureTimestamp || !participants || !scans) return;
+  // Tri par temps croissant
+  classement.sort((a,b)=>{
+    if(a.tempsStr==="--:--:--") return 1;
+    if(b.tempsStr==="--:--:--") return -1;
+    return a.tempsMs - b.tempsMs;
+  });
 
-      let classement = Object.keys(scans).map(dossard => {
-        const scan = scans[dossard];
-        const p = participants[dossard] || {};
-        const course = String(p.course || '').trim();
-        if (!COURSE_10KM.includes(course)) return null;
+  // Calcul Scratch, PosGenre et PosCat en une seule passe
+  const genreCounter={}, catCounter={};
+  classement.forEach((p,i)=>{
+    p.scratch=i+1;
+    genreCounter[p.genre] = (genreCounter[p.genre]||0)+1;
+    p.posGenre = genreCounter[p.genre];
+    catCounter[p.categorie] = (catCounter[p.categorie]||0)+1;
+    p.posCat = catCounter[p.categorie];
+  });
 
-        const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
-        return { ...p, tempsStr: tempsMs < 0 ? "--:--:--" : formatTime(tempsMs) };
-      }).filter(Boolean)
-        .sort((a,b) => {
-          if(a.tempsStr === "--:--:--") return 1;
-          if(b.tempsStr === "--:--:--") return -1;
-          return a.tempsStr.localeCompare(b.tempsStr);
-        });
+  // Remplissage du tableau
+  const fragment=document.createDocumentFragment();
+  classement.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="text-center">${p.dossard}</td>
+      <td>${p.nom}</td>
+      <td>${p.prenom}</td>
+      <td class="text-center">${p.tempsStr}</td>
+      <td class="text-center">${p.scratch}</td>
+      <td class="text-center">${p.genre||''}</td>
+      <td class="text-center">${p.posGenre}</td>
+      <td class="text-center">${p.categorie||''}</td>
+      <td class="text-center">${p.posCat}</td>
+    `;
+    fragment.appendChild(tr);
+  });
 
-      const fragment = document.createDocumentFragment();
-      classement.forEach(p => fragment.appendChild(createRow(p)));
+  elements.tbody.innerHTML='';
+  elements.tbody.appendChild(fragment);
+  elements.loading.classList.add('hidden');
+  elements.tableContainer.classList.remove('hidden');
+  elements.lastUpdate.classList.remove('hidden');
+  elements.updateTime.textContent=new Date().toLocaleTimeString('fr-FR');
+}
 
-      elements.tbody.innerHTML = '';
-      elements.tbody.appendChild(fragment);
-      elements.loading.classList.add('hidden');
-      elements.tableContainer.classList.remove('hidden');
-      elements.lastUpdate.classList.remove('hidden');
-      elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
-    }
+let departureTimestamp=null, participants={}, scans={};
 
-    let departureTimestamp = null;
-    let participants = {};
-    let scans = {};
+db.ref('data/depart_course').on('value', snapshot=>{
+  departureTimestamp = snapshot.exists()? new Date(snapshot.val()).getTime():null;
+  updateTable(participants, scans, departureTimestamp);
+});
 
-    db.ref('data/depart_course').on('value', snapshot => {
-      departureTimestamp = snapshot.exists() ? new Date(snapshot.val()).getTime() : null;
-      updateTable(participants, scans, departureTimestamp);
-    });
+db.ref('participants').on('value', snapshot=>{
+  participants = snapshot.val()||{};
+  updateTable(participants, scans, departureTimestamp);
+});
 
-    db.ref('participants').on('value', snapshot => {
-      participants = snapshot.val() || {};
-      updateTable(participants, scans, departureTimestamp);
-    });
-
-    db.ref('scan_dossards').on('value', snapshot => {
-      scans = snapshot.val() || {};
-      updateTable(participants, scans, departureTimestamp);
-    });
-  </script>
+db.ref('scan_dossards').on('value', snapshot=>{
+  scans = snapshot.val()||{};
+  updateTable(participants, scans, departureTimestamp);
+});
+</script>
 </body>
 </html>
