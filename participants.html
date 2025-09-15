@@ -84,13 +84,14 @@
 
     #search {
       width: 100%;
-      padding: 12px 16px;
+      /* Ajout pour la transparence et les bordures */
       background: transparent; 
-      border: none;
-      border-bottom: 2px solid var(--border-light);
-      border-radius: 0;
+      border: none; /* Enlève la bordure */
+      border-bottom: 2px solid var(--border-light); /* Garde une bordure du bas pour la lisibilité */
+      border-radius: 0; /* Enlève les coins arrondis */
       font-size: 1rem;
       transition: border-color var(--transition-smooth);
+      /* Fin de l'ajout */
     }
 
     #search:focus {
@@ -104,8 +105,8 @@
       gap: 8px;
       padding: 10px 16px;
       background: transparent;
-      border-radius: 0;
-      box-shadow: none;
+      /*border-radius: var(--border-radius);*/
+      /*box-shadow: 0 2px 8px var(--shadow-light);*/
       white-space: nowrap;
       min-width: fit-content;
     }
@@ -114,10 +115,10 @@
     .counter-20km { color: var(--primary-pink); }
 
     .table-container {
-      background: transparent;
-      border-radius: 0;
+      background: var(--bg-white);
+      border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: none;
+      box-shadow: 0 4px 12px var(--shadow-medium);
     }
 
     table {
