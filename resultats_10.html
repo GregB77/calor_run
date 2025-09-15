@@ -7,6 +7,7 @@
 <style>
 :root {
   --primary-blue: #215E99;
+  --accent-pink: #E61780;
   --bg-white: #fff;
   --bg-light: #f9f9f9;
   --shadow: rgba(0,0,0,0.15);
@@ -17,26 +18,34 @@
   --header-bg: #e0e0e0;
 }
 
-* { box-sizing: border-box; margin:0; padding:0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
   color: var(--text-dark);
   min-height: 100vh;
   padding: 20px;
+  position: relative;
 }
 
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: linear-gradient(0.25turn, var(--primary-blue), #E61780);
+  background: linear-gradient(0.25turn, var(--primary-blue), var(--accent-pink));
   opacity: 0.3;
   z-index: -1;
 }
 
-.container { max-width: var(--max-width); margin: 0 auto; }
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
 
 .header {
   text-align: center;
@@ -45,7 +54,7 @@ body::before {
   font-size: 1.3rem;
   font-weight: bold;
   padding: 20px 20px 60px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   background: url('calor.png') center/contain no-repeat;
 }
 
@@ -70,13 +79,14 @@ body::before {
   outline: none;
   transition: border-color 0.3s;
 }
-#search:focus { border-bottom-color: var(--primary-blue); }
+#search:focus {
+  border-bottom-color: var(--primary-blue);
+}
 
 #counter {
   font-weight: bold;
   color: var(--primary-blue);
   white-space: nowrap;
-  align-self: center;
 }
 
 .table-container {
@@ -110,21 +120,39 @@ th {
   z-index: 10;
 }
 
-tbody tr:nth-child(even) { background: var(--bg-light); }
+tbody tr:nth-child(even) {
+  background: var(--bg-light);
+}
 
-.text-center { text-align: center; }
+.text-center {
+  text-align: center;
+}
+
 .loading, .last-update {
   text-align: center;
   padding: 20px 0;
   font-size: 1rem;
 }
-.last-update { color: var(--text-dark); font-size: 0.9rem; margin-top: 20px; }
-.hidden { display: none; }
 
-@media(max-width:768px){
-  .search-counter-container { justify-content: center; }
-  table { font-size: 0.85rem; }
-  th, td { padding: 6px 8px; }
+.last-update {
+  font-size: 0.9rem;
+  margin-top: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media(max-width: 768px) {
+  .search-counter-container {
+    justify-content: center;
+  }
+  table {
+    font-size: 0.85rem;
+  }
+  th, td {
+    padding: 6px 8px;
+  }
 }
 </style>
 </head>
@@ -168,102 +196,130 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script>
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-  authDomain: "calor-run.firebaseapp.com",
-  databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "calor-run",
-  storageBucket: "calor-run.firebasestorage.app",
-  messagingSenderId: "329949291334",
-  appId: "1:329949291334:web:c71ef20268c609cf953b47",
-  measurementId: "G-YVQPW6JGPK"
-};
-firebase.initializeApp(FIREBASE_CONFIG);
+  // 🔐 Configuration Firebase
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+    authDomain: "calor-run.firebaseapp.com",
+    databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "calor-run",
+    storageBucket: "calor-run.appspot.com",
+    messagingSenderId: "329949291334",
+    appId: "1:329949291334:web:c71ef20268c609cf953b47",
+    measurementId: "G-YVQPW6JGPK"
+  };
+  firebase.initializeApp(FIREBASE_CONFIG);
 
-const db = {
-  depart: firebase.database().ref('data/depart_course'),
-  participants: firebase.database().ref('participants'),
-  scans: firebase.database().ref('scan_dossards')
-};
+  // 🔗 Références Firebase
+  const db = {
+    depart: firebase.database().ref('data/depart_course'),
+    participants: firebase.database().ref('participants'),
+    scans: firebase.database().ref('scan_dossards')
+  };
 
-const el = {
-  tbody: document.getElementById('tbody'),
-  table: document.getElementById('table-container'),
-  search: document.getElementById('search'),
-  counter: document.getElementById('counter'),
-  last: document.getElementById('last-update'),
-  time: document.getElementById('update-time')
-};
+  // 🎯 Sélecteurs DOM
+  const el = {
+    tbody: document.getElementById('tbody'),
+    table: document.getElementById('table-container'),
+    search: document.getElementById('search'),
+    counter: document.getElementById('counter'),
+    last: document.getElementById('last-update'),
+    time: document.getElementById('update-time')
+  };
 
-let participants = {}, scans = {}, departure = null, tableRows = new Map();
+  // 📦 Données
+  let participants = {}, scans = {}, departure = null;
+  const tableRows = new Map();
 
-const formatTime = ms => {
-  const s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
-  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-};
+  // ⏱️ Formatage du temps
+  const formatTime = ms => {
+    const s = Math.floor(ms / 1000);
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  };
 
-const render = () => {
-  if (!departure) return;
+  // 🧮 Fonction principale d'affichage
+  const render = () => {
+    if (!departure) return;
 
-  // Filtrage participants 10KM
-  const data = Object.entries(scans).map(([id, s]) => {
-    const p = participants[id];
-    if (!p || p.course !== 10) return null;
-    const t = new Date(s.dateTime).getTime() - departure;
-    return {...p, tempsMs: t, tempsStr: formatTime(t)};
-  }).filter(Boolean);
+    const data = Object.entries(scans).map(([id, scan]) => {
+      const p = participants[id];
+      if (!p || p.course !== 10) return null;
+      const t = new Date(scan.dateTime).getTime() - departure;
+      return { ...p, tempsMs: t, tempsStr: formatTime(t) };
+    }).filter(Boolean);
 
-  // Total participants
-  const total = Object.values(participants).filter(p => p.course === 10).length;
-  el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
+    const total = Object.values(participants).filter(p => p.course === 10).length;
+    el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-  // Tri par temps
-  data.sort((a,b) => a.tempsMs - b.tempsMs);
+    data.sort((a, b) => a.tempsMs - b.tempsMs);
 
-  // Calcul positions Scratch / Genre / Cat
-  const genreLast = {}, catLast = {};
-  tableRows.clear();
-  const frag = document.createDocumentFragment();
+    const genreCount = {}, catCount = {};
+    tableRows.clear();
+    const frag = document.createDocumentFragment();
 
-  data.forEach((p, i) => {
-    p.scratch = i + 1;
-    genreLast[p.genre] = (genreLast[p.genre] || 0) + 1;
-    p.posGenre = genreLast[p.genre];
-    catLast[p.categorie] = (catLast[p.categorie] || 0) + 1;
-    p.posCat = catLast[p.categorie];
+    data.forEach((p, i) => {
+      p.scratch = i + 1;
+      p.posGenre = ++genreCount[p.genre] || 1;
+      p.posCat = ++catCount[p.categorie] || 1;
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="text-center">${p.dossard}</td>
-      <td>${p.nom}</td>
-      <td>${p.prenom}</td>
-      <td class="text-center">${p.tempsStr}</td>
-      <td class="text-center">${p.scratch}</td>
-      <td class="text-center">${p.genre||''}</td>
-      <td class="text-center">${p.posGenre}</td>
-      <td class="text-center">${p.categorie||''}</td>
-      <td class="text-center">${p.posCat}</td>`;
-    frag.appendChild(tr);
-    tableRows.set(tr,tr);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="text-center">${p.dossard}</td>
+        <td>${p.nom}</td>
+        <td>${p.prenom}</td>
+        <td class="text-center">${p.tempsStr}</td>
+        <td class="text-center">${p.scratch}</td>
+        <td class="text-center">${p.genre || ''}</td>
+        <td class="text-center">${p.posGenre}</td>
+        <td class="text-center">${p.categorie || ''}</td>
+        <td class="text-center">${p.posCat}</td>
+      `;
+      frag.appendChild(tr);
+      tableRows.set(tr, tr);
+    });
+
+    el.tbody.innerHTML = '';
+    el.tbody.appendChild(frag);
+    el.table.classList.remove('hidden');
+    el.last.classList.remove('hidden');
+    el.time.textContent = new Date().toLocaleTimeString('fr-FR');
+  };
+
+  // 🔍 Recherche dynamique
+  el.search.addEventListener('input', e => {
+    const term = e.target.value.toLowerCase();
+    tableRows.forEach(tr => {
+      tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
   });
 
-  el.tbody.innerHTML = '';
-  el.tbody.appendChild(frag);
-  el.table.classList.remove('hidden');
-  el.last.classList.remove('hidden');
-  el.time.textContent = new Date().toLocaleTimeString('fr-FR');
-};
+  // 🔁 Écoute Firebase avec gestion d'erreur
+  const safeListener = (ref, callback) => {
+    ref.on('value', snapshot => {
+      try {
+        callback(snapshot);
+      } catch (err) {
+        console.error('Erreur Firebase :', err);
+      }
+    });
+  };
 
-// Recherche
-el.search.addEventListener('input', e => {
-  const term = e.target.value.toLowerCase();
-  tableRows.forEach(tr => tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none');
-});
+  safeListener(db.depart, snap => {
+    departure = snap.exists() ? new Date(snap.val()).getTime() : null;
+    render();
+  });
 
-// Firebase listeners
-db.depart.on('value', s => { departure = s.exists() ? new Date(s.val()).getTime() : null; render(); });
-db.participants.on('value', s => { participants = s.val() || {}; render(); });
-db.scans.on('value', s => { scans = s.val() || {}; render(); });
+  safeListener(db.participants, snap => {
+    participants = snap.val() || {};
+    render();
+  });
+
+  safeListener(db.scans, snap => {
+    scans = snap.val() || {};
+    render();
+  });
 </script>
 </body>
 </html>
