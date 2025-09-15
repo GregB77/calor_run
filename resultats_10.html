@@ -17,7 +17,7 @@
   --header-bg: #e0e0e0;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -51,18 +51,12 @@ body::before {
   background: url('calor.png') center/contain no-repeat;
 }
 
-/* Barre recherche + compteur */
 .search-counter-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
-  position: sticky;
-  top: 0;
-  background: var(--bg-white);
-  z-index: 20;
-  padding: 10px 0;
 }
 
 #search {
@@ -87,7 +81,6 @@ body::before {
   align-self: center;
 }
 
-/* Tableau */
 .table-container {
   width: 100%;
   overflow-x: auto;
@@ -117,13 +110,6 @@ th {
   z-index: 10;
 }
 
-th.dossard, td.dossard {
-  position: sticky;
-  left: 0;
-  background: var(--bg-white);
-  z-index: 15;
-}
-
 tbody tr:nth-child(even) { background: var(--bg-light); }
 
 .text-center { text-align: center; }
@@ -131,7 +117,7 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 .last-update { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-dark); }
 .hidden { display: none; }
 
-@media(max-width:768px){
+@media(max-width: 768px){
   table { font-size: 0.85rem; }
   th, td { padding: 6px 8px; }
 }
@@ -151,7 +137,7 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
   <table>
     <thead>
       <tr>
-        <th class="text-center dossard">Dossard</th>
+        <th class="text-center">Dossard</th>
         <th>Nom</th>
         <th>Prénom</th>
         <th class="text-center">Temps</th>
@@ -242,7 +228,7 @@ function renderTable() {
   tableRows = data.map(p => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="text-center dossard">${p.dossard}</td>
+      <td class="text-center">${p.dossard}</td>
       <td>${p.nom}</td>
       <td>${p.prenom}</td>
       <td class="text-center">${p.tempsStr}</td>
