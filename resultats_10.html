@@ -19,11 +19,7 @@
   --header-bg: #e0e0e0;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin:0; padding:0; }
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -35,142 +31,102 @@ body {
 }
 
 body::before {
-  content: '';
+  content:'';
   position: fixed;
-  inset: 0;
+  inset:0;
   background: linear-gradient(0.25turn, var(--primary-blue), var(--accent-pink));
-  opacity: 0.3;
-  z-index: -1;
+  opacity:0.3;
+  z-index:-1;
 }
 
-.container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
+.container { max-width: var(--max-width); margin:0 auto; }
 
 .header {
-  text-align: center;
-  margin-bottom: 10px;
+  text-align:center;
+  margin-bottom:10px;
   color: var(--primary-blue);
-  font-size: 1.3rem;
-  font-weight: bold;
-  padding: 20px 20px 60px;
-  background: url('calor.png') center/contain no-repeat;
+  font-size:1.3rem;
+  font-weight:bold;
+  padding:20px 20px 60px;
+  background:url('calor.png') center/contain no-repeat;
 }
 
 .search-counter-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:20px;
 }
 
 #search {
   flex: 1 1 200px;
   max-width: 300px;
-  padding: 6px 12px;
-  border: none;
-  border-bottom: 1px solid #888;
-  background: transparent;
+  padding:6px 12px;
+  border:none;
+  border-bottom:1px solid #888;
+  background:transparent;
   color: var(--text-dark);
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.3s;
+  font-size:1rem;
+  outline:none;
+  transition:border-color 0.3s;
 }
-#search:focus {
-  border-bottom-color: var(--primary-blue);
-}
+#search:focus { border-bottom-color: var(--primary-blue); }
 
-#counter {
-  font-weight: bold;
-  color: var(--primary-blue);
-  white-space: nowrap;
-}
+#counter { font-weight:bold; color:var(--primary-blue); white-space:nowrap; }
+
+select { padding:4px 6px; border-radius:4px; border:1px solid #888; }
 
 .table-container {
   max-width: var(--max-width);
-  overflow-x: auto;
-  margin: 0 auto 20px;
+  overflow-x:auto;
+  margin:0 auto 20px;
   background: var(--bg-white);
   border-radius: var(--radius);
   box-shadow: 0 4px 12px var(--shadow);
 }
 
 table {
-  width: 100%;
+  width:100%;
   border-collapse: collapse;
-  min-width: 700px;
+  min-width:700px;
 }
 
 th, td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--border-light);
-  text-align: left;
+  padding:6px 8px;
+  border-bottom:1px solid var(--border-light);
+  text-align:left;
   white-space: nowrap;
 }
 
 th {
   background: var(--header-bg);
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  font-weight:600;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 
-tbody tr:nth-child(even) {
-  background: var(--bg-light);
-}
+tbody tr:nth-child(even){ background: var(--bg-light); }
 
-.text-center {
-  text-align: center;
-}
+.text-center { text-align:center; }
 
 .loading, .last-update {
-  text-align: center;
-  padding: 20px 0;
-  font-size: 1rem;
+  text-align:center;
+  padding:20px 0;
+  font-size:1rem;
 }
 
-.last-update {
-  font-size: 0.9rem;
-  margin-top: 20px;
-}
+.last-update { font-size:0.9rem; margin-top:20px; }
 
-.hidden {
-  display: none;
-}
+.hidden { display:none; }
 
-button {
-  cursor: pointer;
-  background: var(--primary-blue);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  margin-left: 4px;
-}
-
-button.active {
-  background: var(--accent-pink);
-}
-
-@media(max-width: 768px) {
-  .header {
-    margin-bottom: 5px;
-  }
-  .search-counter-container {
-    justify-content: center;
-    flex-direction: column;
-    gap: 8px;
-  }
-  table {
-    font-size: 0.85rem;
-  }
-  th, td {
-    padding: 6px 8px;
-  }
+@media(max-width:768px){
+  .header { margin-bottom:5px; }
+  .search-counter-container { justify-content:center; flex-direction:column; gap:8px; }
+  table { font-size:0.85rem; }
+  th, td { padding:6px 8px; }
 }
 </style>
 </head>
@@ -181,11 +137,31 @@ button.active {
   <div class="search-counter-container">
     <input type="text" id="search" placeholder="Rechercher par nom, prénom..." autocomplete="off">
     <div id="counter">Arrivées : 0 / 0</div>
-    <div>
-      <button id="sort-scratch" class="active">Scratch</button>
-      <button id="sort-genre">Genre</button>
-      <button id="sort-cat">Catégorie</button>
-    </div>
+    <!-- Filtres -->
+    <select id="filter-genre">
+      <option value="">Tous Genres</option>
+      <option value="H">H</option>
+      <option value="F">F</option>
+    </select>
+
+    <select id="filter-cat">
+      <option value="">Toutes Catégories</option>
+      <option value="CA">CA</option>
+      <option value="JU">JU</option>
+      <option value="ES">ES</option>
+      <option value="SE">SE</option>
+      <option value="M0">M0</option>
+      <option value="M1">M1</option>
+      <option value="M2">M2</option>
+      <option value="M3">M3</option>
+      <option value="M4">M4</option>
+      <option value="M5">M5</option>
+      <option value="M6">M6</option>
+      <option value="M7">M7</option>
+      <option value="M8">M8</option>
+      <option value="M9">M9</option>
+      <option value="M10">M10</option>
+    </select>
   </div>
 </div>
 
@@ -244,65 +220,59 @@ const el = {
   counter: document.getElementById('counter'),
   last: document.getElementById('last-update'),
   time: document.getElementById('update-time'),
-  btnScratch: document.getElementById('sort-scratch'),
-  btnGenre: document.getElementById('sort-genre'),
-  btnCat: document.getElementById('sort-cat')
+  filterGenre: document.getElementById('filter-genre'),
+  filterCat: document.getElementById('filter-cat')
 };
 
 let participants = {}, scans = {}, departure = null;
 const tableRows = new Map();
-let currentSort = 'scratch'; // scratch par défaut
 
 const formatTime = ms => {
-  const s = Math.floor(ms / 1000);
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
+  const s = Math.floor(ms/1000);
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
 };
 
-// Tri visuel selon le bouton
-const sortData = (data) => {
-  if(currentSort==='scratch'){
-    data.sort((a,b)=>a.tempsMs-b.tempsMs);
-  } else if(currentSort==='genre'){
-    data.sort((a,b)=>(a.genre||'').localeCompare(b.genre||'') || a.tempsMs-b.tempsMs);
-  } else if(currentSort==='cat'){
-    data.sort((a,b)=>(a.categorie||'').localeCompare(b.categorie||'') || a.tempsMs-b.tempsMs);
-  }
+const applyFilters = (data) => {
+  const genre = el.filterGenre.value;
+  const cat = el.filterCat.value;
+  return data.filter(p => (!genre || p.genre===genre) && (!cat || p.categorie===cat));
 };
 
 const render = () => {
-  if(!departure) return;
+  if (!departure) return;
 
-  const data = Object.entries(scans).map(([id, scan]) => {
+  let data = Object.entries(scans).map(([id, scan]) => {
     const p = participants[id];
     if(!p || p.course!==10) return null;
-    const t = new Date(scan.dateTime).getTime() - departure;
+    const t = new Date(scan.dateTime).getTime()-departure;
     return {...p, tempsMs:t, tempsStr:formatTime(t)};
   }).filter(Boolean);
 
   const total = Object.values(participants).filter(p=>p.course===10).length;
   el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-  // Classement scratch pour calcul des positions
-  const scratchData = [...data].sort((a,b)=>a.tempsMs-b.tempsMs);
-  const genreCount = {}, catCount = {};
-  scratchData.forEach((p,i)=>{
+  // Tri scratch
+  data.sort((a,b)=>a.tempsMs-b.tempsMs);
+
+  // Classements
+  const classementGenre = {}, classementCat = {};
+  data.forEach((p,i)=>{
     p.scratch=i+1;
-    genreCount[p.genre] = (genreCount[p.genre]||0)+1;
-    p.posGenre = genreCount[p.genre];
-    catCount[p.categorie] = (catCount[p.categorie]||0)+1;
-    p.posCat = catCount[p.categorie];
+    classementGenre[p.genre] = (classementGenre[p.genre]||0)+1;
+    p.posGenre = classementGenre[p.genre];
+    classementCat[p.categorie] = (classementCat[p.categorie]||0)+1;
+    p.posCat = classementCat[p.categorie];
   });
 
-  // Tri visuel selon le bouton
-  sortData(data);
+  const filteredData = applyFilters(data);
 
-  // Construction du tableau
+  // Génération tableau
   tableRows.clear();
   const frag = document.createDocumentFragment();
-  data.forEach(p=>{
+  filteredData.forEach(p=>{
     const tr = document.createElement('tr');
     tr.innerHTML=`
       <td class="text-center">${p.dossard}</td>
@@ -327,54 +297,25 @@ const render = () => {
 };
 
 // Recherche
-el.search.addEventListener('input',e=>{
+el.search.addEventListener('input', e=>{
   const term = e.target.value.toLowerCase();
-  tableRows.forEach(tr=>{
-    tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
-  });
+  tableRows.forEach(tr=>{ tr.style.display = tr.textContent.toLowerCase().includes(term)?'':'none'; });
 });
 
-// Boutons de tri
-const setActiveButton = (btn)=>{
-  [el.btnScratch, el.btnGenre, el.btnCat].forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-};
-
-el.btnScratch.addEventListener('click',()=>{
-  currentSort='scratch';
-  setActiveButton(el.btnScratch);
-  render();
-});
-el.btnGenre.addEventListener('click',()=>{
-  currentSort='genre';
-  setActiveButton(el.btnGenre);
-  render();
-});
-el.btnCat.addEventListener('click',()=>{
-  currentSort='cat';
-  setActiveButton(el.btnCat);
-  render();
-});
+// Filtres
+el.filterGenre.addEventListener('change', render);
+el.filterCat.addEventListener('change', render);
 
 // Firebase
-const safeListener = (ref,callback)=>{
-  ref.on('value', snapshot=>{
+const safeListener = (ref, callback) => {
+  ref.on('value', snapshot => {
     try{ callback(snapshot); } catch(err){ console.error('Erreur Firebase :', err); }
   });
 };
 
-safeListener(db.depart, snap=>{
-  departure = snap.exists() ? new Date(snap.val()).getTime() : null;
-  render();
-});
-safeListener(db.participants, snap=>{
-  participants = snap.val()||{};
-  render();
-});
-safeListener(db.scans, snap=>{
-  scans = snap.val()||{};
-  render();
-});
+safeListener(db.depart, snap => { departure = snap.exists()?new Date(snap.val()).getTime():null; render(); });
+safeListener(db.participants, snap => { participants = snap.val()||{}; render(); });
+safeListener(db.scans, snap => { scans = snap.val()||{}; render(); });
 </script>
 </body>
 </html>
