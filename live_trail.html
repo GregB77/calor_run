@@ -20,11 +20,7 @@
             --header-bg: #e0e0e0;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -47,10 +43,7 @@
             z-index: -1;
         }
 
-        .container {
-            max-width: var(--max-width);
-            margin: 0 auto;
-        }
+        .container { max-width: var(--max-width); margin: 0 auto; }
 
         .header {
             text-align: center;
@@ -73,36 +66,18 @@
             font-weight: bold;
         }
 
-        .chrono-time.paused {
-            opacity: 0.7;
-        }
+        .chrono-time.paused { opacity: 0.7; }
 
-        .counter-line {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-
-        .counter-line span {
-            margin: 0 6px;
-        }
-
-        .counter-10km {
-            color: var(--primary-blue);
-        }
-
-        .counter-20km {
-            color: var(--primary-pink);
-        }
+        .counter-line { text-align: center; margin-bottom: 15px; font-size: 1rem; }
+        .counter-line span { margin: 0 6px; }
+        .counter-10km { color: var(--primary-blue); }
+        .counter-20km { color: var(--primary-pink); }
 
         .counter-error {
             animation: blinker 2s linear infinite;
             color: red;
         }
-        
-        @keyframes blinker {
-            50% { opacity: 0; }
-        }
+        @keyframes blinker { 50% { opacity: 0; } }
 
         .table-container {
             width: 96vw;
@@ -115,19 +90,8 @@
             padding: 0;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: auto;
-        }
-
-        th, td {
-            padding: 8px 10px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-light);
-            word-break: break-word;
-        }
-
+        table { width: 100%; border-collapse: collapse; table-layout: auto; }
+        th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border-light); word-break: break-word; }
         th {
             background: var(--header-bg);
             font-weight: 600;
@@ -137,56 +101,18 @@
             top: 0;
             z-index: 10;
         }
-
-        tbody tr:nth-child(even) {
-            background: var(--bg-light);
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.1rem;
-            color: var(--primary-blue);
-        }
-
-        .last-update {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-        }
-
-        .hidden {
-            display: none;
-        }
+        tbody tr:nth-child(even) { background: var(--bg-light); }
+        .text-center { text-align: center; }
+        .loading { text-align: center; padding: 40px; font-size: 1.1rem; color: var(--primary-blue); }
+        .last-update { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-dark); }
+        .hidden { display: none; }
 
         @media (max-width: 768px) {
-            .header {
-                margin-bottom: 0px;
-            }
-
-            .counter-line {
-                margin-bottom: 5px;
-            }
-
-            .table-container {
-                width: 98vw;
-                overflow-x: auto;
-            }
-            
-            table {
-                width: auto;
-                font-size: 0.85rem;
-            }
-            
-            th, td {
-                padding: 10px 8px;
-                white-space: nowrap;
-            }
+            .header { margin-bottom: 0px; }
+            .counter-line { margin-bottom: 5px; }
+            .table-container { width: 98vw; overflow-x: auto; }
+            table { width: auto; font-size: 0.85rem; }
+            th, td { padding: 10px 8px; white-space: nowrap; }
         }
     </style>
 </head>
@@ -197,9 +123,7 @@
                 <span id="chrono-text">--:--:--</span>
             </div>
         </div>
-
         <div id="loading" class="loading">Connexion en temps réel...</div>
-
         <div id="compteurs" class="counter-line hidden">
             <span class="counter-10km">10 km : 0</span>
             <span>•</span>
@@ -252,12 +176,8 @@
         };
 
         const COURSE_ALIASES = {
-            '10': '10km',
-            '10km': '10km',
-            '10 km': '10km',
-            '20': '20km',
-            '20km': '20km',
-            '20 km': '20km'
+            '10': '10km', '10km': '10km', '10 km': '10km',
+            '20': '20km', '20km': '20km', '20 km': '20km'
         };
 
         const elements = {
@@ -330,24 +250,31 @@
             return tr;
         }
 
+        // ✅ Version corrigée
         function calculatePositions(classement) {
             const scratchCounter = {};
             const genreCounter = {};
             const catCounter = {};
             let count10 = 0;
             let count20 = 0;
+
             for (let i = classement.length - 1; i >= 0; i--) {
                 const participant = classement[i];
+
                 const courseNormalized = COURSE_ALIASES[String(participant.course).trim()] || participant.course;
                 if (courseNormalized === '10km') count10++;
                 else if (courseNormalized === '20km') count20++;
+
                 const scratchKey = participant.course;
                 scratchCounter[scratchKey] = (scratchCounter[scratchKey] || 0) + 1;
                 participant.scratch = scratchCounter[scratchKey];
+
                 const genreKey = `${participant.course}_${participant.genre}`;
                 genreCounter[genreKey] = (genreCounter[genreKey] || 0) + 1;
                 participant.posGenre = genreCounter[genreKey];
-                const catKey = `${participant.course}_${participant.categorie}`;
+
+                // 🔥 Catégorie liée au genre et à la course
+                const catKey = `${participant.course}_${participant.genre}_${participant.categorie}`;
                 catCounter[catKey] = (catCounter[catKey] || 0) + 1;
                 participant.posCat = catCounter[catKey];
             }
@@ -368,16 +295,11 @@
             elements.counter20km.textContent = `20 km : ${count20}`;
             elements.counterTotal.textContent = `Total : ${classement.length}`;
             const displayedTotal = classement.length;
-            const displayed10km = count10;
-            const displayed20km = count20;
-            const expectedTotal = displayed10km + displayed20km;
-            console.log(`Compteurs: 10km=${displayed10km}, 20km=${displayed20km}, Total=${displayedTotal}, Attendu=${expectedTotal}`);
+            const expectedTotal = count10 + count20;
             if (displayedTotal !== expectedTotal) {
                 elements.counterTotal.classList.add('counter-error');
-                console.log('⚠️ Incohérence: Total ≠ (10km + 20km) - Clignotement activé');
             } else {
                 elements.counterTotal.classList.remove('counter-error');
-                console.log('✅ Cohérent: Total = (10km + 20km)');
             }
             elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
             elements.lastUpdate.classList.remove('hidden');
@@ -403,6 +325,7 @@
                         categorie: participant.categorie || ''
                     };
                 }).sort((a, b) => b.tempsMs - a.tempsMs);
+
                 const { count10, count20 } = calculatePositions(classement);
                 displayData(classement, count10, count20);
             } catch (error) {
