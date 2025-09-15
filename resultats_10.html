@@ -120,6 +120,33 @@ th {
   z-index: 10;
 }
 
+/* Styles pour les indicateurs de tri */
+th.sortable {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+.sort-indicator {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 6px solid rgba(0, 0, 0, 0.4);
+  opacity: 0.5;
+  transition: transform 0.3s, opacity 0.3s;
+}
+th.sorted .sort-indicator {
+  opacity: 1;
+  border-bottom-color: var(--primary-blue);
+}
+th.sorted.desc .sort-indicator {
+  transform: translateY(-50%) rotate(180deg);
+}
+
 tbody tr:nth-child(even) {
   background: var(--bg-light);
 }
@@ -145,7 +172,7 @@ tbody tr:nth-child(even) {
 
 @media(max-width: 768px) {
   .header {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
   }
   .search-counter-container {
     justify-content: center;
@@ -173,15 +200,15 @@ tbody tr:nth-child(even) {
   <table>
     <thead>
       <tr>
-        <th class="text-center">Dossard</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th class="text-center">Temps</th>
-        <th class="text-center">Scratch</th>
-        <th class="text-center">Genre</th>
-        <th class="text-center">Pos. Genre</th>
-        <th class="text-center">Cat</th>
-        <th class="text-center">Pos. Cat</th>
+        <th class="text-center sortable" data-column="dossard" aria-sort="none">Dossard<span class="sort-indicator"></span></th>
+        <th class="sortable" data-column="nom" aria-sort="none">Nom<span class="sort-indicator"></span></th>
+        <th class="sortable" data-column="prenom" aria-sort="none">Prénom<span class="sort-indicator"></span></th>
+        <th class="text-center sortable" data-column="tempsMs" aria-sort="none">Temps<span class="sort-indicator"></span></th>
+        <th class="text-center sortable" data-column="scratch" aria-sort="none">Scratch<span class="sort-indicator"></span></th>
+        <th class="text-center sortable" data-column="genre" aria-sort="none">Genre<span class="sort-indicator"></span></th>
+        <th class="text-center sortable" data-column="posGenre" aria-sort="none">Pos. Genre<span class="sort-indicator"></span></th>
+        <th class="text-center sortable" data-column="categorie" aria-sort="none">Cat<span class="sort-indicator"></span></th>
+        <th class="text-center sortable" data-column="posCat" aria-sort="none">Pos. Cat<span class="sort-indicator"></span></th>
       </tr>
     </thead>
     <tbody id="tbody">
@@ -223,11 +250,13 @@ tbody tr:nth-child(even) {
     search: document.getElementById('search'),
     counter: document.getElementById('counter'),
     last: document.getElementById('last-update'),
-    time: document.getElementById('update-time')
+    time: document.getElementById('update-time'),
+    headers: document.querySelectorAll('th[data-column]')
   };
 
   let participants = {}, scans = {}, departure = null;
-  const tableRows = new Map();
+  let allResults = [];
+  let currentSort = { column: 'tempsMs', direction: 'asc' };
 
   const formatTime = ms => {
     const s = Math.floor(ms / 1000);
@@ -237,57 +266,116 @@ tbody tr:nth-child(even) {
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
-  const render = () => {
+  const normalizeString = str => {
+    return (str || '').toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  };
+  
+  const sortResults = (column, direction) => {
+    allResults.sort((a, b) => {
+      let valA = a[column];
+      let valB = b[column];
+      
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        valA = normalizeString(valA);
+        valB = normalizeString(valB);
+      }
+      
+      if (valA < valB) return direction === 'asc' ? -1 : 1;
+      if (valA > valB) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    renderTable();
+  };
+
+  const updateSortIndicators = () => {
+    el.headers.forEach(header => {
+      header.classList.remove('sorted', 'desc');
+      header.setAttribute('aria-sort', 'none');
+      if (header.dataset.column === currentSort.column) {
+        header.classList.add('sorted');
+        if (currentSort.direction === 'desc') {
+          header.classList.add('desc');
+          header.setAttribute('aria-sort', 'descending');
+        } else {
+          header.setAttribute('aria-sort', 'ascending');
+        }
+      }
+    });
+  };
+
+  const renderTable = () => {
+    const searchTerm = normalizeString(el.search.value);
+    const filteredResults = allResults.filter(p => {
+      return Object.values(p).some(val => normalizeString(val).includes(searchTerm));
+    });
+
+    const frag = document.createDocumentFragment();
+    if (filteredResults.length === 0) {
+      frag.innerHTML = `<tr><td colspan="9" class="loading">Aucun résultat trouvé</td></tr>`;
+      el.tbody.innerHTML = '';
+      el.tbody.appendChild(frag);
+    } else {
+      filteredResults.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="text-center">${p.dossard}</td>
+          <td>${p.nom}</td>
+          <td>${p.prenom}</td>
+          <td class="text-center">${p.tempsStr}</td>
+          <td class="text-center">${p.scratch}</td>
+          <td class="text-center">${p.genre || ''}</td>
+          <td class="text-center">${p.posGenre}</td>
+          <td class="text-center">${p.categorie || ''}</td>
+          <td class="text-center">${p.posCat}</td>
+        `;
+        frag.appendChild(tr);
+      });
+      el.tbody.innerHTML = '';
+      el.tbody.appendChild(frag);
+    }
+  };
+
+  const refreshData = () => {
     if (!departure) return;
 
-    const data = Object.entries(scans).map(([id, scan]) => {
+    allResults = Object.entries(scans).map(([id, scan]) => {
       const p = participants[id];
       if (!p || p.course !== 10) return null;
       const t = new Date(scan.dateTime).getTime() - departure;
       return { ...p, tempsMs: t, tempsStr: formatTime(t) };
     }).filter(Boolean);
 
-    const total = Object.values(participants).filter(p => p.course === 10).length;
-    el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
+    allResults.sort((a, b) => a.tempsMs - b.tempsMs);
 
-    data.sort((a, b) => a.tempsMs - b.tempsMs);
-
-    const genreCount = {}, catCount = {};
-    tableRows.clear();
-    const frag = document.createDocumentFragment();
-
-    data.forEach((p, i) => {
+    const genreCount = {};
+    const catCount = {};
+    allResults.forEach((p, i) => {
       p.scratch = i + 1;
       p.posGenre = ++genreCount[p.genre] || 1;
       p.posCat = ++catCount[p.categorie] || 1;
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="text-center">${p.dossard}</td>
-        <td>${p.nom}</td>
-        <td>${p.prenom}</td>
-        <td class="text-center">${p.tempsStr}</td>
-        <td class="text-center">${p.scratch}</td>
-        <td class="text-center">${p.genre || ''}</td>
-        <td class="text-center">${p.posGenre}</td>
-        <td class="text-center">${p.categorie || ''}</td>
-        <td class="text-center">${p.posCat}</td>
-      `;
-      frag.appendChild(tr);
-      tableRows.set(tr, tr);
     });
 
-    el.tbody.innerHTML = '';
-    el.tbody.appendChild(frag);
+    const totalParticipants = Object.values(participants).filter(p => p.course === 10).length;
+    el.counter.textContent = `Arrivées : ${allResults.length} / ${totalParticipants}`;
+
+    updateSortIndicators();
+    renderTable();
     el.table.classList.remove('hidden');
     el.last.classList.remove('hidden');
     el.time.textContent = new Date().toLocaleTimeString('fr-FR');
   };
 
-  el.search.addEventListener('input', e => {
-    const term = e.target.value.toLowerCase();
-    tableRows.forEach(tr => {
-      tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+  el.search.addEventListener('input', renderTable);
+
+  el.headers.forEach(header => {
+    header.addEventListener('click', () => {
+      const column = header.dataset.column;
+      let newDirection = 'asc';
+      if (currentSort.column === column) {
+        newDirection = currentSort.direction === 'asc' ? 'desc' : 'asc';
+      }
+      currentSort = { column, direction: newDirection };
+      sortResults(currentSort.column, currentSort.direction);
     });
   });
 
@@ -303,17 +391,17 @@ tbody tr:nth-child(even) {
 
   safeListener(db.depart, snap => {
     departure = snap.exists() ? new Date(snap.val()).getTime() : null;
-    render();
+    refreshData();
   });
 
   safeListener(db.participants, snap => {
     participants = snap.val() || {};
-    render();
+    refreshData();
   });
 
   safeListener(db.scans, snap => {
     scans = snap.val() || {};
-    render();
+    refreshData();
   });
 </script>
 </body>
