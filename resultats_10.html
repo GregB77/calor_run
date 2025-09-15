@@ -114,6 +114,7 @@ th, td {
 th {
   background: var(--header-bg);
   font-weight: 600;
+  text-transform: uppercase;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -122,9 +123,9 @@ th {
 /* Styles pour les indicateurs de tri */
 th.sortable {
   cursor: pointer;
-  position: relative; /* Nouvelle règle pour positionner la flèche par rapport à l'en-tête */
+  position: relative;
   user-select: none;
-  padding-right: 26px; /* Nouvelle règle pour laisser de l'espace à la flèche */
+  padding-right: 26px; /* Ajoute un espace pour la flèche et évite la superposition */
 }
 .sort-indicator {
   position: absolute;
@@ -137,17 +138,17 @@ th.sortable {
   border-right: 5px solid transparent;
   border-bottom: 6px solid rgba(0, 0, 0, 0.4);
   opacity: 0.5;
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s, opacity 0.3s, border-bottom-color 0.3s; /* Ajout de la transition sur la couleur */
 }
 
 /* Modification ici pour que la flèche devienne bleue */
 th.sorted .sort-indicator {
   opacity: 1;
-  border-bottom-color: var(--primary-blue);
+  border-bottom-color: var(--primary-blue); /* La couleur devient bleue */
 }
 
 th.sorted.desc .sort-indicator {
-  transform: translateY(-50%) rotate(180deg);
+  transform: translateY(-50%) rotate(180deg); /* La flèche pivote */
 }
 
 tbody tr:nth-child(even) {
@@ -287,6 +288,7 @@ tbody tr:nth-child(even) {
       if (valA > valB) return direction === 'asc' ? 1 : -1;
       return 0;
     });
+    updateSortIndicators(); // CORRECTION: Mise à jour des indicateurs après le tri
     renderTable();
   };
 
@@ -328,7 +330,6 @@ tbody tr:nth-child(even) {
           <td class="text-center">${p.scratch}</td>
           <td class="text-center">${p.genre || ''}</td>
           <td class="text-center">${p.posGenre}</td>
-          <td class="text-center">${p.categorie || ''}</td>
           <td class="text-center">${p.posCat}</td>
         `;
         frag.appendChild(tr);
