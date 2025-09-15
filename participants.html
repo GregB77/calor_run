@@ -89,14 +89,20 @@
       border: none; /* Enlève la bordure */
       border-bottom: 2px solid var(--border-light); /* Garde une bordure du bas pour la lisibilité */
       border-radius: 0; /* Enlève les coins arrondis */
+      color: var(--text-dark);    
       font-size: 1rem;
       transition: border-color var(--transition-smooth);
       /* Fin de l'ajout */
     }
 
+    #search::placeholder {
+      color: #999;                      /* Placeholder plus discret */
+      opacity: 1;
+    }
+    
     #search:focus {
       outline: none;
-      border-color: var(--primary-blue);
+      border-bottom-color: var(--primary-blue);
     }
 
     .counter-box {
