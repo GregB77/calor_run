@@ -52,7 +52,7 @@ body::before {
 .search-counter-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between; /* barre à gauche, compteur à droite */
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
@@ -80,8 +80,7 @@ body::before {
 }
 
 .table-container {
-  width: 95%;
-  max-width: 950px;
+  max-width: var(--max-width);
   overflow-x: auto;
   margin: 0 auto 20px;
   background: var(--bg-white);
@@ -205,32 +204,35 @@ const formatTime = ms => {
 const render = () => {
   if (!departure) return;
 
-  const data = Object.entries(scans).map(([id, s])=>{
-    const p = participants[id]; 
-    if (!p || p.course !== 10) return null; // simplification
+  // Filtrage participants 10KM
+  const data = Object.entries(scans).map(([id, s]) => {
+    const p = participants[id];
+    if (!p || p.course !== 10) return null;
     const t = new Date(s.dateTime).getTime() - departure;
-    return {...p, tempsMs: t, tempsStr: formatTime(t)}; // suppression du test temps négatif
+    return {...p, tempsMs: t, tempsStr: formatTime(t)};
   }).filter(Boolean);
 
+  // Total participants
   const total = Object.values(participants).filter(p => p.course === 10).length;
-
   el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-  data.sort((a,b)=>a.tempsMs-b.tempsMs);
+  // Tri par temps
+  data.sort((a,b) => a.tempsMs - b.tempsMs);
 
-  const genreCount={}, catCount={};
+  // Calcul positions Scratch / Genre / Cat
+  const genreLast = {}, catLast = {};
   tableRows.clear();
-  const frag=document.createDocumentFragment();
+  const frag = document.createDocumentFragment();
 
-  data.forEach((p,i)=>{
-    genreCount[p.genre]=(genreCount[p.genre]||0)+1;
-    catCount[p.categorie]=(catCount[p.categorie]||0)+1;
-    p.scratch=i+1;
-    p.posGenre=genreCount[p.genre];
-    p.posCat=catCount[p.categorie];
+  data.forEach((p, i) => {
+    p.scratch = i + 1;
+    genreLast[p.genre] = (genreLast[p.genre] || 0) + 1;
+    p.posGenre = genreLast[p.genre];
+    catLast[p.categorie] = (catLast[p.categorie] || 0) + 1;
+    p.posCat = catLast[p.categorie];
 
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
       <td class="text-center">${p.dossard}</td>
       <td>${p.nom}</td>
       <td>${p.prenom}</td>
@@ -239,13 +241,12 @@ const render = () => {
       <td class="text-center">${p.genre||''}</td>
       <td class="text-center">${p.posGenre}</td>
       <td class="text-center">${p.categorie||''}</td>
-      <td class="text-center">${p.posCat}</td>
-    `;
+      <td class="text-center">${p.posCat}</td>`;
     frag.appendChild(tr);
     tableRows.set(tr,tr);
   });
 
-  el.tbody.innerHTML='';
+  el.tbody.innerHTML = '';
   el.tbody.appendChild(frag);
   el.table.classList.remove('hidden');
   el.last.classList.remove('hidden');
@@ -253,15 +254,15 @@ const render = () => {
 };
 
 // Recherche
-el.search.addEventListener('input', e=>{
+el.search.addEventListener('input', e => {
   const term = e.target.value.toLowerCase();
-  tableRows.forEach(tr=>tr.style.display=tr.textContent.toLowerCase().includes(term)?'':'none');
+  tableRows.forEach(tr => tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none');
 });
 
 // Firebase listeners
-db.depart.on('value', s=>{departure=s.exists()?new Date(s.val()).getTime():null; render();});
-db.participants.on('value', s=>{participants=s.val()||{}; render();});
-db.scans.on('value', s=>{scans=s.val()||{}; render();});
+db.depart.on('value', s => { departure = s.exists() ? new Date(s.val()).getTime() : null; render(); });
+db.participants.on('value', s => { participants = s.val() || {}; render(); });
+db.scans.on('value', s => { scans = s.val() || {}; render(); });
 </script>
 </body>
 </html>
