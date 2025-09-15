@@ -6,30 +6,124 @@
 <title>Résultats 10 KM - Calor Run</title>
 <style>
 :root {
-  --primary-blue:#215E99; --bg-white:#fff; --bg-light:#f9f9f9;
-  --shadow:rgba(0,0,0,0.15); --radius:8px; --max-width:1000px;
-  --text-dark:#333; --border-light:#ddd; --header-bg:#e0e0e0;
+  --primary-blue: #215E99;
+  --bg-white: #fff;
+  --bg-light: #f9f9f9;
+  --shadow: rgba(0,0,0,0.15);
+  --radius: 8px;
+  --max-width: 1000px;
+  --text-dark: #333;
+  --border-light: #ddd;
+  --header-bg: #e0e0e0;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-line-height:1.5;color:var(--text-dark);min-height:100vh;padding:20px;}
-body::before{content:'';position:fixed;inset:0;background:linear-gradient(0.25turn,var(--primary-blue),#E61780);opacity:.3;z-index:-1;}
-.container{max-width:var(--max-width);margin:0 auto;}
-.header{text-align:center;margin-bottom:20px;color:var(--primary-blue);font-size:1.3rem;font-weight:bold;padding:20px 20px 60px;border-radius:10px;background:url('calor.png') center/contain no-repeat;}
-.search-counter-container{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:20px;}
-#search{flex:1 1 200px;max-width:300px;padding:5px 10px;border:none;border-bottom:1px solid #888;background:transparent;color:var(--text-dark);font-size:1rem;outline:none;transition:border-color .3s;}
-#search:focus{border-bottom-color:var(--primary-blue);}
-#counter{font-weight:bold;color:var(--primary-blue);white-space:nowrap;align-self:center;}
-.table-container{width:95%;max-width:900px;overflow-x:auto;margin:0 auto 20px;background:var(--bg-white);border-radius:var(--radius);box-shadow:0 4px 12px var(--shadow);}
-table{width:100%;border-collapse:collapse;}
-th,td{padding:8px 10px;border-bottom:1px solid var(--border-light);text-align:left;}
-th{background:var(--header-bg);font-weight:600;text-transform:uppercase;position:sticky;top:0;z-index:10;}
-tbody tr:nth-child(even){background:var(--bg-light);}
-.text-center{text-align:center;}
-.loading,.last-update{text-align:center;color:var(--primary-blue);padding:20px 0;font-size:1rem;}
-.last-update{color:var(--text-dark);font-size:.9rem;margin-top:20px;}
-.hidden{display:none;}
-@media(max-width:768px){table{font-size:.85rem;}th,td{padding:6px 8px;}}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  line-height: 1.5;
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(0.25turn, var(--primary-blue), #E61780);
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.container { max-width: var(--max-width); margin: 0 auto; }
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--primary-blue);
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 20px 20px 60px;
+  border-radius: 10px;
+  background: url('calor.png') center/contain no-repeat;
+}
+
+.search-counter-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#search {
+  flex: 1 1 200px;
+  max-width: 300px;
+  padding: 6px 12px;
+  border: none;
+  border-bottom: 1px solid #888;
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+#search:focus { border-bottom-color: var(--primary-blue); }
+
+#counter {
+  font-weight: bold;
+  color: var(--primary-blue);
+  white-space: nowrap;
+  align-self: center;
+}
+
+.table-container {
+  width: 95%;
+  max-width: 950px;
+  overflow-x: auto;
+  margin: 0 auto 20px;
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px; /* scroll horizontal si trop petit */
+}
+
+th, td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+}
+
+th {
+  background: var(--header-bg);
+  font-weight: 600;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+tbody tr:nth-child(even) { background: var(--bg-light); }
+
+.text-center { text-align: center; }
+.loading, .last-update {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 1rem;
+}
+.last-update { color: var(--text-dark); font-size: 0.9rem; margin-top: 20px; }
+.hidden { display: none; }
+
+@media(max-width:768px){
+  table { font-size: 0.85rem; }
+  th, td { padding: 6px 8px; }
+}
 </style>
 </head>
 <body>
@@ -72,25 +166,25 @@ tbody tr:nth-child(even){background:var(--bg-light);}
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script>
-const FIREBASE_CONFIG={
-  apiKey:"AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-  authDomain:"calor-run.firebaseapp.com",
-  databaseURL:"https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId:"calor-run",
-  storageBucket:"calor-run.firebasestorage.app",
-  messagingSenderId:"329949291334",
-  appId:"1:329949291334:web:c71ef20268c609cf953b47",
-  measurementId:"G-YVQPW6JGPK"
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+  authDomain: "calor-run.firebaseapp.com",
+  databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "calor-run",
+  storageBucket: "calor-run.firebasestorage.app",
+  messagingSenderId: "329949291334",
+  appId: "1:329949291334:web:c71ef20268c609cf953b47",
+  measurementId: "G-YVQPW6JGPK"
 };
 firebase.initializeApp(FIREBASE_CONFIG);
 
-const db={
+const db = {
   depart: firebase.database().ref('data/depart_course'),
   participants: firebase.database().ref('participants'),
   scans: firebase.database().ref('scan_dossards')
 };
 
-const el={
+const el = {
   tbody: document.getElementById('tbody'),
   table: document.getElementById('table-container'),
   search: document.getElementById('search'),
@@ -99,46 +193,46 @@ const el={
   time: document.getElementById('update-time')
 };
 
-let participants={}, scans={}, departure=null, tableRows=new Map();
+let participants = {}, scans = {}, departure = null, tableRows = new Map();
 
-const formatTime=ms=>{
-  const s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
+const formatTime = ms => {
+  const s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
 };
 
-const render=()=>{
-  if(!departure) return;
+const render = () => {
+  if (!departure) return;
 
-  const data = Object.entries(scans).map(([id, s])=>{
-    const p = participants[id];
-    if(!p) return null;
-
-    const courseStr = String(p.course || '').trim(); // <-- conversion sécurisée
-    if(!['10','10km','10 km'].includes(courseStr)) return null;
+  const data = Object.entries(scans).map(([id, s]) => {
+    const p = participants[id]; if (!p) return null;
+    const courseStr = String(p.course || '').trim();
+    if (!['10','10km','10 km'].includes(courseStr)) return null;
 
     const t = new Date(s.dateTime).getTime() - departure;
-    return {...p, tempsMs: t, tempsStr: t < 0 ? "--:--:--" : formatTime(t)};
+    return { ...p, tempsMs: t, tempsStr: t < 0 ? "--:--:--" : formatTime(t) };
   }).filter(Boolean);
 
-  const total = Object.values(participants).filter(p=>{
-    return ['10','10km','10 km'].includes(String(p.course || '').trim());
-  }).length;
+  const total = Object.values(participants).filter(p =>
+    ['10','10km','10 km'].includes(String(p.course || '').trim())
+  ).length;
 
   el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
 
-  data.sort((a,b)=>a.tempsMs-b.tempsMs);
+  data.sort((a,b) => a.tempsMs - b.tempsMs);
 
-  const genreCount={}, catCount={};
+  const genreCount = {}, catCount = {};
   tableRows.clear();
-  const frag=document.createDocumentFragment();
+  const frag = document.createDocumentFragment();
 
-  for(const p of data){
-    p.scratch = genreCount[p.genre] = (genreCount[p.genre] || 0) + 1;
+  for (const p of data) {
+    genreCount[p.genre] = (genreCount[p.genre] || 0) + 1;
+    catCount[p.categorie] = (catCount[p.categorie] || 0) + 1;
+    p.scratch = data.indexOf(p)+1;
     p.posGenre = genreCount[p.genre];
-    p.posCat = catCount[p.categorie] = (catCount[p.categorie] || 0) + 1;
+    p.posCat = catCount[p.categorie];
 
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
       <td class="text-center">${p.dossard}</td>
       <td>${p.nom}</td>
       <td>${p.prenom}</td>
@@ -147,30 +241,29 @@ const render=()=>{
       <td class="text-center">${p.genre || ''}</td>
       <td class="text-center">${p.posGenre}</td>
       <td class="text-center">${p.categorie || ''}</td>
-      <td class="text-center">${p.posCat}</td>`;
+      <td class="text-center">${p.posCat}</td>
+    `;
     frag.appendChild(tr);
-    tableRows.set(tr, tr);
+    tableRows.set(tr,tr);
   }
 
-  el.tbody.innerHTML='';
+  el.tbody.innerHTML = '';
   el.tbody.appendChild(frag);
   el.table.classList.remove('hidden');
   el.last.classList.remove('hidden');
   el.time.textContent = new Date().toLocaleTimeString('fr-FR');
 };
 
-// Recherche rapide
-el.search.addEventListener('input', e=>{
+// Recherche
+el.search.addEventListener('input', e => {
   const term = e.target.value.toLowerCase();
-  tableRows.forEach(tr=>{
-    tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
-  });
+  tableRows.forEach(tr => tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none');
 });
 
 // Firebase listeners
-db.depart.on('value', s=>{ departure = s.exists() ? new Date(s.val()).getTime() : null; render(); });
-db.participants.on('value', s=>{ participants = s.val()||{}; render(); });
-db.scans.on('value', s=>{ scans = s.val()||{}; render(); });
+db.depart.on('value', s => { departure = s.exists() ? new Date(s.val()).getTime() : null; render(); });
+db.participants.on('value', s => { participants = s.val()||{}; render(); });
+db.scans.on('value', s => { scans = s.val()||{}; render(); });
 </script>
 </body>
 </html>
