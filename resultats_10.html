@@ -58,6 +58,11 @@ body::before {
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-white);
+  z-index: 20;
+  padding: 10px 0;
 }
 
 #search {
@@ -95,7 +100,6 @@ body::before {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px; /* permet le scroll horizontal */
 }
 
 th, td {
@@ -110,6 +114,14 @@ th {
   text-transform: uppercase;
   position: sticky;
   top: 0;
+  z-index: 10;
+}
+
+th.dossard, td.dossard {
+  position: sticky;
+  left: 0;
+  background: var(--bg-white);
+  z-index: 15;
 }
 
 tbody tr:nth-child(even) { background: var(--bg-light); }
@@ -119,9 +131,9 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 .last-update { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-dark); }
 .hidden { display: none; }
 
-@media(max-width: 768px){
+@media(max-width:768px){
   table { font-size: 0.85rem; }
-  th, td { padding: 8px 6px; }
+  th, td { padding: 6px 8px; }
 }
 </style>
 </head>
@@ -139,7 +151,7 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
   <table>
     <thead>
       <tr>
-        <th class="text-center">Dossard</th>
+        <th class="text-center dossard">Dossard</th>
         <th>Nom</th>
         <th>Prénom</th>
         <th class="text-center">Temps</th>
@@ -230,7 +242,7 @@ function renderTable() {
   tableRows = data.map(p => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="text-center">${p.dossard}</td>
+      <td class="text-center dossard">${p.dossard}</td>
       <td>${p.nom}</td>
       <td>${p.prenom}</td>
       <td class="text-center">${p.tempsStr}</td>
