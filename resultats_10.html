@@ -5,100 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Résultats 10 KM - Calor Run</title>
 <style>
-  :root {
-    --primary-blue: #215E99;
-    --bg-white: #fff;
-    --bg-light: #f9f9f9;
-    --shadow: rgba(0,0,0,0.15);
-    --radius: 8px;
-    --max-width: 1000px;
-    --text-dark: #333;
-    --border-light: #ddd;
-    --header-bg: #e0e0e0;
-  }
+:root {
+  --primary-blue: #215E99;
+  --bg-white: #fff;
+  --bg-light: #f9f9f9;
+  --shadow: rgba(0,0,0,0.15);
+  --radius: 8px;
+  --max-width: 1000px;
+  --text-dark: #333;
+  --border-light: #ddd;
+  --header-bg: #e0e0e0;
+}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
 
-  body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    line-height: 1.5;
-    color: var(--text-dark);
-    min-height: 100vh;
-    padding: 20px;
-    overflow-x: hidden;
-    position: relative;
-  }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+  position: relative;
+}
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(0.25turn, var(--primary-blue), #E61780);
-    opacity: 0.3;
-    z-index: -1;
-  }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(0.25turn, var(--primary-blue), #E61780);
+  opacity: 0.3;
+  z-index: -1;
+}
 
-  .container { max-width: var(--max-width); margin: 0 auto; }
+.container { max-width: var(--max-width); margin: 0 auto; }
 
-  .header {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--primary-blue);
-    font-size: 1.3rem;
-    font-weight: bold;
-    padding: 20px 20px 60px;
-    border-radius: 10px;
-    background: url('calor.png') center/contain no-repeat;
-  }
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--primary-blue);
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 20px 20px 60px;
+  border-radius: 10px;
+  background: url('calor.png') center/contain no-repeat;
+}
 
-  .search-counter-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+/* Barre recherche + compteur */
+.search-counter-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
-  #search {
-    flex: 1;
-    max-width: 300px;
-    width: 100%;
-    padding: 5px;
-    border: none;
-    border-bottom: 1px solid #888;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s;
-  }
+#search {
+  flex: 1 1 200px;
+  max-width: 300px;
+  padding: 5px 10px;
+  border: none;
+  border-bottom: 1px solid #888;
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
 
-  #search:focus { border-bottom-color: var(--primary-blue); }
+#search:focus { border-bottom-color: var(--primary-blue); }
 
-  #counter { font-weight: bold; color: var(--primary-blue); white-space: nowrap; }
+#counter {
+  font-weight: bold;
+  color: var(--primary-blue);
+  white-space: nowrap;
+  align-self: center;
+}
 
-  .table-container {
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto 20px;
-    background: var(--bg-white);
-    border-radius: var(--radius);
-    overflow-x: auto;
-    box-shadow: 0 4px 12px var(--shadow);
-  }
+/* Tableau */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 20px;
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px var(--shadow);
+}
 
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border-light); }
-  th { background: var(--header-bg); font-weight: 600; text-transform: uppercase; position: sticky; top: 0; }
-  tbody tr:nth-child(even) { background: var(--bg-light); }
-  .text-center { text-align: center; }
-  .loading { text-align: center; padding: 40px; font-size: 1.1rem; color: var(--primary-blue); }
-  .last-update { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-dark); }
-  .hidden { display: none; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px; /* permet le scroll horizontal */
+}
 
-  @media(max-width:768px){
-    table { font-size: 0.85rem; }
-    th, td { padding: 10px 8px; }
-  }
+th, td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+}
+
+th {
+  background: var(--header-bg);
+  font-weight: 600;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+}
+
+tbody tr:nth-child(even) { background: var(--bg-light); }
+
+.text-center { text-align: center; }
+.loading { text-align: center; padding: 40px; font-size: 1.1rem; color: var(--primary-blue); }
+.last-update { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-dark); }
+.hidden { display: none; }
+
+@media(max-width: 768px){
+  table { font-size: 0.85rem; }
+  th, td { padding: 8px 6px; }
+}
 </style>
 </head>
 <body>
@@ -233,7 +257,6 @@ elements.search.addEventListener('input', e => {
   });
 });
 
-// Firebase listeners
 dbRefs.depart.on('value', snap => { departureTimestamp = snap.exists()?new Date(snap.val()).getTime():null; renderTable(); });
 dbRefs.participants.on('value', snap => { participants = snap.val()||{}; renderTable(); });
 dbRefs.scans.on('value', snap => { scans = snap.val()||{}; renderTable(); });
