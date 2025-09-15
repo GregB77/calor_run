@@ -84,45 +84,59 @@ const FIREBASE_CONFIG={
 };
 firebase.initializeApp(FIREBASE_CONFIG);
 
-const db={depart:firebase.database().ref('data/depart_course'),
-          participants:firebase.database().ref('participants'),
-          scans:firebase.database().ref('scan_dossards')};
+const db={
+  depart: firebase.database().ref('data/depart_course'),
+  participants: firebase.database().ref('participants'),
+  scans: firebase.database().ref('scan_dossards')
+};
 
-const el={tbody:document.getElementById('tbody'),
-          table:document.getElementById('table-container'),
-          search:document.getElementById('search'),
-          counter:document.getElementById('counter'),
-          last:document.getElementById('last-update'),
-          time:document.getElementById('update-time')};
+const el={
+  tbody: document.getElementById('tbody'),
+  table: document.getElementById('table-container'),
+  search: document.getElementById('search'),
+  counter: document.getElementById('counter'),
+  last: document.getElementById('last-update'),
+  time: document.getElementById('update-time')
+};
 
-let participants={},scans={},departure=null,tableRows=new Map();
+let participants={}, scans={}, departure=null, tableRows=new Map();
 
 const formatTime=ms=>{
-  const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  const s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
 };
 
 const render=()=>{
   if(!departure) return;
-  const data=Object.entries(scans).map(([id,s])=>{
-    const p=participants[id]; if(!p || !['10','10km','10 km'].includes((p.course||'').trim())) return null;
-    const t=new Date(s.dateTime).getTime()-departure;
-    return {...p,tempsMs:t,tempsStr:t<0?"--:--:--":formatTime(t)};
+
+  const data = Object.entries(scans).map(([id, s])=>{
+    const p = participants[id];
+    if(!p) return null;
+
+    const courseStr = String(p.course || '').trim(); // <-- conversion sécurisée
+    if(!['10','10km','10 km'].includes(courseStr)) return null;
+
+    const t = new Date(s.dateTime).getTime() - departure;
+    return {...p, tempsMs: t, tempsStr: t < 0 ? "--:--:--" : formatTime(t)};
   }).filter(Boolean);
 
-  const total=Object.values(participants).filter(p=>['10','10km','10 km'].includes((p.course||'').trim())).length;
-  el.counter.textContent=`Arrivées : ${data.length} / ${total}`;
-  
+  const total = Object.values(participants).filter(p=>{
+    return ['10','10km','10 km'].includes(String(p.course || '').trim());
+  }).length;
+
+  el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
+
   data.sort((a,b)=>a.tempsMs-b.tempsMs);
 
-  const genreCount={},catCount={};
+  const genreCount={}, catCount={};
   tableRows.clear();
   const frag=document.createDocumentFragment();
 
-  data.forEach((p,i)=>{
-    p.scratch=i+1;
-    genreCount[p.genre]=(genreCount[p.genre]||0)+1; p.posGenre=genreCount[p.genre];
-    catCount[p.categorie]=(catCount[p.categorie]||0)+1; p.posCat=catCount[p.categorie];
+  for(const p of data){
+    p.scratch = genreCount[p.genre] = (genreCount[p.genre] || 0) + 1;
+    p.posGenre = genreCount[p.genre];
+    p.posCat = catCount[p.categorie] = (catCount[p.categorie] || 0) + 1;
+
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="text-center">${p.dossard}</td>
@@ -130,29 +144,33 @@ const render=()=>{
       <td>${p.prenom}</td>
       <td class="text-center">${p.tempsStr}</td>
       <td class="text-center">${p.scratch}</td>
-      <td class="text-center">${p.genre||''}</td>
+      <td class="text-center">${p.genre || ''}</td>
       <td class="text-center">${p.posGenre}</td>
-      <td class="text-center">${p.categorie||''}</td>
+      <td class="text-center">${p.categorie || ''}</td>
       <td class="text-center">${p.posCat}</td>`;
     frag.appendChild(tr);
-    tableRows.set(tr,tr);
-  });
+    tableRows.set(tr, tr);
+  }
 
-  el.tbody.innerHTML=''; el.tbody.appendChild(frag);
+  el.tbody.innerHTML='';
+  el.tbody.appendChild(frag);
   el.table.classList.remove('hidden');
   el.last.classList.remove('hidden');
-  el.time.textContent=new Date().toLocaleTimeString('fr-FR');
+  el.time.textContent = new Date().toLocaleTimeString('fr-FR');
 };
 
 // Recherche rapide
-el.search.addEventListener('input',e=>{
-  const term=e.target.value.toLowerCase();
-  tableRows.forEach(tr=>tr.style.display=tr.textContent.toLowerCase().includes(term)?'':'none');
+el.search.addEventListener('input', e=>{
+  const term = e.target.value.toLowerCase();
+  tableRows.forEach(tr=>{
+    tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+  });
 });
 
-db.depart.on('value',s=>{departure=s.exists()?new Date(s.val()).getTime():null; render();});
-db.participants.on('value',s=>{participants=s.val()||{}; render();});
-db.scans.on('value',s=>{scans=s.val()||{}; render();});
+// Firebase listeners
+db.depart.on('value', s=>{ departure = s.exists() ? new Date(s.val()).getTime() : null; render(); });
+db.participants.on('value', s=>{ participants = s.val()||{}; render(); });
+db.scans.on('value', s=>{ scans = s.val()||{}; render(); });
 </script>
 </body>
 </html>
