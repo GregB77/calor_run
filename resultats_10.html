@@ -18,11 +18,7 @@
       --header-bg: #e0e0e0;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -45,10 +41,7 @@
       z-index: -1;
     }
 
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-    }
+    .container { max-width: var(--max-width); margin: 0 auto; }
 
     .header {
       text-align: center;
@@ -60,10 +53,6 @@
       padding: 20px 20px 60px 20px;
       border-radius: 10px;
       background: url('calor.png') center/contain no-repeat;
-    }
-
-    .header-text {
-      font-weight: bold;
     }
 
     .table-container {
@@ -79,7 +68,6 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      table-layout: auto;
     }
 
     th, td {
@@ -93,15 +81,12 @@
       background: var(--header-bg);
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
       position: sticky;
       top: 0;
       z-index: 10;
     }
 
-    tbody tr:nth-child(even) {
-      background: var(--bg-light);
-    }
+    tbody tr:nth-child(even) { background: var(--bg-light); }
 
     .text-center { text-align: center; }
 
@@ -128,10 +113,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <span class="header-text">RÉSULTATS 10 KM</span>
-    </div>
-
+    <div class="header">RÉSULTATS 10 KM</div>
     <div id="loading" class="loading">Connexion en temps réel...</div>
   </div>
 
@@ -143,11 +125,8 @@
           <th>Nom</th>
           <th>Prénom</th>
           <th class="text-center">Temps</th>
-          <th class="text-center">Scratch</th>
           <th class="text-center">Genre</th>
-          <th class="text-center">Pos. Genre</th>
           <th class="text-center">CAT</th>
-          <th class="text-center">Pos. CAT</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -195,18 +174,15 @@
       return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
     }
 
-    function createRow(p, scratch, posGenre, posCat) {
+    function createRow(p) {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td class="text-center">${p.dossard}</td>
         <td>${p.nom}</td>
         <td>${p.prenom}</td>
         <td class="text-center">${p.tempsStr}</td>
-        <td class="text-center">${scratch}</td>
         <td class="text-center">${p.genre || ''}</td>
-        <td class="text-center">${posGenre}</td>
         <td class="text-center">${p.categorie || ''}</td>
-        <td class="text-center">${posCat}</td>
       `;
       return tr;
     }
@@ -221,25 +197,16 @@
         if (!COURSE_10KM.includes(course)) return null;
 
         const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
-        return {
-          ...p,
-          tempsMs,
-          tempsStr: tempsMs < 0 ? "--:--:--" : formatTime(tempsMs)
-        };
-      }).filter(Boolean).sort((a,b) => b.tempsMs - a.tempsMs);
+        return { ...p, tempsStr: tempsMs < 0 ? "--:--:--" : formatTime(tempsMs) };
+      }).filter(Boolean)
+        .sort((a,b) => {
+          if(a.tempsStr === "--:--:--") return 1;
+          if(b.tempsStr === "--:--:--") return -1;
+          return a.tempsStr.localeCompare(b.tempsStr);
+        });
 
-      // Calcul positions
-      const scratchCounter = {};
-      const genreCounter = {};
-      const catCounter = {};
       const fragment = document.createDocumentFragment();
-
-      classement.forEach(p => {
-        const scratch = (scratchCounter[p.course] = (scratchCounter[p.course] || 0) + 1);
-        const posGenre = (genreCounter[p.genre] = (genreCounter[p.genre] || 0) + 1);
-        const posCat = (catCounter[p.categorie] = (catCounter[p.categorie] || 0) + 1);
-        fragment.appendChild(createRow(p, scratch, posGenre, posCat));
-      });
+      classement.forEach(p => fragment.appendChild(createRow(p)));
 
       elements.tbody.innerHTML = '';
       elements.tbody.appendChild(fragment);
