@@ -379,15 +379,17 @@
       async startCamera() {
         try {
           const cameras = await Html5Qrcode.getCameras();
-          if (!cameras.length) throw new Error('No cameras found');
+          if (!cameras.length) throw new Error('Aucune caméra trouvée');
 
-          // Prefer back camera with highest resolution
-          const backCameras = cameras.filter(c => 
-            c.label.toLowerCase().includes('back') || 
-            c.label.toLowerCase().includes('rear') ||
-            c.label.toLowerCase().includes('environment')
+          // Prefer back camera
+          const backCamera = cameras.find(c => 
+            c.label && (
+              c.label.toLowerCase().includes('back') || 
+              c.label.toLowerCase().includes('rear') ||
+              c.label.toLowerCase().includes('environment')
+            )
           );
-          const selectedCamera = backCameras[0] || cameras[0];
+          const selectedCamera = backCamera || cameras[0];
 
           if (!this.qrScanner) {
             this.qrScanner = new Html5Qrcode("reader");
@@ -395,43 +397,103 @@
 
           // Optimized config for speed and distance
           const config = {
-            fps: 60, // Higher FPS for faster detection
+            fps: 30, // Start with stable FPS
+            qrbox: { width: 300, height: 300 }, // Fixed size first
+            disableFlip: true,
+            aspectRatio: 1.0
+          };
+
+          // Simple camera constraint - start basic then enhance
+          let cameraId;
+          if (selectedCamera && selectedCamera.id) {
+            cameraId = { deviceId: { exact: selectedCamera.id } };
+          } else {
+            cameraId = { facingMode: "environment" };
+          }
+
+          await this.qrScanner.start(
+            cameraId,
+            config,
+            (decodedText) => this.handleScanResult(decodedText),
+            (errorMessage) => {
+              // Silent error handling for scan failures
+              console.log('Scan error (normal):', errorMessage);
+            }
+          );
+
+          this.isScanning = true;
+          console.log('Caméra démarrée avec succès');
+
+          // Enhance after successful start
+          setTimeout(() => this.enhanceCamera(), 2000);
+
+        } catch (error) {
+          console.error('Camera start failed:', error);
+          
+          // Fallback: try with minimal config
+          try {
+            if (!this.qrScanner) {
+              this.qrScanner = new Html5Qrcode("reader");
+            }
+            
+            await this.qrScanner.start(
+              { facingMode: "environment" },
+              { 
+                fps: 20,
+                qrbox: { width: 250, height: 250 }
+              },
+              (decodedText) => this.handleScanResult(decodedText),
+              () => {}
+            );
+            
+            this.isScanning = true;
+            console.log('Caméra démarrée en mode fallback');
+            
+          } catch (fallbackError) {
+            alert('Impossible de démarrer la caméra. Vérifiez les permissions.');
+            console.error('Fallback failed:', fallbackError);
+          }
+        }
+      }
+
+      async enhanceCamera() {
+        if (!this.isScanning) return;
+        
+        try {
+          await this.qrScanner.stop();
+          
+          // Enhanced config after initial success
+          const enhancedConfig = {
+            fps: 60,
             qrbox: function(viewfinderWidth, viewfinderHeight) {
-              // Dynamic QR box - larger for distance scanning
               const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-              const qrboxSize = Math.floor(minEdge * 0.8);
+              const qrboxSize = Math.floor(minEdge * 0.7);
               return {
                 width: qrboxSize,
                 height: qrboxSize
               };
             },
-            disableFlip: true, // Faster processing
-            aspectRatio: 1.0,
-            experimentalFeatures: {
-              useBarCodeDetectorIfSupported: true // Use native detector when available
-            }
+            disableFlip: true,
+            aspectRatio: 1.0
           };
 
-          // Use deviceId with exact constraint and request back camera
-          const cameraConstraints = {
-            deviceId: { exact: selectedCamera.id },
-            facingMode: { ideal: "environment" }, // Request back camera
-            width: { ideal: 1920 }, // Request higher resolution
-            height: { ideal: 1080 }
-          };
+          const cameras = await Html5Qrcode.getCameras();
+          const backCamera = cameras.find(c => 
+            c.label && c.label.toLowerCase().includes('back')
+          ) || cameras[0];
 
           await this.qrScanner.start(
-            cameraConstraints,
-            config,
+            { deviceId: { exact: backCamera.id } },
+            enhancedConfig,
             (decodedText) => this.handleScanResult(decodedText),
-            () => {} // Ignore scan failures for performance
+            () => {}
           );
 
-          this.isScanning = true;
-
+          console.log('Caméra améliorée');
+          
         } catch (error) {
-          console.error('Camera start failed:', error);
-          alert('Erreur caméra: ' + error.message);
+          console.log('Enhancement failed, keeping basic mode');
+          // Continue with basic mode
         }
       }
 
