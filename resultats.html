@@ -68,17 +68,26 @@ body::before {
 }
 #search:focus { border-bottom-color: var(--primary-color); }
 
+/* === Style compteur + liens === */
 #counter {
-  font-weight:bold;
-  color:var(--primary-color);
-  white-space:nowrap;
+  font-weight: normal;
+  color: #000;
+  white-space: nowrap;
 }
 #counter a {
-  color: var(--secondary-color);
   text-decoration: none;
   margin: 0 0.25rem;
+  font-weight: normal;
+  color: #000;
 }
-#counter a:hover {
+#counter a[href*="distance=10"] {
+  color: var(--primary-color);
+}
+#counter a[href*="distance=20"] {
+  color: var(--secondary-color);
+}
+#counter a.active {
+  font-weight: bold;
   text-decoration: underline;
 }
 
@@ -239,7 +248,14 @@ const render = () => {
   }).filter(Boolean);
 
   const total = Object.values(participants).filter(p=>p.course===COURSE_DISTANCE).length;
-  el.counter.innerHTML = `<a href="?distance=10">10 km</a> | <a href="?distance=20">20 km</a> – Arrivées : ${data.length} / ${total}`;
+  el.counter.innerHTML = `
+    <a href="?distance=10">10 km</a> | 
+    <a href="?distance=20">20 km</a> – Arrivées : ${data.length} / ${total}
+  `;
+
+  // Ajouter la classe active sur le lien courant
+  const activeLink = el.counter.querySelector(`a[href="?distance=${COURSE_DISTANCE}"]`);
+  if (activeLink) activeLink.classList.add("active");
 
   // Tri scratch
   data.sort((a,b)=>a.tempsMs-b.tempsMs);
