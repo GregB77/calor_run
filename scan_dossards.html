@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scanner Dossards</title>
+  <title>Scanner Dossards Optimisé</title>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -90,7 +90,7 @@
     #history-list {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center; /* centrer horizontalement */
+      justify-content: center;
       gap: 5px;
     }
 
@@ -107,12 +107,35 @@
       border-radius: 6px;
       box-sizing: border-box;
     }
+
+    .offline { opacity: 0.7; border: 2px solid orange; }
+    .syncing { border: 2px solid yellow; animation: pulse 1s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    #status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8em;
+      background: rgba(0,0,0,0.7);
+    }
+
+    .status-online { color: #4CAF50; }
+    .status-offline { color: #FF9800; }
+    .status-syncing { color: #2196F3; }
   </style>
 </head>
 <body>
   <div id="reader"></div>
   <div id="current-scan">---</div>
   <div id="counter" class="button">HISTORIQUE</div>
+  <div id="status" class="status-online">●</div>
 
   <div id="results">
     <button id="back-button" class="button">RETOUR</button>
@@ -144,124 +167,325 @@
     const resultsDiv = document.getElementById('results');
     const backButton = document.getElementById('back-button');
     const historyList = document.getElementById('history-list');
+    const statusDiv = document.getElementById('status');
 
-    // State
-    let scannedCodes = new Set(JSON.parse(localStorage.getItem('scannedCodes') || "[]"));
-    let lastScan = "", lastScanTime = 0, maxDossard;
-    let qrScanner;
+    // Enhanced State Management
+    class ScannerState {
+      constructor() {
+        this.scannedCodes = new Set(JSON.parse(localStorage.getItem('scannedCodes') || "[]"));
+        this.offlineQueue = JSON.parse(localStorage.getItem('offlineQueue') || "[]");
+        this.syncedCodes = new Set(JSON.parse(localStorage.getItem('syncedCodes') || "[]"));
+        this.isOnline = navigator.onLine;
+        this.isSyncing = false;
+        this.lastScan = "";
+        this.lastScanTime = 0;
+        this.maxDossard = 1000; // Default value
+        
+        this.setupConnectionListeners();
+        this.loadMaxDossard();
+      }
+
+      setupConnectionListeners() {
+        window.addEventListener('online', () => {
+          this.isOnline = true;
+          this.updateStatus();
+          this.syncOfflineScans();
+        });
+        
+        window.addEventListener('offline', () => {
+          this.isOnline = false;
+          this.updateStatus();
+        });
+      }
+
+      updateStatus() {
+        if (this.isSyncing) {
+          statusDiv.className = 'status-syncing';
+          statusDiv.textContent = '⟳';
+        } else if (this.isOnline) {
+          statusDiv.className = 'status-online';
+          statusDiv.textContent = '●';
+        } else {
+          statusDiv.className = 'status-offline';
+          statusDiv.textContent = '○';
+        }
+      }
+
+      async loadMaxDossard() {
+        try {
+          const snapshot = await database.ref('data/participants').once('value');
+          const val = snapshot.val();
+          if (val && !isNaN(parseInt(val, 10))) {
+            this.maxDossard = parseInt(val, 10);
+          }
+        } catch (error) {
+          console.log('Using default max dossard due to:', error);
+        }
+      }
+
+      saveToStorage() {
+        localStorage.setItem('scannedCodes', JSON.stringify(Array.from(this.scannedCodes)));
+        localStorage.setItem('offlineQueue', JSON.stringify(this.offlineQueue));
+        localStorage.setItem('syncedCodes', JSON.stringify(Array.from(this.syncedCodes)));
+      }
+
+      canScan(code) {
+        const now = Date.now();
+        if (this.scannedCodes.has(code)) return false;
+        // Reduced debounce time for faster scanning
+        if (code === this.lastScan && (now - this.lastScanTime) < 1500) return false;
+        this.lastScan = code;
+        this.lastScanTime = now;
+        return true;
+      }
+
+      isValidCode(codeInt) {
+        return !isNaN(codeInt) && codeInt >= 1 && codeInt <= this.maxDossard;
+      }
+
+      async handleNewScan(code) {
+        const codeInt = parseInt(code, 10);
+        if (!this.isValidCode(codeInt) || !this.canScan(code)) return;
+
+        // Always add to local state immediately
+        this.scannedCodes.add(code);
+        
+        const scanData = {
+          code: code,
+          timestamp: Date.now(),
+          synced: false
+        };
+
+        if (this.isOnline) {
+          try {
+            await this.syncSingleScan(scanData);
+            this.syncedCodes.add(code);
+            scanData.synced = true;
+          } catch (error) {
+            console.log('Failed to sync immediately, adding to offline queue');
+            this.offlineQueue.push(scanData);
+          }
+        } else {
+          this.offlineQueue.push(scanData);
+        }
+
+        this.saveToStorage();
+        this.displayScan(code, scanData.synced);
+        this.playFeedback();
+        
+        return true;
+      }
+
+      async syncSingleScan(scanData) {
+        const scanRef = database.ref(`scan_dossards/${scanData.code}`);
+        await scanRef.transaction(current => 
+          current === null ? { dateTime: scanData.timestamp } : undefined
+        );
+      }
+
+      async syncOfflineScans() {
+        if (this.offlineQueue.length === 0 || this.isSyncing) return;
+        
+        this.isSyncing = true;
+        this.updateStatus();
+
+        const batchSize = 5; // Process in small batches to avoid overwhelming
+        
+        while (this.offlineQueue.length > 0 && this.isOnline) {
+          const batch = this.offlineQueue.splice(0, batchSize);
+          
+          for (const scanData of batch) {
+            try {
+              await this.syncSingleScan(scanData);
+              this.syncedCodes.add(scanData.code);
+              
+              // Update UI to show as synced
+              const entry = document.querySelector(`[data-code="${scanData.code}"]`);
+              if (entry) {
+                entry.classList.remove('offline', 'syncing');
+              }
+              
+            } catch (error) {
+              console.log('Failed to sync:', scanData.code);
+              // Put back in queue
+              this.offlineQueue.unshift(scanData);
+              break;
+            }
+          }
+          
+          // Small delay between batches
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        this.isSyncing = false;
+        this.updateStatus();
+        this.saveToStorage();
+      }
+
+      displayScan(code, synced) {
+        currentScanDiv.textContent = code;
+        this.addScanToHistory(code, synced);
+        setTimeout(() => currentScanDiv.textContent = "---", 1500); // Reduced display time
+      }
+
+      addScanToHistory(code, synced = false) {
+        const entry = document.createElement('div');
+        entry.className = 'scan-entry';
+        entry.textContent = code;
+        entry.setAttribute('data-code', code);
+
+        const codeInt = parseInt(code, 10);
+        if (codeInt >= 1 && codeInt <= 300) entry.style.color = 'var(--primary-color)';
+        else if (codeInt >= 301 && codeInt <= 600) entry.style.color = 'var(--secondary-color)';
+        else entry.style.color = '#fff';
+
+        if (!synced) {
+          entry.classList.add(this.isOnline ? 'syncing' : 'offline');
+        }
+
+        historyList.prepend(entry);
+        if (historyList.childNodes.length > 100) {
+          historyList.removeChild(historyList.lastChild);
+        }
+      }
+
+      playFeedback() {
+        beepSound.play().catch(() => {}); // Ignore audio errors
+        if (navigator.vibrate) navigator.vibrate(50); // Reduced vibration
+      }
+
+      loadInitialHistory() {
+        // Load from local storage first (instant)
+        this.scannedCodes.forEach(code => {
+          const synced = this.syncedCodes.has(code);
+          this.addScanToHistory(code, synced);
+        });
+
+        // Then sync any offline scans
+        if (this.isOnline) {
+          this.syncOfflineScans();
+        }
+      }
+    }
+
+    // Enhanced QR Scanner
+    class OptimizedQRScanner {
+      constructor(scannerState) {
+        this.scannerState = scannerState;
+        this.qrScanner = null;
+        this.isScanning = false;
+      }
+
+      async startCamera() {
+        try {
+          const cameras = await Html5Qrcode.getCameras();
+          if (!cameras.length) throw new Error('No cameras found');
+
+          // Prefer back camera with highest resolution
+          const backCameras = cameras.filter(c => 
+            c.label.toLowerCase().includes('back') || 
+            c.label.toLowerCase().includes('rear') ||
+            c.label.toLowerCase().includes('environment')
+          );
+          const selectedCamera = backCameras[0] || cameras[0];
+
+          if (!this.qrScanner) {
+            this.qrScanner = new Html5Qrcode("reader");
+          }
+
+          // Optimized config for speed and distance
+          const config = {
+            fps: 60, // Higher FPS for faster detection
+            qrbox: function(viewfinderWidth, viewfinderHeight) {
+              // Dynamic QR box - larger for distance scanning
+              const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+              const qrboxSize = Math.floor(minEdge * 0.8);
+              return {
+                width: qrboxSize,
+                height: qrboxSize
+              };
+            },
+            disableFlip: true, // Faster processing
+            aspectRatio: 1.0,
+            experimentalFeatures: {
+              useBarCodeDetectorIfSupported: true // Use native detector when available
+            }
+          };
+
+          // Use deviceId with exact constraint and request back camera
+          const cameraConstraints = {
+            deviceId: { exact: selectedCamera.id },
+            facingMode: { ideal: "environment" }, // Request back camera
+            width: { ideal: 1920 }, // Request higher resolution
+            height: { ideal: 1080 }
+          };
+
+          await this.qrScanner.start(
+            cameraConstraints,
+            config,
+            (decodedText) => this.handleScanResult(decodedText),
+            () => {} // Ignore scan failures for performance
+          );
+
+          this.isScanning = true;
+
+        } catch (error) {
+          console.error('Camera start failed:', error);
+          alert('Erreur caméra: ' + error.message);
+        }
+      }
+
+      handleScanResult(decodedText) {
+        // Immediate processing, no delays
+        this.scannerState.handleNewScan(decodedText.trim());
+      }
+
+      async stop() {
+        if (this.qrScanner && this.isScanning) {
+          await this.qrScanner.stop();
+          this.isScanning = false;
+        }
+      }
+    }
+
+    // Initialize app
+    let scannerState, qrScanner;
 
     // UI Events
     counterDiv.onclick = () => resultsDiv.style.display = 'block';
     backButton.onclick = () => resultsDiv.style.display = 'none';
 
-    function updateCounter() {
-      counterDiv.textContent = "HISTORIQUE";
-    }
-
-    function saveScannedCodes() {
-      localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes)));
-    }
-
-    function addScanToHistory(code) {
-      const entry = document.createElement('div');
-      entry.className = 'scan-entry';
-      entry.textContent = code;
-
-      const codeInt = parseInt(code, 10);
-      if (codeInt >= 1 && codeInt <= 300) entry.style.color = 'var(--primary-color)';
-      else if (codeInt >= 301 && codeInt <= 600) entry.style.color = 'var(--secondary-color)';
-      else entry.style.color = '#fff';
-
-      historyList.prepend(entry);
-      if (historyList.childNodes.length > 100) historyList.removeChild(historyList.lastChild);
-    }
-
-    function canScan(code) {
-      const now = Date.now();
-      if (scannedCodes.has(code)) return false;
-      if (code === lastScan && (now - lastScanTime) < 3000) return false;
-      lastScan = code;
-      lastScanTime = now;
-      return true;
-    }
-
-    function isValidCode(codeInt) {
-      return !isNaN(codeInt) && codeInt >= 1 && codeInt <= maxDossard;
-    }
-
-    function handleNewScan(code) {
-      const codeInt = parseInt(code, 10);
-      if (!isValidCode(codeInt) || !canScan(code)) return;
-
-      scannedCodes.add(code);
-      saveScannedCodes();
-      currentScanDiv.textContent = code;
-      addScanToHistory(code);
-      updateCounter();
-      beepSound.play();
-      navigator.vibrate?.(100);
-      setTimeout(() => currentScanDiv.textContent = "---", 2000);
-
-      const scanRef = database.ref(`scan_dossards/${code}`);
-      scanRef.transaction(current => current === null ? { dateTime: Date.now() } : undefined);
-    }
-
-    function loadInitialScans(limit = 50) {
-      scannedCodes.forEach(code => addScanToHistory(code));
-
-      database.ref('scan_dossards').orderByKey().limitToLast(limit).once('value', snapshot => {
-        snapshot.forEach(child => {
-          if (!scannedCodes.has(child.key)) {
-            scannedCodes.add(child.key);
-            saveScannedCodes();
-            addScanToHistory(child.key);
-          }
-        });
-      });
-
-      database.ref('scan_dossards').limitToLast(1).on('child_added', snapshot => {
-        const code = snapshot.key;
-        if (!scannedCodes.has(code)) {
-          scannedCodes.add(code);
-          saveScannedCodes();
-          addScanToHistory(code);
-        }
-      });
-    }
-
-    function startCamera() {
-      Html5Qrcode.getCameras().then(cameras => {
-        if (!cameras.length) return;
-        const rear = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
-        if (!qrScanner) qrScanner = new Html5Qrcode("reader");
-
-        qrScanner.start(
-          { deviceId: { exact: rear.id } },
-          { fps: 30, qrbox: { width: 300, height: 300 }, disableFlip: true, aspectRatio: 1.0 },
-          handleNewScan,
-          () => {}
-        );
-      });
-    }
-
     function startApp() {
-      loadInitialScans();
-      startCamera();
+      scannerState = new ScannerState();
+      qrScanner = new OptimizedQRScanner(scannerState);
+      
+      scannerState.loadInitialHistory();
+      qrScanner.startCamera();
+      
+      // Periodic sync attempt (every 30 seconds when online)
+      setInterval(() => {
+        if (scannerState.isOnline && scannerState.offlineQueue.length > 0) {
+          scannerState.syncOfflineScans();
+        }
+      }, 30000);
     }
 
-    database.ref('data/participants').once('value').then(snapshot => {
-      const val = snapshot.val();
-      if (val && !isNaN(parseInt(val, 10))) {
-        maxDossard = parseInt(val, 10);
-        console.log("Max dossards:", maxDossard);
-      }
-    });
-
+    // Auth and startup
     auth.onAuthStateChanged(user => {
       if (user) startApp();
     });
 
-    auth.signInAnonymously().catch(err => alert("Erreur d'authentification: " + err.message));
+    auth.signInAnonymously().catch(err => {
+      alert("Erreur d'authentification: " + err.message);
+    });
+
+    // Update counter display
+    function updateCounter() {
+      counterDiv.textContent = "HISTORIQUE";
+    }
+    
+    // Call initially
+    updateCounter();
   </script>
 </body>
 </html>
