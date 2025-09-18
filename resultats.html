@@ -248,7 +248,7 @@ const render = () => {
   `;
 
   // Ajout classe active
-  const activeLink = el.counter.querySelector(\`a[href="?distance=\${COURSE_DISTANCE}"]\`);
+  const activeLink = el.counter.querySelector('a[href="?distance=' + COURSE_DISTANCE + '"]');
   if (activeLink) activeLink.classList.add("active");
 
   // Tri scratch
