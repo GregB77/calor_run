@@ -26,6 +26,7 @@
     #counter {
       position: absolute; bottom: 10px; left: 0; right: 0;
       font-size: 2em; text-align: center; background: rgba(255,255,255,0.2); padding: 10px;
+      cursor: pointer;
     }
     #results {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -46,7 +47,7 @@
 <body>
   <div id="reader"></div>
   <div id="current-scan">---</div>
-  <div id="counter">SCANS : 0</div>
+  <div id="counter">Historique</div>
   <div id="results">
     <button id="back-button">Retour</button>
     <div id="history-list"></div>
@@ -92,20 +93,23 @@
       lastScanTime = now;
 
       const ref = database.ref('scan_dossards/' + code);
-      ref.once("value", snap => {
-        if (!snap.exists()) {
-          ref.set({ dateTime: now }).then(() => {
-            scannedCodes.add(code);
-            currentScanDiv.textContent = code;
-            historyList.prepend(Object.assign(document.createElement('div'), {
-              className: 'scan-entry',
-              textContent: code
-            }));
-            counterDiv.textContent = "SCANS : " + scannedCodes.size;
-            beepSound.play();
-            navigator.vibrate?.(100);
-            setTimeout(() => currentScanDiv.textContent = "---", 2000);
-          });
+      ref.transaction(current => {
+        if (current === null) {
+          return { dateTime: now }; // on écrit uniquement si absent
+        }
+        return; // sinon on ne change rien
+      }, (error, committed, snapshot) => {
+        if (committed) {
+          scannedCodes.add(code);
+          currentScanDiv.textContent = code;
+          historyList.prepend(Object.assign(document.createElement('div'), {
+            className: 'scan-entry',
+            textContent: code
+          }));
+          counterDiv.textContent = "Historique";
+          beepSound.play();
+          navigator.vibrate?.(100);
+          setTimeout(() => currentScanDiv.textContent = "---", 2000);
         }
       });
     }
@@ -119,7 +123,7 @@
             textContent: child.key
           }));
         });
-        counterDiv.textContent = "SCANS : " + scannedCodes.size;
+        counterDiv.textContent = "Historique";
       });
 
       Html5Qrcode.getCameras().then(cameras => {
