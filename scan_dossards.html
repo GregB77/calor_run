@@ -13,9 +13,16 @@ body { margin:0;font-family:sans-serif;background:#000;color:#fff;overflow:hidde
 #reader{position:absolute;top:0;left:0;right:0;bottom:30vh;}
 #reader video{object-fit:cover;width:100%;height:100%;}
 #current-scan{position:absolute;bottom:28vh;left:0;right:0;font-size:3em;font-weight:bold;text-align:center;background:rgba(0,0,0,0.6);padding:10px;}
-#counter{position:absolute;bottom:10px;left:0;right:0;font-size:2em;text-align:center;background:rgba(255,255,255,0.2);padding:10px;cursor:pointer;}
+#counter, #back-button {
+  font-size:2em;text-align:center;padding:10px 20px;cursor:pointer;
+  background: linear-gradient(to right, rgba(0,123,255,0.6), rgba(255,0,150,0.6));
+  color:#fff;border-radius:8px;border:1px solid rgba(255,255,255,0.3);
+  transition: background 0.3s ease;
+}
+#counter:hover, #back-button:hover {
+  background: linear-gradient(to right, rgba(0,123,255,0.8), rgba(255,0,150,0.8));
+}
 #results{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:none;padding:20px;text-align:center;overflow-y:auto;}
-#back-button{background:#28a745;color:white;border:none;padding:10px 20px;font-size:1.2em;border-radius:8px;margin-bottom:20px;}
 #history-list .scan-entry{font-size:2em;margin:10px auto;background:#fff;color:#000;padding:10px 20px;border-radius:6px;display:inline-block;}
 </style>
 </head>
@@ -61,6 +68,10 @@ function addScanToHistory(code){
   const entry=document.createElement('div');
   entry.className='scan-entry';
   entry.textContent=code;
+  const codeInt=parseInt(code,10);
+  if(codeInt>=1 && codeInt<=300) entry.style.color='rgba(0,123,255,1)';
+  else if(codeInt>=301 && codeInt<=600) entry.style.color='rgba(255,0,150,1)';
+  else entry.style.color='#fff';
   historyList.prepend(entry);
   if(historyList.childNodes.length>100) historyList.removeChild(historyList.lastChild);
 }
@@ -88,7 +99,6 @@ function sendToFirebase(code){
   navigator.vibrate?.(100);
   setTimeout(()=>currentScanDiv.textContent="---",2000);
 
-  // transaction pour éviter doublons et permettre offline
   const ref=database.ref('scan_dossards/'+code);
   ref.transaction(current=>current===null?{dateTime:Date.now()}:undefined);
 }
@@ -105,7 +115,7 @@ function loadInitialScans(limit=50){
     });
   });
 
-  // écoute temps réel des nouveaux scans
+  // écoute temps réel
   database.ref('scan_dossards').limitToLast(1).on('child_added',snapshot=>{
     const code=snapshot.key;
     if(!scannedCodes.has(code)){
