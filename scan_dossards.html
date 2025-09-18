@@ -7,14 +7,10 @@
   <title>Scanner Dossards</title>
 
   <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.jsc="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.jsc="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></scriptr -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script rgba(0,123,255,1);
-      --secondary-color: rgba(255,0,150,1);
-      --button-bg: linear-gradient(to right, rgba(0,123,255,0.6), rgba(255,0,150,0.6));
-      --button-hover-bg: linear-gradient(to right, rgba(0,123,255,0.8), rgba(255,0,150,0.8));
-    }
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.jsc="https://www.gstatic.com/firebasejs/se-database-compat.js
+  https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js
 
-    body {
+ {
       margin: 0;
       font-family: sans-serif;
       background: #000;
@@ -44,30 +40,30 @@
       padding: 10px;
     }
 
-    .button {
+    #counter, #back-button {
       font-size: 1em;
       text-align: center;
       padding: 10px 20px;
       cursor: pointer;
-      background: var(--button-bg);
+      background: linear-gradient(to right, rgba(0,123,255,0.6), rgba(255,0,150,0.6));
       color: #fff;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.3);
       transition: background 0.3s ease;
     }
 
-    .button:hover {
-      background: var(--button-hover-bg);
+    #back-button {
+      margin-bottom: 20px;
+    }
+
+    #counter:hover, #back-button:hover {
+      background: linear-gradient(to right, rgba(0,123,255,0.8), rgba(255,0,150,0.8));
     }
 
     #counter {
       position: absolute;
       bottom: 10px;
       left: 0; right: 0;
-    }
-
-    #back-button {
-      margin-bottom: 20px;
     }
 
     #results {
@@ -105,17 +101,17 @@
 <body>
   <div id="reader"></div>
   <div id="current-scan">---</div>
-  <div id="counter" class="button">HISTORIQUE</div>
+  <div id="counter">HISTORIQUE</div>
 
   <div id="results">
-    <button id="back-button" class="button">RETOUR</button>
+    <button id="back-button">RETOUR</button>
     <div id="history-list"></div>
   </div>
 
   <audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
 
   <script>
-    // Firebase config
+    // Configuration Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
       authDomain: "calor-run.firebaseapp.com",
@@ -130,7 +126,7 @@
     const database = firebase.database();
     const auth = firebase.auth();
 
-    // DOM elements
+    // Éléments DOM
     const beepSound = document.getElementById('beep-sound');
     const currentScanDiv = document.getElementById('current-scan');
     const counterDiv = document.getElementById('counter');
@@ -138,21 +134,17 @@
     const backButton = document.getElementById('back-button');
     const historyList = document.getElementById('history-list');
 
-    // State
+    // État
     let scannedCodes = new Set(JSON.parse(localStorage.getItem('scannedCodes') || "[]"));
     let lastScan = "", lastScanTime = 0, maxDossard;
-    let qrScanner;
+    let qrInstance;
 
-    // UI Events
+    // Événements UI
     counterDiv.onclick = () => resultsDiv.style.display = 'block';
     backButton.onclick = () => resultsDiv.style.display = 'none';
 
     function updateCounter() {
       counterDiv.textContent = "Historique";
-    }
-
-    function saveScannedCodes() {
-      localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes)));
     }
 
     function addScanToHistory(code) {
@@ -161,8 +153,8 @@
       entry.textContent = code;
 
       const codeInt = parseInt(code, 10);
-      if (codeInt >= 1 && codeInt <= 300) entry.style.color = 'var(--primary-color)';
-      else if (codeInt >= 301 && codeInt <= 600) entry.style.color = 'var(--secondary-color)';
+      if (codeInt >= 1 && codeInt <= 300) entry.style.color = 'rgba(0,123,255,1)';
+      else if (codeInt >= 301 && codeInt <= 600) entry.style.color = 'rgba(255,0,150,1)';
       else entry.style.color = '#fff';
 
       historyList.prepend(entry);
@@ -178,16 +170,13 @@
       return true;
     }
 
-    function isValidCode(codeInt) {
-      return !isNaN(codeInt) && codeInt >= 1 && codeInt <= maxDossard;
-    }
-
-    function handleNewScan(code) {
+    function sendToFirebase(code) {
       const codeInt = parseInt(code, 10);
-      if (!isValidCode(codeInt) || !canScan(code)) return;
+      if (!maxDossard || isNaN(codeInt) || codeInt < 1 || codeInt > maxDossard) return;
+      if (!canScan(code)) return;
 
       scannedCodes.add(code);
-      saveScannedCodes();
+      localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes)));
       currentScanDiv.textContent = code;
       addScanToHistory(code);
       updateCounter();
@@ -195,8 +184,8 @@
       navigator.vibrate?.(100);
       setTimeout(() => currentScanDiv.textContent = "---", 2000);
 
-      const scanRef = database.ref(`scan_dossards/${code}`);
-      scanRef.transaction(current => current === null ? { dateTime: Date.now() } : undefined);
+      const ref = database.ref('scan_dossards/' + code);
+      ref.transaction(current => current === null ? { dateTime: Date.now() } : undefined);
     }
 
     function loadInitialScans(limit = 50) {
@@ -206,7 +195,7 @@
         snapshot.forEach(child => {
           if (!scannedCodes.has(child.key)) {
             scannedCodes.add(child.key);
-            saveScannedCodes();
+            localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes)));
             addScanToHistory(child.key);
           }
         });
@@ -216,7 +205,7 @@
         const code = snapshot.key;
         if (!scannedCodes.has(code)) {
           scannedCodes.add(code);
-          saveScannedCodes();
+          localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes)));
           addScanToHistory(code);
         }
       });
@@ -226,12 +215,12 @@
       Html5Qrcode.getCameras().then(cameras => {
         if (!cameras.length) return;
         const rear = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
-        if (!qrScanner) qrScanner = new Html5Qrcode("reader");
+        if (!qrInstance) qrInstance = new Html5Qrcode("reader");
 
-        qrScanner.start(
+        qrInstance.start(
           { deviceId: { exact: rear.id } },
           { fps: 30, qrbox: { width: 300, height: 300 }, disableFlip: true, aspectRatio: 1.0 },
-          handleNewScan,
+          sendToFirebase,
           () => {}
         );
       });
