@@ -67,7 +67,21 @@ body::before {
   transition:border-color 0.3s;
 }
 #search:focus { border-bottom-color: var(--primary-color); }
-#counter { font-weight:bold; color:var(--primary-color); white-space:nowrap; }
+
+#counter {
+  font-weight:bold;
+  color:var(--primary-color);
+  white-space:nowrap;
+}
+#counter a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  margin: 0 0.25rem;
+}
+#counter a:hover {
+  text-decoration: underline;
+}
+
 .table-container {
   max-width: var(--max-width);
   overflow-x:auto;
@@ -130,7 +144,9 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
   <div class="header" id="header-title"></div>
   <div class="search-counter-container">
     <input type="text" id="search" placeholder="Recherche par Nom, prénom, cat. (ex: HM1)" autocomplete="off" aria-label="Recherche par Nom, prénom ou catégorie">
-    <div id="counter">Arrivées : 0 / 0</div>
+    <div id="counter">
+      <a href="?distance=10">10 km</a> | <a href="?distance=20">20 km</a> – Arrivées : 0 / 0
+    </div>
   </div>
 </div>
 
@@ -223,7 +239,7 @@ const render = () => {
   }).filter(Boolean);
 
   const total = Object.values(participants).filter(p=>p.course===COURSE_DISTANCE).length;
-  el.counter.textContent = `Arrivées : ${data.length} / ${total}`;
+  el.counter.innerHTML = `<a href="?distance=10">10 km</a> | <a href="?distance=20">20 km</a> – Arrivées : ${data.length} / ${total}`;
 
   // Tri scratch
   data.sort((a,b)=>a.tempsMs-b.tempsMs);
