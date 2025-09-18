@@ -14,12 +14,12 @@ body { margin:0;font-family:sans-serif;background:#000;color:#fff;overflow:hidde
 #reader video{object-fit:cover;width:100%;height:100%;}
 #current-scan{position:absolute;bottom:28vh;left:0;right:0;font-size:3em;font-weight:bold;text-align:center;background:rgba(0,0,0,0.6);padding:10px;}
 #counter, #back-button {
-  font-size:2em;text-align:center;padding:10px 20px;cursor:pointer;
+  font-size:1em;text-align:center;padding:10px 20px;cursor:pointer;
   background: linear-gradient(to right, rgba(0,123,255,0.6), rgba(255,0,150,0.6));
   color:#fff;border-radius:8px;border:1px solid rgba(255,255,255,0.3);
   transition: background 0.3s ease;
 }
-#back-button {font-size:1.5em}
+#back-button {font-size:1em;margin-bottom:20px}
 #counter:hover, #back-button:hover {
   background: linear-gradient(to right, rgba(0,123,255,0.8), rgba(255,0,150,0.8));
 }
@@ -49,9 +49,9 @@ body { margin:0;font-family:sans-serif;background:#000;color:#fff;overflow:hidde
 <body>
 <div id="reader"></div>
 <div id="current-scan">---</div>
-<div id="counter">Historique</div>
+<div id="counter">HISTORIQUE</div>
 <div id="results">
-<button id="back-button">Retour</button>
+<button id="back-button">RETOUR</button>
 <div id="history-list"></div>
 </div>
 <audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
