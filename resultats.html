@@ -261,7 +261,7 @@ const render = () => {
     p.scratch = i+1;
     classementGenre[p.genre] = (classementGenre[p.genre]||0)+1;
     p.posGenre = classementGenre[p.genre];
-    const catKey = \`\${p.genre}_\${p.categorie}\`;
+    const catKey = `${p.genre}_${p.categorie}`;
     classementCat[catKey] = (classementCat[catKey]||0)+1;
     p.posCat = classementCat[catKey];
   });
