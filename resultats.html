@@ -149,7 +149,7 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
   <div class="header" id="header-title"></div>
   <div class="search-counter-container">
     <input type="text" id="search" placeholder="Recherche par Nom, prénom, cat. (ex: HM1)" autocomplete="off" aria-label="Recherche par Nom, prénom ou catégorie">
-    <div id="counter">10 km | 20 km – Arrivées : 0/0</div>
+    <div id="counter">10 km | 20 km – Arrivées : 0 / 0</div>
   </div>
 </div>
 
@@ -244,7 +244,7 @@ const render = () => {
   const total = Object.values(participants).filter(p=>p.course===COURSE_DISTANCE).length;
   el.counter.innerHTML = `
     <a href="?distance=10">10 km</a> | 
-    <a href="?distance=20">20 km</a> – Arrivées : ${data.length}/${total}
+    <a href="?distance=20">20 km</a> – Arrivées : ${data.length} / ${total}
   `;
 
   // Ajout classe active
@@ -271,17 +271,17 @@ const render = () => {
   const frag = document.createDocumentFragment();
   data.forEach(p=>{
     const tr = document.createElement('tr');
-    tr.innerHTML=\`
-      <td class="text-center">\${p.dossard}</td>
-      <td>\${p.nom}</td>
-      <td>\${p.prenom}</td>
-      <td class="text-center">\${p.tempsStr}</td>
-      <td class="text-center">\${p.scratch}</td>
-      <td class="text-center">\${p.genre||''}</td>
-      <td class="text-center">\${p.posGenre}</td>
-      <td class="text-center">\${p.categorie||''}</td>
-      <td class="text-center">\${p.posCat}</td>
-    \`;
+    tr.innerHTML = `
+      <td class="text-center">${p.dossard}</td>
+      <td>${p.nom}</td>
+      <td>${p.prenom}</td>
+      <td class="text-center">${p.tempsStr}</td>
+      <td class="text-center">${p.scratch}</td>
+      <td class="text-center">${p.genre||''}</td>
+      <td class="text-center">${p.posGenre}</td>
+      <td class="text-center">${p.categorie||''}</td>
+      <td class="text-center">${p.posCat}</td>
+    `;
     frag.appendChild(tr);
     tableRows.set(tr,tr);
   });
