@@ -1,259 +1,205 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scanner Dossards</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scanner Dossards</title>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.jsc="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.jsc="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></scriptr -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script rgba(0,123,255,1);
-      --secondary-color: rgba(255,0,150,1);
-      --button-bg: linear-gradient(to right, rgba(0,123,255,0.6), rgba(255,0,150,0.6));
-      --button-hover-bg: linear-gradient(to right, rgba(0,123,255,0.8), rgba(255,0,150,0.8));
-    }
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #000;
-      color: #fff;
-      overflow: hidden;
-    }
+<style>
+:root {
+  --primary-color: rgba(0,123,255,1);
+  --secondary-color: rgba(255,0,150,1);
+  --button-bg: linear-gradient(to right, rgba(0,123,255,0.6), rgba(255,0,150,0.6));
+  --button-hover-bg: linear-gradient(to right, rgba(0,123,255,0.8), rgba(255,0,150,0.8));
+}
 
-    #reader {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 30vh;
-    }
+body {margin:0;font-family:sans-serif;background:#000;color:#fff;overflow:hidden;}
 
-    #reader video {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-    }
+#reader{position:absolute;top:0;left:0;right:0;bottom:30vh;}
+#reader video{object-fit:cover;width:100%;height:100%;}
+#current-scan{position:absolute;bottom:28vh;left:0;right:0;font-size:4em;font-weight:bold;text-align:center;background:rgba(0,0,0,0.6);padding:10px;}
 
-    #current-scan {
-      position: absolute;
-      bottom: 28vh;
-      left: 0; right: 0;
-      font-size: 4em;
-      font-weight: bold;
-      text-align: center;
-      background: rgba(0,0,0,0.6);
-      padding: 10px;
-    }
-
-    .button {
-      font-size: 1em;
-      text-align: center;
-      padding: 10px 20px;
-      cursor: pointer;
-      background: var(--button-bg);
-      color: #fff;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.3);
-      transition: background 0.3s ease;
-    }
-
-    .button:hover {
-      background: var(--button-hover-bg);
-    }
-
-    #counter {
-      position: absolute;
-      bottom: 10px;
-      left: 0; right: 0;
-    }
-
-    #back-button {
-      margin-bottom: 20px;
-    }
-
-    #results {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      padding: 20px;
-      text-align: center;
-      overflow-y: auto;
-    }
-
-    #history-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      gap: 5px;
-    }
-
-    .scan-entry {
-      font-size: 2em;
-      width: 3em;
-      height: 3em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: monospace;
-      background: #fff;
-      color: #000;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-  </style>
+.button{font-size:1em;text-align:center;padding:10px 20px;cursor:pointer;background:var(--button-bg);color:#fff;border-radius:8px;border:1px solid rgba(255,255,255,0.3);transition:background 0.3s ease;}
+.button:hover{background:var(--button-hover-bg);}
+#counter{position:absolute;bottom:10px;left:0;right:0;}
+#back-button{margin-bottom:20px;}
+#results{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:none;padding:20px;text-align:center;overflow-y:auto;}
+#history-list{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:5px;}
+.scan-entry{font-size:2em;width:3em;height:3em;display:flex;align-items:center;justify-content:center;font-family:monospace;background:#fff;color:#000;border-radius:6px;box-sizing:border-box;}
+</style>
 </head>
 <body>
-  <div id="reader"></div>
-  <div id="current-scan">---</div>
-  <div id="counter" class="button">HISTORIQUE</div>
 
-  <div id="results">
-    <button id="back-button" class="button">RETOUR</button>
-    <div id="history-list"></div>
-  </div>
+<div id="reader"></div>
+<div id="current-scan">---</div>
+<div id="counter" class="button">HISTORIQUE</div>
 
-  <audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
+<div id="results">
+  <button id="back-button" class="button">RETOUR</button>
+  <div id="history-list"></div>
+</div>
 
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
-      authDomain: "calor-run.firebaseapp.com",
-      databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "calor-run",
-      storageBucket: "calor-run.appspot.com",
-      messagingSenderId: "329949291334",
-      appId: "1:329949291334:web:c71ef20268c609cf953b47"
-    };
+<audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
 
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const auth = firebase.auth();
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+  authDomain: "calor-run.firebaseapp.com",
+  databaseURL: "https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "calor-run",
+  storageBucket: "calor-run.appspot.com",
+  messagingSenderId: "329949291334",
+  appId: "1:329949291334:web:c71ef20268c609cf953b47"
+};
 
-    // DOM elements
-    const beepSound = document.getElementById('beep-sound');
-    const currentScanDiv = document.getElementById('current-scan');
-    const counterDiv = document.getElementById('counter');
-    const resultsDiv = document.getElementById('results');
-    const backButton = document.getElementById('back-button');
-    const historyList = document.getElementById('history-list');
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const auth = firebase.auth();
 
-    // State
-    let scannedCodes = new Set(JSON.parse(localStorage.getItem('scannedCodes') || "[]"));
-    let lastScan = "", lastScanTime = 0, maxDossard;
-    let qrScanner;
+// DOM
+const beepSound = document.getElementById('beep-sound');
+const currentScanDiv = document.getElementById('current-scan');
+const counterDiv = document.getElementById('counter');
+const resultsDiv = document.getElementById('results');
+const backButton = document.getElementById('back-button');
+const historyList = document.getElementById('history-list');
 
-    // UI Events
-    counterDiv.onclick = () => resultsDiv.style.display = 'block';
-    backButton.onclick = () => resultsDiv.style.display = 'none';
+// State
+let scannedCodes = new Set(JSON.parse(localStorage.getItem('scannedCodes')||"[]"));
+let scanQueue = JSON.parse(localStorage.getItem('scanQueue')||"[]");
+let lastScan="", lastScanTime=0, maxDossard;
+let qrScanner;
 
-    function updateCounter() {
-      counterDiv.textContent = "Historique";
-    }
+// UI Events
+counterDiv.onclick = ()=>resultsDiv.style.display='block';
+backButton.onclick = ()=>resultsDiv.style.display='none';
 
-    function saveScannedCodes() {
-      localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes)));
-    }
+function updateCounter(){ counterDiv.textContent = "Historique"; }
+function saveScannedCodes(){ localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes))); }
+function saveQueue(){ localStorage.setItem('scanQueue', JSON.stringify(scanQueue)); }
 
-    function addScanToHistory(code) {
-      const entry = document.createElement('div');
-      entry.className = 'scan-entry';
-      entry.textContent = code;
+function addScanToHistory(code){
+  const entry = document.createElement('div');
+  entry.className = 'scan-entry';
+  entry.textContent = code;
 
-      const codeInt = parseInt(code, 10);
-      if (codeInt >= 1 && codeInt <= 300) entry.style.color = 'var(--primary-color)';
-      else if (codeInt >= 301 && codeInt <= 600) entry.style.color = 'var(--secondary-color)';
-      else entry.style.color = '#fff';
+  const codeInt = parseInt(code,10);
+  if(codeInt>=1 && codeInt<=300) entry.style.color='var(--primary-color)';
+  else if(codeInt>=301 && codeInt<=600) entry.style.color='var(--secondary-color)';
+  else entry.style.color='#fff';
 
-      historyList.prepend(entry);
-      if (historyList.childNodes.length > 100) historyList.removeChild(historyList.lastChild);
-    }
+  historyList.prepend(entry);
+  if(historyList.childNodes.length>100) historyList.removeChild(historyList.lastChild);
+}
 
-    function canScan(code) {
-      const now = Date.now();
-      if (scannedCodes.has(code)) return false;
-      if (code === lastScan && (now - lastScanTime) < 3000) return false;
-      lastScan = code;
-      lastScanTime = now;
-      return true;
-    }
+function canScan(code){
+  const now = Date.now();
+  if(scannedCodes.has(code)) return false;
+  if(code===lastScan && (now-lastScanTime)<3000) return false;
+  lastScan=code;
+  lastScanTime=now;
+  return true;
+}
 
-    function isValidCode(codeInt) {
-      return !isNaN(codeInt) && codeInt >= 1 && codeInt <= maxDossard;
-    }
+function isValidCode(codeInt){ return !isNaN(codeInt) && codeInt>=1 && codeInt<=maxDossard; }
 
-    function handleNewScan(code) {
-      const codeInt = parseInt(code, 10);
-      if (!isValidCode(codeInt) || !canScan(code)) return;
+// Queue management
+function enqueueScan(code){
+  if(!scanQueue.includes(code)){
+    scanQueue.push(code);
+    saveQueue();
+  }
+}
 
-      scannedCodes.add(code);
-      saveScannedCodes();
-      currentScanDiv.textContent = code;
-      addScanToHistory(code);
-      updateCounter();
-      beepSound.play();
-      navigator.vibrate?.(100);
-      setTimeout(() => currentScanDiv.textContent = "---", 2000);
+function flushQueue(){
+  if(!navigator.onLine) return;
+  while(scanQueue.length){
+    const code = scanQueue.shift();
+    database.ref('scan_dossards/'+code).transaction(current=>current===null?{dateTime:Date.now()}:undefined);
+  }
+  saveQueue();
+}
+window.addEventListener('online', flushQueue);
 
-      const scanRef = database.ref(`scan_dossards/${code}`);
-      scanRef.transaction(current => current === null ? { dateTime: Date.now() } : undefined);
-    }
+// Scan handler
+function handleNewScan(code){
+  const codeInt=parseInt(code,10);
+  if(!isValidCode(codeInt)||!canScan(code)) return;
 
-    function loadInitialScans(limit = 50) {
-      scannedCodes.forEach(code => addScanToHistory(code));
+  scannedCodes.add(code);
+  saveScannedCodes();
+  enqueueScan(code);
+  flushQueue(); // tente d'envoyer
+  currentScanDiv.textContent = code;
+  addScanToHistory(code);
+  updateCounter();
+  beepSound.play();
+  navigator.vibrate?.(100);
+  setTimeout(()=>currentScanDiv.textContent="---",2000);
+}
 
-      database.ref('scan_dossards').orderByKey().limitToLast(limit).once('value', snapshot => {
-        snapshot.forEach(child => {
-          if (!scannedCodes.has(child.key)) {
-            scannedCodes.add(child.key);
-            saveScannedCodes();
-            addScanToHistory(child.key);
-          }
-        });
-      });
+// Initial load
+function loadInitialScans(limit=50){
+  scannedCodes.forEach(code=>addScanToHistory(code));
 
-      database.ref('scan_dossards').limitToLast(1).on('child_added', snapshot => {
-        const code = snapshot.key;
-        if (!scannedCodes.has(code)) {
-          scannedCodes.add(code);
-          saveScannedCodes();
-          addScanToHistory(code);
-        }
-      });
-    }
-
-    function startCamera() {
-      Html5Qrcode.getCameras().then(cameras => {
-        if (!cameras.length) return;
-        const rear = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
-        if (!qrScanner) qrScanner = new Html5Qrcode("reader");
-
-        qrScanner.start(
-          { deviceId: { exact: rear.id } },
-          { fps: 30, qrbox: { width: 300, height: 300 }, disableFlip: true, aspectRatio: 1.0 },
-          handleNewScan,
-          () => {}
-        );
-      });
-    }
-
-    function startApp() {
-      loadInitialScans();
-      startCamera();
-    }
-
-    database.ref('data/participants').once('value').then(snapshot => {
-      const val = snapshot.val();
-      if (val && !isNaN(parseInt(val, 10))) {
-        maxDossard = parseInt(val, 10);
-        console.log("Max dossards:", maxDossard);
+  database.ref('scan_dossards').orderByKey().limitToLast(limit).once('value', snapshot=>{
+    snapshot.forEach(child=>{
+      if(!scannedCodes.has(child.key)){
+        scannedCodes.add(child.key);
+        saveScannedCodes();
+        addScanToHistory(child.key);
       }
     });
+  });
 
-    auth.onAuthStateChanged(user => {
-      if (user) startApp();
-    });
+  database.ref('scan_dossards').limitToLast(1).on('child_added', snapshot=>{
+    const code = snapshot.key;
+    if(!scannedCodes.has(code)){
+      scannedCodes.add(code);
+      saveScannedCodes();
+      addScanToHistory(code);
+    }
+  });
+}
 
-    auth.signInAnonymously().catch(err => alert("Erreur d'authentification: " + err.message));
-  </script>
+// Camera
+function startCamera(){
+  Html5Qrcode.getCameras().then(cameras=>{
+    if(!cameras.length) return;
+    const rear = cameras.find(c=>c.label.toLowerCase().includes("back"))||cameras[0];
+    if(!qrScanner) qrScanner=new Html5Qrcode("reader");
+    qrScanner.start(
+      {deviceId:{exact:rear.id}},
+      {fps:30,qrbox:{width:300,height:300},disableFlip:true,aspectRatio:1.0},
+      handleNewScan,
+      ()=>{}
+    );
+  });
+}
+
+// App start
+function startApp(){
+  loadInitialScans();
+  startCamera();
+}
+
+// Load max participants
+database.ref('data/participants').once('value').then(snapshot=>{
+  const val = snapshot.val();
+  if(val && !isNaN(parseInt(val,10))) maxDossard = parseInt(val,10);
+  console.log("Max dossards:", maxDossard);
+});
+
+// Auth
+auth.onAuthStateChanged(user=>{ if(user) startApp(); });
+auth.signInAnonymously().catch(err=>alert("Erreur d'authentification: "+err.message));
+
+</script>
 </body>
 </html>
