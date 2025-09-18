@@ -25,16 +25,23 @@ body { margin:0;font-family:sans-serif;background:#000;color:#fff;overflow:hidde
 }
 #counter { position: absolute; bottom: 10px; left:0; right:0; } /* bouton en bas */
 #results{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:none;padding:20px;text-align:center;overflow-y:auto;}
+#history-list {
+  display: flex;
+  flex-wrap: wrap;       /* retour à la ligne automatique */
+  justify-content: flex-start;
+  gap: 5px;              /* espace entre les cases */
+}
 #history-list .scan-entry {
   font-size: 2em;
-  margin: 5px 5px;
+  width: 3em;            /* largeur fixe */
+  height: 3em;           /* hauteur fixe */
+  display: flex;
+  align-items: center;   /* centrer verticalement */
+  justify-content: center; /* centrer horizontalement */
+  font-family: monospace;
   background: #fff;
   color: #000;
-  padding: 10px 0;
   border-radius: 6px;
-  text-align: center;
-  font-family: monospace;
-  width: 3ch;
   box-sizing: border-box;
 }
 </style>
