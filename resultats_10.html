@@ -7,8 +7,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏅</text></svg>">
 <style>
 :root {
-  --primary-blue: #215E99;
-  --accent-pink: #E61780;
+  --primary-color: #215E99;  /* anciennement --primary-blue */
+  --secondary-color: #E61780; /* anciennement --accent-pink */
   --bg-white: #fff;
   --bg-light: #f9f9f9;
   --shadow: rgba(0,0,0,0.15);
@@ -31,7 +31,7 @@ body::before {
   content:'';
   position: fixed;
   inset:0;
-  background: linear-gradient(0.25turn, var(--primary-blue), var(--accent-pink));
+  background: linear-gradient(0.25turn, var(--primary-color), var(--secondary-color));
   opacity:0.3;
   z-index:-1;
 }
@@ -39,7 +39,7 @@ body::before {
 .header {
   text-align:center;
   margin-bottom:10px;
-  color: var(--primary-blue);
+  color: var(--primary-color);
   font-size:1.3rem;
   font-weight:bold;
   padding:20px 20px 60px;
@@ -65,8 +65,8 @@ body::before {
   outline:none;
   transition:border-color 0.3s;
 }
-#search:focus { border-bottom-color: var(--primary-blue); }
-#counter { font-weight:bold; color:var(--primary-blue); white-space:nowrap; }
+#search:focus { border-bottom-color: var(--primary-color); }
+#counter { font-weight:bold; color:var(--primary-color); white-space:nowrap; }
 .table-container {
   max-width: var(--max-width);
   overflow-x:auto;
