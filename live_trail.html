@@ -27,7 +27,6 @@
             line-height: 1.5;
             color: var(--text-dark);
             min-height: 100vh;
-            padding: 1.25rem;
             position: relative;
         }
         body::before {
@@ -55,10 +54,7 @@
         .counter-line { text-align: center; margin-bottom: 15px; font-size: 1rem; }
         .counter-10km { color: var(--primary-color); }
         .counter-20km { color: var(--secondary-color); }
-        .counter-error {
-            animation: blinker 2s linear infinite;
-            color: red;
-        }
+        .counter-error { animation: blinker 2s linear infinite; color: red; }
         @keyframes blinker { 50% { opacity: 0; } }
         .table-container {
             width: 96vw;
@@ -139,6 +135,9 @@
         measurementId: "G-YVQPW6JGPK"
     };
 
+    const app = firebase.initializeApp(FIREBASE_CONFIG);
+    const db = firebase.database();
+
     const COURSE_ALIASES = {
         '10': '10km', '10km': '10km', '10 km': '10km',
         '20': '20km', '20km': '20km', '20 km': '20km'
@@ -151,31 +150,22 @@
         compteurs: document.getElementById('compteurs'),
         tbody: document.querySelector('#classement tbody'),
         tableContainer: document.getElementById('table-container'),
-        lastUpdate: document.getElementById('last-update'),
-        updateTime: document.getElementById('update-time'),
-        counter10km: null,
-        counter20km: null,
-        counterTotal: null
+        counter10km: document.querySelector('.counter-10km'),
+        counter20km: document.querySelector('.counter-20km'),
+        counterTotal: document.querySelector('span:last-child')
     };
-
-    elements.counter10km = elements.compteurs.querySelector('.counter-10km');
-    elements.counter20km = elements.compteurs.querySelector('.counter-20km');
-    elements.counterTotal = elements.compteurs.querySelector('span:last-child');
 
     let departureTimestamp = null;
     let participants = {};
     let scans = {};
     let chronoInterval = null;
 
-    const app = firebase.initializeApp(FIREBASE_CONFIG);
-    const db = firebase.database();
-
     function formatTime(ms) {
         const totalSeconds = Math.floor(Math.abs(ms) / 1000);
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
     }
 
     function startChrono() {
@@ -196,124 +186,85 @@
         chronoInterval = setInterval(updateChrono, 1000);
     }
 
-    function createTableRow(participant) {
-        const tr = document.createElement('tr');
-        const tempsDisplay = (typeof participant.tempsMs === "number" && participant.tempsMs < 0) ? "--:--:--" : participant.tempsStr;
-        tr.innerHTML = `
-            <td class="text-center">${participant.dossard}</td>
-            <td>${participant.nom}</td>
-            <td>${participant.prenom}</td>
-            <td class="text-center">${tempsDisplay}</td>
-            <td class="text-center">${participant.course}</td>
-            <td class="text-center">${participant.scratch}</td>
-            <td class="text-center">${participant.genre || ''}</td>
-            <td class="text-center">${participant.posGenre}</td>
-            <td class="text-center">${participant.categorie || ''}</td>
-            <td class="text-center">${participant.posCat}</td>
-        `;
-        return tr;
-    }
-
-    function calculatePositions(classement) {
-        const scratchCounter = {};
-        const genreCounter = {};
-        const catCounter = {};
-
-        let count10 = 0;   // arrivés 10 km
-        let count20 = 0;   // arrivés 20 km
-        let total10 = 0;   // inscrits 10 km
-        let total20 = 0;   // inscrits 20 km
-
-        Object.values(participants).forEach(p => {
-            const courseNormalized = COURSE_ALIASES[String(p.course).trim()] || p.course;
-            if (courseNormalized === '10km') total10++;
-            else if (courseNormalized === '20km') total20++;
-        });
-
-        for (let i = classement.length - 1; i >= 0; i--) {
-            const participant = classement[i];
-
-            const courseNormalized = COURSE_ALIASES[String(participant.course).trim()] || participant.course;
-            if (courseNormalized === '10km') count10++;
-            else if (courseNormalized === '20km') count20++;
-
-            const scratchKey = participant.course;
-            scratchCounter[scratchKey] = (scratchCounter[scratchKey] || 0) + 1;
-            participant.scratch = scratchCounter[scratchKey];
-
-            const genreKey = `${participant.course}_${participant.genre}`;
-            genreCounter[genreKey] = (genreCounter[genreKey] || 0) + 1;
-            participant.posGenre = genreCounter[genreKey];
-
-            const catKey = `${participant.course}_${participant.genre}_${participant.categorie}`;
-            catCounter[catKey] = (catCounter[catKey] || 0) + 1;
-            participant.posCat = catCounter[catKey];
-        }
-
-        return { count10, count20, total10, total20 };
-    }
-
-    function displayData(classement, count10, count20, total10, total20) {
-        const fragment = document.createDocumentFragment();
-        classement.forEach(participant => {
-            fragment.appendChild(createTableRow(participant));
-        });
-        elements.tbody.innerHTML = '';
-        elements.tbody.appendChild(fragment);
-        elements.loading.classList.add('hidden');
-        elements.compteurs.classList.remove('hidden');
-        elements.tableContainer.classList.remove('hidden');
-
-        elements.counter10km.textContent = `10 km : ${count10}/${total10}`;
-        elements.counter20km.textContent = `20 km : ${count20}/${total20}`;
-        elements.counterTotal.textContent = `Total : ${classement.length}/${total10 + total20}`;
-
-        const displayedTotal = classement.length;
-        const expectedTotal = count10 + count20;
-        if (displayedTotal !== expectedTotal) {
-            elements.counterTotal.classList.add('counter-error');
-        } else {
-            elements.counterTotal.classList.remove('counter-error');
-        }
-        elements.updateTime.textContent = new Date().toLocaleTimeString('fr-FR');
-        elements.lastUpdate.classList.remove('hidden');
-    }
-
     function updateClassement() {
-        if (!departureTimestamp || Object.keys(scans).length === 0) {
-            return;
-        }
+        if (!departureTimestamp || Object.keys(scans).length === 0) return;
+
         try {
-            const classement = Object.keys(scans).map(dossard => {
+            const classement = [];
+            let count10 = 0, count20 = 0, total10 = 0, total20 = 0;
+            const scratchCounter = {}, genreCounter = {}, catCounter = {};
+
+            // Comptage des inscrits
+            Object.values(participants).forEach(p => {
+                const courseNormalized = COURSE_ALIASES[String(p.course).trim()] || p.course;
+                if (courseNormalized === '10km') total10++;
+                else if (courseNormalized === '20km') total20++;
+            });
+
+            // Classement + positions
+            Object.keys(scans).forEach(dossard => {
                 const scan = scans[dossard];
                 const participant = participants[dossard] || {};
                 const tempsMs = new Date(scan.dateTime).getTime() - departureTimestamp;
-                return {
-                    dossard,
-                    nom: participant.nom || '',
-                    prenom: participant.prenom || '',
-                    tempsMs,
-                    tempsStr: formatTime(tempsMs),
-                    course: participant.course || '',
-                    genre: participant.genre || '',
-                    categorie: participant.categorie || ''
-                };
-            }).sort((a, b) => b.tempsMs - a.tempsMs);
+                const tempsStr = (typeof tempsMs === "number" && tempsMs < 0) ? "--:--:--" : formatTime(tempsMs);
+                const courseNormalized = COURSE_ALIASES[String(participant.course).trim()] || participant.course;
 
-            const { count10, count20, total10, total20 } = calculatePositions(classement);
-            displayData(classement, count10, count20, total10, total20);
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour du classement:', error);
+                if (courseNormalized === '10km') count10++;
+                else if (courseNormalized === '20km') count20++;
+
+                scratchCounter[courseNormalized] = (scratchCounter[courseNormalized] || 0) + 1;
+                const scratch = scratchCounter[courseNormalized];
+
+                const genreKey = `${courseNormalized}_${participant.genre}`;
+                genreCounter[genreKey] = (genreCounter[genreKey] || 0) + 1;
+                const posGenre = genreCounter[genreKey];
+
+                const catKey = `${courseNormalized}_${participant.genre}_${participant.categorie}`;
+                catCounter[catKey] = (catCounter[catKey] || 0) + 1;
+                const posCat = catCounter[catKey];
+
+                classement.push({ ...participant, dossard, tempsMs, tempsStr, scratch, posGenre, posCat, course: courseNormalized });
+            });
+
+            classement.sort((a,b) => b.tempsMs - a.tempsMs);
+
+            const fragment = document.createDocumentFragment();
+            classement.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-center">${p.dossard}</td>
+                    <td>${p.nom}</td>
+                    <td>${p.prenom}</td>
+                    <td class="text-center">${p.tempsStr}</td>
+                    <td class="text-center">${p.course}</td>
+                    <td class="text-center">${p.scratch}</td>
+                    <td class="text-center">${p.genre || ''}</td>
+                    <td class="text-center">${p.posGenre}</td>
+                    <td class="text-center">${p.categorie || ''}</td>
+                    <td class="text-center">${p.posCat}</td>
+                `;
+                fragment.appendChild(tr);
+            });
+
+            elements.tbody.innerHTML = '';
+            elements.tbody.appendChild(fragment);
+            elements.loading.classList.add('hidden');
+            elements.compteurs.classList.remove('hidden');
+            elements.tableContainer.classList.remove('hidden');
+
+            elements.counter10km.textContent = `10 km : ${count10}/${total10}`;
+            elements.counter20km.textContent = `20 km : ${count20}/${total20}`;
+            elements.counterTotal.textContent = `Total : ${classement.length}/${total10+total20}`;
+            elements.counterTotal.classList.toggle('counter-error', classement.length !== (count10+count20));
+
+        } catch(err) {
+            console.error('Erreur mise à jour classement:', err);
         }
     }
 
     db.ref('data/depart_course').on('value', snapshot => {
         departureTimestamp = snapshot.exists() ? new Date(snapshot.val()).getTime() : null;
-        if (departureTimestamp) {
-            startChrono();
-        } else {
-            elements.chronoTime.classList.add('paused');
-        }
+        startChrono();
         updateClassement();
     });
 
@@ -327,11 +278,7 @@
         updateClassement();
     });
 
-    window.addEventListener('beforeunload', () => {
-        if (chronoInterval) {
-            clearInterval(chronoInterval);
-        }
-    });
-</script>
+    window.addEventListener('beforeunload', () => clearInterval(chronoInterval));
+    </script>
 </body>
 </html>
