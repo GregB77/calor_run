@@ -80,7 +80,6 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 @media (max-width:768px){
   table { min-width:auto; font-size:0.85rem; }
 }
-
 </style>
 </head>
 <body>
@@ -156,7 +155,7 @@ const el = {
   age10: document.querySelector('#tbl-age-10 tbody'),
   age20: document.querySelector('#tbl-age-20 tbody'),
   err: document.getElementById('err'),
-  updateTime: document.getElementById('update-time') // facultatif si tu veux afficher l'heure
+  updateTime: null // facultatif
 };
 
 const orderCat = ['CA','JU','ES','SE','M0','M1','M2','M3','M4','M5','M6','M7','M8','M9','M10'];
@@ -241,10 +240,6 @@ db.ref('participants').on('value',snap=>{
     const data = snap.val()||{};
     renderCats(el.cat,data);
     renderAges(el.age10,el.age20,data);
-    if(el.updateTime){
-      const now = new Date();
-      el.updateTime.textContent = now.toLocaleTimeString('fr-FR');
-    }
   }catch(e){
     console.error(e);
     showError("Erreur traitement : "+e.message);
@@ -256,4 +251,3 @@ db.ref('participants').on('value',snap=>{
 </script>
 </body>
 </html>
-
