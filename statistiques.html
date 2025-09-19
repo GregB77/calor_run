@@ -41,14 +41,14 @@ body::before {
 
 /* Header */
 .header {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
-    padding: 3rem 1rem 5rem;
-    background: url('calor.png') center/contain no-repeat;
-    background-size: contain;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  padding: 3rem 1rem 5rem;
+  background: url('calor.png') center/contain no-repeat;
+  background-size: contain;
 }
 
 /* Table styles */
@@ -61,7 +61,7 @@ body::before {
   padding:0.5rem;
 }
 
-table { width:100%; border-collapse:collapse; min-width:600px; margin-bottom:1rem; }
+table { width:100%; border-collapse:collapse; min-width:300px; margin-bottom:1rem; }
 th, td { padding:0.5rem; border-bottom:1px solid var(--border-light); text-align:center; }
 th { font-weight:600; position:sticky; top:0; z-index:10; }
 caption { caption-side: top; text-align:left; font-weight:bold; margin-bottom:0.5rem; }
@@ -87,6 +87,7 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 
 @media (max-width:768px){
   table { min-width:auto; font-size:0.85rem; }
+  .ages-container { flex-direction: column; }
 }
 </style>
 </head>
@@ -291,6 +292,5 @@ db.ref('participants').on('value',snap=>{
   }
 },err=>{console.error(err);showError("Erreur Firebase : "+err.message);});
 </script>
-
 </body>
 </html>
