@@ -39,7 +39,7 @@ body::before {
 
 .container { max-width:1200px; margin:0 auto; }
 
-/* Header style code 2 simplifié */
+/* Header */
 .header {
     text-align: center;
     font-size: 1.5rem;
@@ -51,30 +51,21 @@ body::before {
     background-size: contain;
 }
 
-/* Card style */
-.card {
-  margin-bottom:1.5rem;
-  background: var(--bg-white);
-  border-radius: var(--border-radius);
-  box-shadow:0 0.25rem 0.75rem var(--shadow);
-  padding:1rem;
-}
-
-.card h2 { margin-bottom:1rem; color: var(--primary-color); }
-
+/* Table styles */
 .table-container {
   margin-bottom:1.5rem;
   overflow-x:auto;
   background: var(--bg-white);
   border-radius: var(--border-radius);
   box-shadow:0 0.25rem 0.75rem var(--shadow);
+  padding:0.5rem;
 }
 
-table { width:100%; border-collapse:collapse; min-width:600px; }
+table { width:100%; border-collapse:collapse; min-width:600px; margin-bottom:1rem; }
 th, td { padding:0.5rem; border-bottom:1px solid var(--border-light); text-align:center; }
 th { font-weight:600; position:sticky; top:0; z-index:10; }
+caption { caption-side: top; text-align:left; font-weight:bold; margin-bottom:0.5rem; }
 
-/* Couleurs spécifiques aux colonnes du tableau cat */
 #tbl-cat th:nth-child(1), #tbl-cat th:nth-child(8) { background: var(--grey); color:#111; }
 #tbl-cat th:nth-child(2), #tbl-cat th:nth-child(3), #tbl-cat th:nth-child(4) { background: var(--primary-color); color:#fff; }
 #tbl-cat th:nth-child(5), #tbl-cat th:nth-child(6), #tbl-cat th:nth-child(7) { background: var(--secondary-color); color:#fff; }
@@ -92,48 +83,48 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 <div class="container">
   <div class="header">STATISTIQUES</div>
 
-  <section class="card">
-    <h2>Répartition par catégories</h2>
-    <div class="table-container">
-      <table id="tbl-cat">
-        <thead>
-          <tr>
-            <th>Catégorie</th>
-            <th>Femmes (10km)</th>
-            <th>Hommes (10km)</th>
-            <th>Total (10km)</th>
-            <th>Femmes (20km)</th>
-            <th>Hommes (20km)</th>
-            <th>Total (20km)</th>
-            <th>Total général</th>
-          </tr>
-        </thead>
-        <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
-      </table>
-    </div>
-  </section>
+  <!-- Tableau 1 : Répartition par catégories -->
+  <div class="table-container">
+    <table id="tbl-cat">
+      <caption>Répartition par catégories</caption>
+      <thead>
+        <tr>
+          <th>Catégorie</th>
+          <th>Femmes (10km)</th>
+          <th>Hommes (10km)</th>
+          <th>Total (10km)</th>
+          <th>Femmes (20km)</th>
+          <th>Hommes (20km)</th>
+          <th>Total (20km)</th>
+          <th>Total général</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
+    </table>
+  </div>
 
-  <section class="card">
-    <h2>-/+ Âgés - 10 km | 20 km</h2>
-    <div class="table-container" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <table id="tbl-age-10">
-        <thead>
-          <tr>
-            <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
-          </tr>
-        </thead>
-        <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
-      </table>
-      <table id="tbl-age-20">
-        <thead>
-          <tr>
-            <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
-          </tr>
-        </thead>
-        <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
-      </table>
-    </div>
-  </section>
+  <!-- Tableau 2 : Âges -->
+  <div class="table-container">
+    <table id="tbl-age-10">
+      <caption>-/+ Âgés - 10 km</caption>
+      <thead>
+        <tr>
+          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+    </table>
+
+    <table id="tbl-age-20">
+      <caption>-/+ Âgés - 20 km</caption>
+      <thead>
+        <tr>
+          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+    </table>
+  </div>
 </div>
 
 <div id="err" class="error" style="display:none;color:red;text-align:center;margin-top:1rem;"></div>
