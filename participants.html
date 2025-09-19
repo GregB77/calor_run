@@ -68,52 +68,24 @@
       transition:border-color 0.3s;
     }
     #search:focus { border-bottom-color: var(--primary-color); }
-
-    .counter-10km {
-      color: var(--primary-color);
-    }
-
-    .counter-20km {
-      color: var(--secondary-color);
-    }
-    
-    #counter {
-      display: flex;
-      gap: 10px;
-    }
-
+    #counter { text-decoration: none; margin: 0 0.25rem; font-weight: normal; color: #000; }
+    .counter-10km { color: var(--primary-color); }
+    .counter-20km { color: var(--secondary-color); }
     .table-container {
+      max-width: var(--max-width);
+      overflow-x:auto;
+      margin:0 auto 1.25rem;
       background: var(--bg-white);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow);
+      border-radius: var(--border-radius); /* remplacé */
+      box-shadow: 0 0.25rem 0.75rem var(--shadow);
     }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 8px 8px;
-      text-align: left;
-      font-size: 0.95rem;
-    }
-
-    th {
-      background: var(--header-bg);
-      font-weight: bold;
-      position: sticky;
-      color: #333;
-      top: 0;
-      z-index: 10;
-      padding-right: 32px;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
+    table { width:100%; border-collapse: collapse; min-width:43.75rem; }
+    th, td { padding:0.375rem 0.5rem; border-bottom:1px solid var(--border-light); text-align:left; white-space: nowrap; }
+    th { background: var(--header-bg); font-weight:600; position:sticky; top:0; z-index:10; }
+    tbody tr:nth-child(even){ background: var(--bg-light); }
+    .text-center { text-align:center; }
+    .loading { text-align:center; padding:1.25rem 0; font-size:1rem; }
+    .hidden { display:none; }
     .sort-indicator {
       position: absolute;
       right: 12px;
@@ -128,31 +100,13 @@
       transition: all var(--transition-smooth);
       pointer-events: none;
     }
-
-    th.sorted .sort-indicator {
-      opacity: 1;
-      border-bottom-color: var(--primary-color);
-    }
-
-    th.sorted.desc .sort-indicator {
-      transform: translateY(-50%) rotate(180deg);
-    }
+    th.sorted .sort-indicator { opacity: 1; border-bottom-color: var(--primary-color); }
+    th.sorted.desc .sort-indicator { transform: translateY(-50%) rotate(180deg); }
 
     .header-label {
       display: inline-block;
       vertical-align: middle;
       margin-right: 4px;
-    }
-
-    tbody tr:nth-child(even) {
-      background: var(--bg-light);
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1rem;
-      color: var(--primary-color);
     }
 
     .no-results {
@@ -162,72 +116,19 @@
       font-style: italic;
     }
 
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-      
-      th, td {
-        padding: 10px 8px;
-      }
-      
-      th {
-        padding-right: 26px;
-      }
-      
-      table {
-        font-size: 0.85rem;
-        min-width: 600px;
-      }
-      
-      .table-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .search-counter {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-      }
-
-      #search {
-        width: 100%;
-        max-width: none;
-      }
-      
-      #counter {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: nowrap;
-        gap: 10px;
-      }
-      
-      #counter span {
-        flex-shrink: 0;
-        white-space: nowrap;
-      }
-    }
-    
-    #data-table th,
-    #data-table td {
-      border: 1px solid #ddd;
-    }
-    
-    #data-table tbody tr:nth-child(odd) {
-      background: #fff;
-    }
-    
-    #data-table tbody tr:nth-child(even) {
-      background: #f9f9f9;
-    }
+    @media(max-width:768px){
+      .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
+      .search-counter-container { justify-content:center; flex-direction:column; gap:0.625rem; margin-bottom:0.625rem; }
+      #search, #counter { font-size:0.75rem; text-align: center; width: 100%; padding:0rem; max-width: none; flex: none; }
+      table { font-size:0.85rem; }
+      th, td { padding:0.375rem 0.5rem; }
+}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">PARTICIPANTS CALOR RUN</div>
-    <div class="search-counter">
+    <div class="search-counter-container">
       <input type="text" id="search" placeholder="Rechercher par nom, prénom, club..." autocomplete="off">
       <div id="counter">
         <span class="counter-10km">10 km : 0</span>
