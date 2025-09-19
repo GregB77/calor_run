@@ -11,7 +11,7 @@
   --secondary-color: #E61780;
   --bg-white: #fff;
   --bg-light: #f9f9f9;
-  --shadow: rgba(0, 0, 0, 0.15);
+  --shadow: rgba(0,0,0,0.15);
   --border-radius: 0.75rem;
   --text-dark: #111;
   --border-light: #ddd;
@@ -73,6 +73,18 @@ caption { caption-side: top; text-align:left; font-weight:bold; margin-bottom:0.
 tbody tr:nth-child(even) { background: var(--bg-light); }
 .muted { color:#777; }
 
+/* Flexbox pour les tableaux Âges */
+.ages-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* empile sur petit écran */
+}
+
+.ages-table {
+  flex: 1; /* prend l’espace disponible équitablement */
+  min-width: 280px; /* garantit la lisibilité sur mobile */
+}
+
 @media (max-width:768px){
   table { min-width:auto; font-size:0.85rem; }
 }
@@ -104,25 +116,43 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
   </div>
 
   <!-- Tableau 2 : Âges -->
-  <div class="table-container">
-    <table id="tbl-age-10">
-      <caption>-/+ Âgés - 10 km</caption>
-      <thead>
-        <tr>
-          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
-        </tr>
-      </thead>
-      <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
-    </table>
+  <div class="table-container ages-container">
+    <div class="ages-table">
+      <table id="tbl-age-10">
+        <caption>-/+ Âgés - 10 km</caption>
+        <thead>
+          <tr>
+            <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="ages-table">
+      <table id="tbl-age-20">
+        <caption>-/+ Âgés - 20 km</caption>
+        <thead>
+          <tr>
+            <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 
-    <table id="tbl-age-20">
-      <caption>-/+ Âgés - 20 km</caption>
+  <!-- Tableau 3 : Classement des clubs -->
+  <div class="table-container">
+    <table id="tbl-clubs">
+      <caption>Classement des clubs par nombre de participants</caption>
       <thead>
         <tr>
-          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+          <th>Rang</th>
+          <th>Club</th>
+          <th>Participants</th>
         </tr>
       </thead>
-      <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+      <tbody><tr><td colspan="3" class="muted">Chargement…</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -142,7 +172,6 @@ const firebaseConfig = {
   messagingSenderId:"329949291334",
   appId:"1:329949291334:web:c71ef20268c609cf953b47"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
@@ -150,6 +179,7 @@ const el = {
   cat: document.querySelector('#tbl-cat tbody'),
   age10: document.querySelector('#tbl-age-10 tbody'),
   age20: document.querySelector('#tbl-age-20 tbody'),
+  clubs: document.querySelector('#tbl-clubs tbody'),
   err: document.getElementById('err')
 };
 
@@ -228,6 +258,18 @@ function renderAges(body10, body20, data){
   body20.innerHTML=buildRows(ages[20]);
 }
 
+function renderClubs(body, data){
+  const clubsCount = {};
+  Object.values(data||{}).forEach(p=>{
+    const club = p.club || '—';
+    clubsCount[club] = (clubsCount[club]||0) + 1;
+  });
+  const sortedClubs = Object.entries(clubsCount)
+    .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
+  const rows = sortedClubs.map((c,i)=>`<tr><td>${i+1}</td><td>${c[0]}</td><td>${c[1]}</td></tr>`);
+  body.innerHTML = rows.join('') || '<tr><td colspan="3" class="muted">Aucune donnée.</td></tr>';
+}
+
 function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
 
 db.ref('participants').on('value',snap=>{
@@ -235,6 +277,7 @@ db.ref('participants').on('value',snap=>{
     const data = snap.val()||{};
     renderCats(el.cat,data);
     renderAges(el.age10,el.age20,data);
+    renderClubs(el.clubs,data);
   }catch(e){
     console.error(e);
     showError("Erreur traitement : "+e.message);
