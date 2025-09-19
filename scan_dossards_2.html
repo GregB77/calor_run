@@ -91,63 +91,63 @@
     }
 
     function canScan(code) {
-      const now=Date.now();
+      const now = Date.now();
       if(scannedCodes.has(code)) return false;
-      if(code===lastScan && (now-lastScanTime)<3000) return false;
-      lastScan=code; lastScanTime=now;
+      if(code === lastScan && (now - lastScanTime) < 3000) return false;
+      lastScan = code; lastScanTime = now;
       return true;
     }
 
-    function isValidCode(codeInt){ return !isNaN(codeInt)&&codeInt>=1&&codeInt<=maxDossard; }
+    function isValidCode(codeInt){ return !isNaN(codeInt) && codeInt >=1 && codeInt <= maxDossard; }
 
     function handleNewScan(code){
-      const codeInt=parseInt(code,10);
-      if(!isValidCode(codeInt)||!canScan(code)) return;
+      const codeInt = parseInt(code,10);
+      if(!isValidCode(codeInt) || !canScan(code)) return;
+
       scannedCodes.add(code);
       saveScannedCodes();
-      currentScanDiv.textContent=code;
+      currentScanDiv.textContent = code;
       addScanToHistory(code);
       beepSound.play();
       navigator.vibrate?.(100);
       setTimeout(()=>currentScanDiv.textContent="---",2000);
 
-      const scanRef=database.ref(`scan_dossards/${code}`);
-      scanRef.transaction(current=>current===null?{dateTime:Date.now()}:undefined)
+      const scanRef = database.ref(`scan_dossards/${code}`);
+      scanRef.transaction(current => current===null?{dateTime:Date.now()}:undefined)
         .catch(()=>{ pendingScans.push({code,timestamp:Date.now()}); savePendingScans(); });
     }
 
     function syncPendingScans(){
       if(!pendingScans.length) return;
-      const toSync=[...pendingScans];
-      pendingScans=[];
+      const toSync = [...pendingScans];
+      pendingScans = [];
       toSync.forEach(({code,timestamp})=>{
-        const scanRef=database.ref(`scan_dossards/${code}`);
+        const scanRef = database.ref(`scan_dossards/${code}`);
         scanRef.transaction(current=>current===null?{dateTime:timestamp}:undefined)
           .catch(()=>pendingScans.push({code,timestamp}))
           .finally(savePendingScans);
       });
     }
 
-    // ------------------- CORRECTION SYNCHRO -------------------
+    // ------------------- SYNCHRO CORRIGÉE -------------------
     function syncFirebaseWithLocal(){
       database.ref('scan_dossards').once('value').then(snapshot=>{
-        const firebaseCodes = new Set();
-        snapshot.forEach(child=>firebaseCodes.add(child.key));
+        const firebaseCodes = [];
+        snapshot.forEach(child => firebaseCodes.push(child.key));
+        firebaseCodes.sort((a,b)=>parseInt(a,10)-parseInt(b,10));
 
-        // Ajouter les codes Firebase manquants au cache local
         firebaseCodes.forEach(code=>{
           if(!scannedCodes.has(code)){
             scannedCodes.add(code);
             addScanToHistory(code);
           }
         });
-
         saveScannedCodes();
 
-        // Envoyer les scans locaux non présents sur Firebase
+        // Envoyer les scans locaux manquants
         pendingScans = pendingScans.filter(({code,timestamp})=>{
-          if(!firebaseCodes.has(code)){
-            const scanRef=database.ref(`scan_dossards/${code}`);
+          if(!firebaseCodes.includes(code)){
+            const scanRef = database.ref(`scan_dossards/${code}`);
             scanRef.transaction(current=>current===null?{dateTime:timestamp}:undefined)
               .catch(()=>pendingScans.push({code,timestamp}));
             return false;
@@ -170,11 +170,11 @@
       });
     }
 
-    // Temps réel
+    // Temps réel : uniquement pour nouveaux scans après le chargement initial
     function listenRealtimeScans(){
       database.ref('scan_dossards').limitToLast(1)
-        .on('child_added',snapshot=>{
-          const code=snapshot.key;
+        .on('child_added', snapshot=>{
+          const code = snapshot.key;
           if(!scannedCodes.has(code)){
             scannedCodes.add(code);
             saveScannedCodes();
@@ -186,12 +186,12 @@
     function startCamera(){
       Html5Qrcode.getCameras().then(cameras=>{
         if(!cameras.length) return;
-        const rear=cameras.find(c=>c.label.toLowerCase().includes("back"))||cameras[0];
-        if(!qrScanner) qrScanner=new Html5Qrcode("reader");
+        const rear = cameras.find(c=>c.label.toLowerCase().includes("back"))||cameras[0];
+        if(!qrScanner) qrScanner = new Html5Qrcode("reader");
 
         qrScanner.start(
           {deviceId:{exact:rear.id}},
-          {fps:30,qrbox:{width:400,height:400},disableFlip:true,experimentalFeatures:{useBarCodeDetectorIfSupported:true}},
+          {fps:30, qrbox:{width:400,height:400}, disableFlip:true, experimentalFeatures:{useBarCodeDetectorIfSupported:true}},
           handleNewScan,
           ()=>{}
         );
@@ -209,7 +209,6 @@
       });
     }
 
-    // Sync online
     window.addEventListener('online',()=>{
       syncPendingScans();
       syncFirebaseWithLocal();
@@ -223,7 +222,6 @@
 
     auth.onAuthStateChanged(user=>{ if(user) startApp(); });
     auth.signInAnonymously().catch(err=>alert("Erreur d'authentification: "+err.message));
-
   </script>
 </body>
 </html>
