@@ -67,6 +67,10 @@ th { background: var(--header-bg); font-weight:600; position:sticky; top:0; z-in
 tbody tr:nth-child(even){ background: var(--bg-light); }
 .muted { color:#777; }
 
+#tbl-cat th, #tbl-cat td { text-align: center; }
+#tbl-age th:nth-child(1),#tbl-age td:nth-child(1), #tbl-age th:nth-child(4), #tbl-age td:nth-child(4), #tbl-age th:nth-child(5), #tbl-age td:nth-child(5), #tbl-age th:nth-child(8), #tbl-age td:nth-child(8) { text-align: center; }
+#tbl-clubs th:nth-child(1), #tbl-clubs td:nth-child(1), #tbl-clubs th:nth-child(3), #tbl-clubs td:nth-child(3) { text-align: center; }
+  
 /* Ligne verticale séparatrice pour le tableau des âges */
 #tbl-age th.separator,
 #tbl-age td.separator {
@@ -108,12 +112,12 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
 
   <!-- Tableau 2 : Âges fusionné -->
   <div class="table-container">
-    <div class="table-title">Âgés – 10 km et 20 km</div>
+    <div class="table-title">Plus et moins âgés 10 et 20 km</div>
     <table id="tbl-age">
       <thead>
         <tr>
           <th colspan="4" class="sub-title">10 km</th>
-          <th colspan="4" class="sub-title">20 km</th>
+          <th colspan="4" class="separator">20 km</th>
         </tr>
         <tr>
           <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
