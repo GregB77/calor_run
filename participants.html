@@ -233,16 +233,16 @@
 
     function filterData(searchTerm) {
       const terms = searchTerm
-        .split(/\s+/)               // découpe en mots séparés par espaces
-        .map(utils.normalizeString) // normalise (minuscules, accents, espaces)
-        .filter(Boolean);           // enlève les vides
-
+        .split(/\s+/)
+        .map(utils.normalizeString)
+        .filter(Boolean);
+    
       if (terms.length === 0) {
         AppState.filteredData = [...AppState.allData];
       } else {
         AppState.filteredData = AppState.allData.filter(p => {
           return terms.every(term => {
-            
+    
             // Cas 1 : recherche genre+catégorie (ex: HM0, FSE)
             if (/^(h|f)([a-z0-9]+)$/i.test(term)) {
               const m = term.match(/^(h|f)([a-z0-9]+)$/i);
@@ -251,20 +251,22 @@
               return g === m[1].toUpperCase() && c === m[2].toUpperCase();
             }
 
-            // Cas 2 : recherche sur la course (ex: "10", "10km", "10 km")
-            if (/^\d+\s*km?$/.test(term)) {
+            // Cas 2 : recherche sur la course (ex: "10 km", "20 km")
+            if (/^\d+\s*km$/.test(term)) {
               return utils.normalizeString(`${p.course} km`).includes(term);
             }
 
-            // Cas 3 : recherche texte générique (nom, prénom, club…)
+            // Cas 3 : recherche texte générique
             return Object.entries(p).some(([k, v]) => {
-            return utils.normalizeString(v).includes(term);
+              return utils.normalizeString(v).includes(term);
             });
           });
         });
       }
+
       sortData(AppState.currentSort.column, AppState.currentSort.direction);
     }
+
 
     const debouncedFilter = utils.debounce(searchTerm => filterData(searchTerm), 300);
     elements.searchInput.addEventListener("input", e => debouncedFilter(e.target.value));
