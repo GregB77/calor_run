@@ -52,17 +52,16 @@ body::before {
 }
 
 .button-row .button {
-  width: 15em;               /* largeur fixe */
+  width: 15ch; /* largeur pour environ 15 caractères */
   padding: 0.75rem 1rem;
   border-radius: var(--border-radius);
   background: var(--primary-color);
   color: #fff;
   font-size: 1rem;
-  font-weight: 500;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 0.25rem 0.5rem var(--shadow);
+  box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.15);
   transition: background 0.3s;
 }
 .button-row .button:hover {
