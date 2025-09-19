@@ -76,7 +76,7 @@
       overflow-x:auto;
       margin:0 auto 1.25rem;
       background: var(--bg-white);
-      border-radius: var(--border-radius); /* remplacé */
+      border-radius: var(--border-radius);
       box-shadow: 0 0.25rem 0.75rem var(--shadow);
     }
     table { width:100%; border-collapse: collapse; min-width:43.75rem; }
@@ -110,21 +110,20 @@
       color: #666;
       font-style: italic;
     }
-
     @media(max-width:768px){
       .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
       .search-counter-container { justify-content:center; flex-direction:column; gap:0.625rem; margin-bottom:0.625rem; }
       #search, #counter { font-size:0.75rem; text-align: center; width: 100%; padding:0rem; max-width: none; flex: none; }
       table { font-size:0.85rem; }
       th, td { padding:0.375rem 0.5rem; }
-}
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">PARTICIPANTS CALOR RUN</div>
     <div class="search-counter-container">
-      <input type="text" id="search" placeholder="Rechercher par nom, prénom, club..." autocomplete="off">
+      <input type="text" id="search" placeholder="Recherche par Nom, prénom, cat. (ex: HM1)" autocomplete="off">
       <div id="counter">
         <span class="counter-10km">10 km : 0</span><span>•</span><span class="counter-20km">20 km : 0</span><span>•</span><span>Total : 0</span>
       </div>
@@ -161,7 +160,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    // Configuration Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
       authDomain: "calor-run.firebaseapp.com",
@@ -173,12 +171,10 @@
       measurementId: "G-YVQPW6JGPK"
     };
 
-    // Initialisation Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dbRef = ref(db, "participants");
 
-    // État de l'application
     const AppState = {
       allData: [],
       filteredData: [],
@@ -186,7 +182,6 @@
       isLoading: true
     };
 
-    // Éléments DOM
     const elements = {
       tbody: document.getElementById("table-body"),
       searchInput: document.getElementById("search"),
@@ -194,7 +189,6 @@
       headers: document.querySelectorAll("th[data-column]")
     };
 
-    // Utilitaires
     const utils = {
       debounce(func, wait) {
         let timeout;
@@ -207,7 +201,6 @@
           timeout = setTimeout(later, wait);
         };
       },
-      // Accent-insensitive normalization for search
       normalizeString(str) {
         return str
           .toString()
@@ -218,10 +211,8 @@
       }
     };
 
-    // Fonctions de rendu
     function renderTable() {
       if (AppState.isLoading) return;
-
       if (AppState.filteredData.length === 0) {
         elements.tbody.innerHTML = `
           <tr>
@@ -233,9 +224,7 @@
         updateCounter();
         return;
       }
-
       const fragment = document.createDocumentFragment();
-
       AppState.filteredData.forEach(participant => {
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -249,7 +238,6 @@
         `;
         fragment.appendChild(row);
       });
-
       elements.tbody.innerHTML = '';
       elements.tbody.appendChild(fragment);
       updateCounter();
@@ -259,7 +247,6 @@
       const km10Count = AppState.filteredData.filter(p => p.course == "10").length;
       const km20Count = AppState.filteredData.filter(p => p.course == "20").length;
       const total = AppState.filteredData.length;
-
       elements.counter.innerHTML = `
         <span class="counter-10km">10 km : ${km10Count}</span>
         <span>•</span>
@@ -269,7 +256,6 @@
       `;
     }
 
-    // Accessibility: update aria-sort attribute
     function updateSortIndicators() {
       elements.headers.forEach(header => {
         header.classList.remove('sorted', 'asc', 'desc');
@@ -284,19 +270,14 @@
       });
     }
 
-    // Fonctions de logique métier
     function sortData(column, direction = null) {
       if (!direction) {
         direction = AppState.currentSort.column === column && AppState.currentSort.direction === 'asc' ? 'desc' : 'asc';
       }
-
       AppState.currentSort = { column, direction };
-
       AppState.filteredData.sort((a, b) => {
         let valueA = a[column];
         let valueB = b[column];
-
-        // Gestion des valeurs numériques
         if (!isNaN(valueA) && !isNaN(valueB)) {
           valueA = Number(valueA);
           valueB = Number(valueB);
@@ -304,16 +285,15 @@
           valueA = utils.normalizeString(valueA);
           valueB = utils.normalizeString(valueB);
         }
-
         if (valueA < valueB) return direction === 'asc' ? -1 : 1;
         if (valueA > valueB) return direction === 'asc' ? 1 : -1;
         return 0;
       });
-
       updateSortIndicators();
       renderTable();
     }
 
+    // 🔎 Recherche enrichie avec support "HM0", "FSE" etc.
     function filterData(searchTerm) {
       const term = utils.normalizeString(searchTerm);
 
@@ -321,22 +301,34 @@
         AppState.filteredData = [...AppState.allData];
       } else {
         AppState.filteredData = AppState.allData.filter(participant => {
-          return Object.entries(participant).some(([key, value]) => {
-            // Pour la colonne course, on permet la recherche avec "km"
-            if (key === 'course') {
-              const courseWithKm = `${value} km`;
-              return utils.normalizeString(courseWithKm).includes(term) ||
-                   utils.normalizeString(value).includes(term);
-            }
-            return utils.normalizeString(value).includes(term);
-          });
+          let genreFilter = "", catFilter = "", nameFilter = term;
+          if (/^(h|f)([a-z0-9]+)$/i.test(term)) {
+            const match = term.match(/^(h|f)([a-z0-9]+)$/i);
+            genreFilter = match[1].toUpperCase();
+            catFilter = match[2].toUpperCase();
+            nameFilter = "";
+          }
+          const pGenre = (participant.genre || "").toUpperCase();
+          const pCat = (participant.categorie || "").toUpperCase();
+          let show = true;
+          if (genreFilter) show = pGenre === genreFilter;
+          if (show && catFilter) show = pCat === catFilter;
+          if (show && nameFilter) {
+            show = Object.entries(participant).some(([key, value]) => {
+              if (key === "course") {
+                const courseWithKm = `${value} km`;
+                return utils.normalizeString(courseWithKm).includes(nameFilter) ||
+                       utils.normalizeString(value).includes(nameFilter);
+              }
+              return utils.normalizeString(value).includes(nameFilter);
+            });
+          }
+          return show;
         });
       }
-
       sortData(AppState.currentSort.column, AppState.currentSort.direction);
     }
 
-    // Gestionnaires d'événements
     const debouncedFilter = utils.debounce((searchTerm) => {
       filterData(searchTerm);
     }, 300);
@@ -351,11 +343,9 @@
       });
     });
 
-    // Initialisation des données Firebase
     function initializeData() {
       const unsubscribe = onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-
         if (data) {
           AppState.allData = Object.values(data).map(participant => ({
             dossard: participant.dossard || '',
@@ -366,10 +356,8 @@
             categorie: participant.categorie || '',
             course: participant.course || ''
           }));
-
           AppState.filteredData = [...AppState.allData];
           AppState.isLoading = false;
-
           sortData('dossard', 'asc');
         } else {
           AppState.allData = [];
@@ -388,14 +376,11 @@
           </tr>
         `;
       });
-
-      // Nettoyage lors du déchargement de la page (Firebase v9+ modular API)
       window.addEventListener('beforeunload', () => {
         off(dbRef);
       });
     }
 
-    // Démarrage de l'application
     initializeData();
   </script>
 </body>
