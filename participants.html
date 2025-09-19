@@ -7,20 +7,19 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃‍♀️</text></svg>">
   <style>
     :root {
-      --primary-blue: #215E99;
-      --primary-pink: #E61780;
-      --bg-overlay: rgba(33, 94, 153, 0.3);
-      --text-dark: #333;
+      --primary-color: #215E99;
+      --secondary-color: #E61780;
       --bg-white: #fff;
       --bg-light: #f9f9f9;
-      --border-light: #ccc;
-      --hover-blue: #e9f7ff;
-      --shadow-light: rgba(0, 0, 0, 0.1);
-      --shadow-medium: rgba(0, 0, 0, 0.15);
+      --shadow: rgba(0,0,0,0.15);
+      --border-radius: 0.5rem;
+      --max-width: 62.5rem;
+      --text-dark: #333;
+      --border-light: #ddd;
       --header-bg: #e0e0e0;
+      --bg-overlay: rgba(33, 94, 153, 0.3);
+      --hover-blue: #e9f7ff;
       --transition-smooth: 0.3s ease;
-      --border-radius: 8px;
-      --max-width: 1000px;
     }
 
     * {
@@ -45,7 +44,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
+      background: linear-gradient(0.25turn, var(--primary-color), var(--secondary-color));
       opacity: 0.3;
       z-index: -1;
     }
@@ -58,7 +57,7 @@
     .header {
       text-align: center;
       margin-bottom: 5px;
-      color: var(--primary-blue);
+      color: var(--primary-color);
       font-size: 1.3rem;
       font-weight: normal;
       padding: 20px 20px 60px 20px;
@@ -92,15 +91,15 @@
     }
 
     #search:focus {
-      border-bottom-color: var(--primary-blue);
+      border-bottom-color: var(--primary-color);
     }
 
     .counter-10km {
-      color: var(--primary-blue);
+      color: var(--primary-color);
     }
 
     .counter-20km {
-      color: var(--primary-pink);
+      color: var(--secondary-color);
     }
     
     #counter {
@@ -112,7 +111,7 @@
       background: var(--bg-white);
       border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: 0 4px 12px var(--shadow-medium);
+      box-shadow: 0 4px 12px var(--shadow);
     }
     
     table {
@@ -157,7 +156,7 @@
 
     th.sorted .sort-indicator {
       opacity: 1;
-      border-bottom-color: var(--primary-blue);
+      border-bottom-color: var(--primary-color);
     }
 
     th.sorted.desc .sort-indicator {
@@ -178,7 +177,7 @@
       text-align: center;
       padding: 40px;
       font-size: 1.1rem;
-      color: var(--primary-blue);
+      color: var(--primary-color);
     }
 
     .no-results {
@@ -222,18 +221,17 @@
         max-width: none;
       }
       
-      /* New and improved counter styles for mobile */
       #counter {
         display: flex;
         justify-content: center;
         align-items: center;
-        flex-wrap: nowrap; /* Ensures counters stay on one line */
-        gap: 10px; /* Provides consistent spacing */
+        flex-wrap: nowrap;
+        gap: 10px;
       }
       
       #counter span {
-        flex-shrink: 0; /* Prevents text from shrinking */
-        white-space: nowrap; /* Prevents text from wrapping */
+        flex-shrink: 0;
+        white-space: nowrap;
       }
     }
     
