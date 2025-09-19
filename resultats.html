@@ -28,9 +28,7 @@ body {
   position: relative;
 }
 body::before {
-  content:'';
-  position: fixed;
-  inset:0;
+  content:''; position: fixed; inset:0;
   background: linear-gradient(0.25turn, var(--primary-color), var(--secondary-color));
   opacity:0.3;
   z-index:-1;
@@ -78,15 +76,9 @@ body::before {
   font-weight: normal;
   color: #000;
 }
-#counter a[href*="distance=10"] {
-  color: var(--primary-color);
-}
-#counter a[href*="distance=20"] {
-  color: var(--secondary-color);
-}
-#counter a.active {
-  text-decoration: underline;
-}
+#counter a[href*="distance=10"] { color: var(--primary-color); }
+#counter a[href*="distance=20"] { color: var(--secondary-color); }
+#counter a.active { text-decoration: underline; }
 .table-container {
   max-width: var(--max-width);
   overflow-x:auto;
@@ -95,49 +87,18 @@ body::before {
   border-radius: var(--radius);
   box-shadow: 0 0.25rem 0.75rem var(--shadow);
 }
-table {
-  width:100%;
-  border-collapse: collapse;
-  min-width:43.75rem;
-}
-th, td {
-  padding:0.375rem 0.5rem;
-  border-bottom:1px solid var(--border-light);
-  text-align:left;
-  white-space: nowrap;
-}
-th {
-  background: var(--header-bg);
-  font-weight:600;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
+table { width:100%; border-collapse: collapse; min-width:43.75rem; }
+th, td { padding:0.375rem 0.5rem; border-bottom:1px solid var(--border-light); text-align:left; white-space: nowrap; }
+th { background: var(--header-bg); font-weight:600; position:sticky; top:0; z-index:10; }
 tbody tr:nth-child(even){ background: var(--bg-light); }
 .text-center { text-align:center; }
 .loading, .last-update { text-align:center; padding:1.25rem 0; font-size:1rem; }
 .last-update { font-size:0.9rem; margin-top:1.25rem; }
 .hidden { display:none; }
 @media(max-width:768px){
-  .header { 
-    margin-bottom:0.625rem;
-    padding:0rem 0rem 1.5rem;
-    font-size:1rem;
-  }
-  .search-counter-container { 
-    justify-content:center; 
-    flex-direction:column; 
-    gap:0.625rem;
-    margin-bottom:0.625rem;
-  }
-  #search, #counter {
-    font-size:0.75rem;
-    text-align: center;
-    width: 100%;
-    padding:0rem;
-    max-width: none;
-    flex: none;
-  }
+  .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
+  .search-counter-container { justify-content:center; flex-direction:column; gap:0.625rem; margin-bottom:0.625rem; }
+  #search, #counter { font-size:0.75rem; text-align: center; width: 100%; padding:0rem; max-width: none; flex: none; }
   table { font-size:0.85rem; }
   th, td { padding:0.375rem 0.5rem; }
 }
@@ -247,14 +208,11 @@ const render = () => {
     <a href="?distance=20">20 km</a> – Arrivées : ${data.length}/${total}
   `;
 
-  // Ajout classe active
   const activeLink = el.counter.querySelector('a[href="?distance=' + COURSE_DISTANCE + '"]');
   if (activeLink) activeLink.classList.add("active");
 
-  // Tri scratch
   data.sort((a,b)=>a.tempsMs-b.tempsMs);
 
-  // Classements
   const classementGenre = {};
   const classementCat = {};
   data.forEach((p,i)=>{
@@ -266,7 +224,6 @@ const render = () => {
     p.posCat = classementCat[catKey];
   });
 
-  // Génération tableau
   tableRows.clear();
   const frag = document.createDocumentFragment();
   data.forEach(p=>{
@@ -292,29 +249,33 @@ const render = () => {
   el.time.textContent=new Date().toLocaleTimeString('fr-FR');
 };
 
-// === Recherche ===
-el.search.addEventListener('input', e=>{
-  const term = e.target.value.toLowerCase().trim();
-  let genreFilter='', catFilter='', nameFilter=term;
+// === Recherche avec debounce ===
+let searchTimeout;
+el.search.addEventListener('input', e => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const term = e.target.value.toLowerCase().trim();
+    let genreFilter = '', catFilter = '', nameFilter = term;
 
-  if (/^(h|f)([a-z0-9]+)$/i.test(term)){
-    const match = term.match(/^(h|f)([a-z0-9]+)$/i);
-    genreFilter = match[1].toUpperCase();
-    catFilter = match[2].toUpperCase();
-    nameFilter = '';
-  }
+    if (/^(h|f)([a-z0-9]+)$/i.test(term)) {
+      const match = term.match(/^(h|f)([a-z0-9]+)$/i);
+      genreFilter = match[1].toUpperCase();
+      catFilter = match[2].toUpperCase();
+      nameFilter = '';
+    }
 
-  tableRows.forEach(tr=>{
-    if (!tr.dataset.cachedText) tr.dataset.cachedText = tr.textContent.toLowerCase();
-    const text = tr.dataset.cachedText;
-    const pGenre = tr.children[5].textContent.toUpperCase();
-    const pCat = tr.children[7].textContent.toUpperCase();
-    let show = true;
-    if (genreFilter) show = pGenre===genreFilter;
-    if (show && catFilter) show = pCat===catFilter;
-    if (show && nameFilter) show = text.includes(nameFilter);
-    tr.style.display = show?'':'none';
-  });
+    tableRows.forEach(tr => {
+      if (!tr.dataset.cachedText) tr.dataset.cachedText = tr.textContent.toLowerCase();
+      const text = tr.dataset.cachedText;
+      const pGenre = tr.children[5].textContent.toUpperCase();
+      const pCat = tr.children[7].textContent.toUpperCase();
+      let show = true;
+      if (genreFilter) show = pGenre === genreFilter;
+      if (show && catFilter) show = pCat === catFilter;
+      if (show && nameFilter) show = text.includes(nameFilter);
+      tr.style.display = show ? '' : 'none';
+    });
+  }, 200);
 });
 
 // === Firebase Listeners sécurisés ===
