@@ -153,6 +153,7 @@ firebase.initializeApp(FIREBASE_CONFIG);
 // === Détection distance depuis URL ===
 const urlParams = new URLSearchParams(window.location.search);
 let COURSE_DISTANCE = parseInt(urlParams.get('distance'), 10) || 10;
+document.title = `Résultats ${COURSE_DISTANCE} km Calor Run`;
 document.getElementById('header-title').textContent = `RÉSULTATS ${COURSE_DISTANCE} KM`;
 
 // === Références Firebase ===
