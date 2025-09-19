@@ -68,6 +68,15 @@ body::before {
   background: var(--secondary-color);
 }
 
+.separator {
+  border: none;
+  border-top: 2px solid var(--primary-color); /* couleur de séparation */
+  margin: 1.5rem 0; /* espace au-dessus et en dessous */
+  width: 50%; /* largeur de la ligne */
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Responsive */
 @media(max-width:768px){
   .header { padding:0.5rem; font-size:1rem; margin-bottom:1rem; }
@@ -95,6 +104,9 @@ body::before {
     <a href="https://gregb77.github.io/calor_run/statistiques.html" class="button">Statistiques</a>
   </div>
 
+  <!-- Ligne de séparation -->
+  <hr class="separator">
+  
   <!-- Ligne 2 : 2 boutons -->
   <div class="button-row">
     <a href="https://gregb77.github.io/calor_run/resultats.html?distance=10" class="button">Résultats 10 km</a>
