@@ -21,78 +21,53 @@
       --hover-blue: #e9f7ff;
       --transition-smooth: 0.3s ease;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin:0; padding:0; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       line-height: 1.5;
       color: var(--text-dark);
       min-height: 100vh;
-      padding: 20px;
-      overflow-x: hidden;
+      padding: 1.25rem;
+      position: relative;
     }
-
     body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      content:''; position: fixed; inset:0;
       background: linear-gradient(0.25turn, var(--primary-color), var(--secondary-color));
-      opacity: 0.3;
-      z-index: -1;
+      opacity:0.3;
+      z-index:-1;
+      pointer-events: none;
     }
-
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-    }
-
+    .container { max-width: var(--max-width); margin:0 auto; }
     .header {
-      text-align: center;
-      margin-bottom: 5px;
+      text-align:center;
+      margin-bottom:0.625rem;
       color: var(--primary-color);
-      font-size: 1.3rem;
-      font-weight: normal;
-      padding: 20px 20px 60px 20px;
-      border-radius: 10px;
-      max-width: var(--max-width);
-      margin-left: auto;
-      margin-right: auto;
-      background: url('calor.png') center/contain no-repeat;
+      font-size:1.3rem;
+      font-weight:bold;
+      padding:1.25rem 1.25rem 3.75rem;
+      background:url('calor.png') center/contain no-repeat;
     }
-
-    .search-counter {
-      display: flex;
+    .search-counter-container {
+      display:flex;
+      flex-wrap: nowrap;
       justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+      align-items:center;
+      gap:0.625rem;
+      margin-bottom:1.25rem;
     }
-
     #search {
-      flex: 1 1 200px;
-      max-width: 300px;
-      padding: 6px 12px;
-      border: none;
-      border-bottom: 1px solid #888;
-      background: transparent;
+      flex:1;
+      max-width:none;
+      padding:0.5rem 0.75rem;
+      border:none;
+      border-bottom:1px solid #888;
+      background:transparent;
       color: var(--text-dark);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.3s;
+      font-size:1rem;
+      outline:none;
+      transition:border-color 0.3s;
     }
-
-    #search:focus {
-      border-bottom-color: var(--primary-color);
-    }
+    #search:focus { border-bottom-color: var(--primary-color); }
 
     .counter-10km {
       color: var(--primary-color);
