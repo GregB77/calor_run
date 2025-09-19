@@ -49,38 +49,34 @@ body::before {
   overflow-x:auto;
   margin:0 auto 1.25rem;
   background: var(--bg-white);
-  border-radius: var(--border-radius); /* remplacé */
+  border-radius: var(--border-radius);
   box-shadow: 0 0.25rem 0.75rem var(--shadow);
+  padding: 0.5rem;
+}
+.table-title {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
 }
 table { width:100%; border-collapse: collapse; min-width:43.75rem; }
 th, td { padding:0.375rem 0.5rem; border-bottom:1px solid var(--border-light); text-align:left; white-space: nowrap; }
 th { background: var(--header-bg); font-weight:600; position:sticky; top:0; z-index:10; }
 
-caption { caption-side: top; text-align:left; font-weight:bold; margin-bottom:0.5rem; }
-#tbl-cat th:nth-child(1), #tbl-cat th:nth-child(8) { background: var(--header-bg); }
-#tbl-cat th:nth-child(2), #tbl-cat th:nth-child(3), #tbl-cat th:nth-child(4) { background: rgba(33, 76, 155, 30%); }
-#tbl-cat th:nth-child(5), #tbl-cat th:nth-child(6), #tbl-cat th:nth-child(7) { background: rgba(230, 23, 128, 30%); }
-
 tbody tr:nth-child(even){ background: var(--bg-light); }
-tbody tr:nth-child(even) { background: var(--bg-light); }
 .muted { color:#777; }
 
-/* Flexbox pour les tableaux Âges */
-.ages-container {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap; /* empile sur petit écran */
-}
-.ages-table {
-  flex: 1; /* prend l’espace disponible équitablement */
-  min-width: 280px; /* garantit la lisibilité sur mobile */
+/* Ligne verticale séparatrice pour le tableau des âges */
+#tbl-age th.separator,
+#tbl-age td.separator {
+  border-left: 2px solid var(--primary-color);
+  padding-left: 0.75rem;
 }
 
 @media (max-width:768px){
   .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
   table { min-width:auto; font-size:0.85rem; }
   th, td { padding:0.375rem 0.5rem; }
-  .ages-container { flex-direction: column; }
 }
 </style>
 </head>
@@ -91,8 +87,8 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 
   <!-- Tableau 1 : Répartition par catégories -->
   <div class="table-container">
+    <div class="table-title">Répartition par catégories</div>
     <table id="tbl-cat">
-      <caption>Répartition par catégories</caption>
       <thead>
         <tr>
           <th>Catégorie</th>
@@ -109,36 +105,28 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
     </table>
   </div>
 
-  <!-- Tableau 2 : Âges -->
-  <div class="table-container ages-container">
-    <div class="ages-table">
-      <table id="tbl-age-10">
-        <caption>-/+ Âgés - 10 km</caption>
-        <thead>
-          <tr>
-            <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
-          </tr>
-        </thead>
-        <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
-      </table>
-    </div>
-    <div class="ages-table">
-      <table id="tbl-age-20">
-        <caption>-/+ Âgés - 20 km</caption>
-        <thead>
-          <tr>
-            <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
-          </tr>
-        </thead>
-        <tbody><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
-      </table>
-    </div>
+  <!-- Tableau 2 : Âges fusionné -->
+  <div class="table-container">
+    <div class="table-title">Âgés – 10 km et 20 km</div>
+    <table id="tbl-age">
+      <thead>
+        <tr>
+          <th colspan="4" class="sub-title">10 km</th>
+          <th colspan="4" class="sub-title">20 km</th>
+        </tr>
+        <tr>
+          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+          <th class="separator">Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
+    </table>
   </div>
 
   <!-- Tableau 3 : Classement des clubs -->
   <div class="table-container">
+    <div class="table-title">Clubs les plus représentés</div>
     <table id="tbl-clubs">
-      <caption>Clubs les plus représentés</caption>
       <thead>
         <tr>
           <th>Rang</th>
@@ -171,8 +159,7 @@ const db = firebase.database();
 
 const el = {
   cat: document.querySelector('#tbl-cat tbody'),
-  age10: document.querySelector('#tbl-age-10 tbody'),
-  age20: document.querySelector('#tbl-age-20 tbody'),
+  age: document.querySelector('#tbl-age tbody'),
   clubs: document.querySelector('#tbl-clubs tbody'),
   err: document.getElementById('err')
 };
@@ -229,46 +216,55 @@ function renderCats(body, data){
   body.innerHTML = rows.join('');
 }
 
-function renderAges(body10, body20, data){
-  const ages={10:{oldest:null,youngest:null},20:{oldest:null,youngest:null}};
+function renderAges(body, data){
+  const ages = {10: [], 20: []};
+  
   Object.values(data||{}).forEach(p=>{
     const course = Number(p.course)||0;
     const birth = parseDate(p.date_naiss);
     const age = computeAge(birth);
-    if(!birth||age===null) return;
-    const pack={dossard:p.dossard||'',prenom:p.prenom||'',nom:p.nom||'',age};
-    if(course===10){
-      if(!ages[10].oldest||age>ages[10].oldest.age) ages[10].oldest=pack;
-      if(!ages[10].youngest||age<ages[10].youngest.age) ages[10].youngest=pack;
-    }
-    if(course===20){
-      if(!ages[20].oldest||age>ages[20].oldest.age) ages[20].oldest=pack;
-      if(!ages[20].youngest||age<ages[20].youngest.age) ages[20].youngest=pack;
-    }
+    if(!birth || age===null) return;
+    const pack = {dossard:p.dossard||'', prenom:p.prenom||'', nom:p.nom||'', age};
+    if(course===10) ages[10].push(pack);
+    if(course===20) ages[20].push(pack);
   });
 
-  function buildRows(a){return [a.oldest,a.youngest].filter(Boolean).map(p=>`<tr><td>${p.dossard}</td><td>${p.prenom}</td><td>${p.nom}</td><td>${p.age} ans</td></tr>`).join('')||'<tr><td colspan="4" class="muted">Aucune donnée.</td></tr>'; }
-  body10.innerHTML=buildRows(ages[10]);
-  body20.innerHTML=buildRows(ages[20]);
+  function getOldestYoungest(arr){
+    if(!arr.length) return [{},{ }]; 
+    arr.sort((a,b)=>b.age-a.age);
+    const oldest = arr[0];
+    const youngest = arr[arr.length-1];
+    return [oldest, youngest];
+  }
+
+  const rows10 = getOldestYoungest(ages[10]);
+  const rows20 = getOldestYoungest(ages[20]);
+
+  body.innerHTML = `
+    <tr>
+      <td>${rows10[0]?.dossard||''}</td><td>${rows10[0]?.prenom||''}</td><td>${rows10[0]?.nom||''}</td><td>${rows10[0]?.age||''}</td>
+      <td class="separator">${rows20[0]?.dossard||''}</td><td>${rows20[0]?.prenom||''}</td><td>${rows20[0]?.nom||''}</td><td>${rows20[0]?.age||''}</td>
+    </tr>
+    <tr>
+      <td>${rows10[1]?.dossard||''}</td><td>${rows10[1]?.prenom||''}</td><td>${rows10[1]?.nom||''}</td><td>${rows10[1]?.age||''}</td>
+      <td class="separator">${rows20[1]?.dossard||''}</td><td>${rows20[1]?.prenom||''}</td><td>${rows20[1]?.nom||''}</td><td>${rows20[1]?.age||''}</td>
+    </tr>
+  `;
 }
 
 function renderClubs(body, data){
   const clubsCount = {};
   Object.values(data||{}).forEach(p=>{
-    const club = (p.club || '').trim(); // <- trim pour enlever espaces
-    if(!club) return; // <- ignorer si vide
+    const club = (p.club || '').trim();
+    if(!club) return;
     clubsCount[club] = (clubsCount[club]||0) + 1;
   });
 
-  // Convertir en tableau et filtrer uniquement les clubs avec participants
-  const filteredClubs = Object.entries(clubsCount).filter(([club, count]) => count > 0);
+  const sortedClubs = Object.entries(clubsCount)
+    .filter(([club,count])=>count>0)
+    .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
 
-  // Trier : nombre décroissant, puis alphabétique
-  const sortedClubs = filteredClubs.sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
-
-  // Générer les lignes
   const rows = sortedClubs.map((c,i)=>`<tr><td>${i+1}</td><td>${c[0]}</td><td>${c[1]}</td></tr>`);
-
   body.innerHTML = rows.join('') || '<tr><td colspan="3" class="muted">Aucune donnée.</td></tr>';
 }
 
@@ -278,7 +274,7 @@ db.ref('participants').on('value',snap=>{
   try{
     const data = snap.val()||{};
     renderCats(el.cat,data);
-    renderAges(el.age10,el.age20,data);
+    renderAges(el.age,data);
     renderClubs(el.clubs,data);
   }catch(e){
     console.error(e);
@@ -286,5 +282,6 @@ db.ref('participants').on('value',snap=>{
   }
 },err=>{console.error(err);showError("Erreur Firebase : "+err.message);});
 </script>
+
 </body>
 </html>
