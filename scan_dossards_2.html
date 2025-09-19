@@ -18,10 +18,10 @@
       --button-bg: linear-gradient(to right, var(--primary-color), var(--secondary-color));
       --button-hover-bg: linear-gradient(to right, var(--primary-color), var(--secondary-color));
     }
-    body { margin: 0; font-family: sans-serif; background: #000; color: #fff; overflow: hidden; }
-    #reader { position: absolute; top:0; left:0; right:0; bottom:30vh; }
-    #reader video { object-fit: cover; width: 100%; height: 100%; }
-    #current-scan { position: absolute; bottom:28vh; left:0; right:0; font-size:4em; font-weight:bold; text-align:center; background:rgba(0,0,0,0.6); padding:10px; }
+    body { margin:0; font-family:sans-serif; background:#000; color:#fff; overflow:hidden; }
+    #reader { position:absolute; top:0; left:0; right:0; bottom:30vh; }
+    #reader video { object-fit: cover; width:100%; height:100%; }
+    #current-scan { position:absolute; bottom:28vh; left:0; right:0; font-size:4em; font-weight:bold; text-align:center; background:rgba(0,0,0,0.6); padding:10px; }
     .button { display:block; width:100%; font-size:1.5em; text-align:center; padding:15px 0; cursor:pointer; background:var(--button-bg); color:#fff; border:none; transition:background 0.3s ease; }
     .button:hover { background: var(--button-hover-bg); }
     #counter { position:absolute; bottom:0; left:0; right:0; }
@@ -44,7 +44,6 @@
   <audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
 
   <script>
-    // ------------------- CONFIG FIREBASE -------------------
     const firebaseConfig = {
       apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
       authDomain: "calor-run.firebaseapp.com",
@@ -58,7 +57,7 @@
     const database = firebase.database();
     const auth = firebase.auth();
 
-    // ------------------- DOM -------------------
+    // DOM
     const beepSound = document.getElementById('beep-sound');
     const currentScanDiv = document.getElementById('current-scan');
     const counterDiv = document.getElementById('counter');
@@ -66,13 +65,13 @@
     const backButton = document.getElementById('back-button');
     const historyList = document.getElementById('history-list');
 
-    // ------------------- STATE -------------------
+    // STATE
     let scannedCodes = new Set(JSON.parse(localStorage.getItem('scannedCodes') || "[]"));
     let pendingScans = JSON.parse(localStorage.getItem('pendingScans') || "[]");
     let lastScan = "", lastScanTime = 0, maxDossard;
     let qrScanner;
 
-    // ------------------- UI -------------------
+    // UI
     counterDiv.onclick = () => resultsDiv.style.display = 'block';
     backButton.onclick = () => resultsDiv.style.display = 'none';
 
@@ -83,76 +82,75 @@
       const entry = document.createElement('div');
       entry.className = 'scan-entry';
       entry.textContent = code;
-      const codeInt = parseInt(code, 10);
-      if (codeInt >= 1 && codeInt <= 300) entry.style.color = 'var(--primary-color)';
-      else if (codeInt >= 301 && codeInt <= 600) entry.style.color = 'var(--secondary-color)';
-      else entry.style.color = '#fff';
+      const codeInt = parseInt(code,10);
+      if(codeInt>=1&&codeInt<=300) entry.style.color='var(--primary-color)';
+      else if(codeInt>=301&&codeInt<=600) entry.style.color='var(--secondary-color)';
+      else entry.style.color='#fff';
       historyList.prepend(entry);
-      if (historyList.childNodes.length > 100) historyList.removeChild(historyList.lastChild);
+      if(historyList.childNodes.length>100) historyList.removeChild(historyList.lastChild);
     }
 
     function canScan(code) {
-      const now = Date.now();
-      if (scannedCodes.has(code)) return false;
-      if (code === lastScan && (now - lastScanTime) < 3000) return false;
-      lastScan = code;
-      lastScanTime = now;
+      const now=Date.now();
+      if(scannedCodes.has(code)) return false;
+      if(code===lastScan && (now-lastScanTime)<3000) return false;
+      lastScan=code; lastScanTime=now;
       return true;
     }
 
-    function isValidCode(codeInt) { return !isNaN(codeInt) && codeInt >= 1 && codeInt <= maxDossard; }
+    function isValidCode(codeInt){ return !isNaN(codeInt)&&codeInt>=1&&codeInt<=maxDossard; }
 
-    function handleNewScan(code) {
-      const codeInt = parseInt(code, 10);
-      if (!isValidCode(codeInt) || !canScan(code)) return;
-
+    function handleNewScan(code){
+      const codeInt=parseInt(code,10);
+      if(!isValidCode(codeInt)||!canScan(code)) return;
       scannedCodes.add(code);
       saveScannedCodes();
-      currentScanDiv.textContent = code;
+      currentScanDiv.textContent=code;
       addScanToHistory(code);
       beepSound.play();
       navigator.vibrate?.(100);
-      setTimeout(() => currentScanDiv.textContent = "---", 2000);
+      setTimeout(()=>currentScanDiv.textContent="---",2000);
 
-      const scanRef = database.ref(`scan_dossards/${code}`);
-      scanRef.transaction(current => current === null ? { dateTime: Date.now() } : undefined)
-        .catch(() => {
-          pendingScans.push({ code, timestamp: Date.now() });
-          savePendingScans();
-        });
+      const scanRef=database.ref(`scan_dossards/${code}`);
+      scanRef.transaction(current=>current===null?{dateTime:Date.now()}:undefined)
+        .catch(()=>{ pendingScans.push({code,timestamp:Date.now()}); savePendingScans(); });
     }
 
-    function syncPendingScans() {
-      if (!pendingScans.length) return;
-      const toSync = [...pendingScans];
-      pendingScans = [];
-      toSync.forEach(({ code, timestamp }) => {
-        const scanRef = database.ref(`scan_dossards/${code}`);
-        scanRef.transaction(current => current === null ? { dateTime: timestamp } : undefined)
-          .catch(() => pendingScans.push({ code, timestamp }))
+    function syncPendingScans(){
+      if(!pendingScans.length) return;
+      const toSync=[...pendingScans];
+      pendingScans=[];
+      toSync.forEach(({code,timestamp})=>{
+        const scanRef=database.ref(`scan_dossards/${code}`);
+        scanRef.transaction(current=>current===null?{dateTime:timestamp}:undefined)
+          .catch(()=>pendingScans.push({code,timestamp}))
           .finally(savePendingScans);
       });
     }
 
-    // ------------------- SYNCHRONISATION BIDIRECTIONNELLE -------------------
-    function syncFirebaseWithLocal() {
-      database.ref('scan_dossards').once('value').then(snapshot => {
+    // ------------------- CORRECTION SYNCHRO -------------------
+    function syncFirebaseWithLocal(){
+      database.ref('scan_dossards').once('value').then(snapshot=>{
         const firebaseCodes = new Set();
-        snapshot.forEach(child => firebaseCodes.add(child.key));
+        snapshot.forEach(child=>firebaseCodes.add(child.key));
 
-        // 1️⃣ Mise à jour locale avec Firebase
-        scannedCodes = firebaseCodes;
+        // Ajouter les codes Firebase manquants au cache local
+        firebaseCodes.forEach(code=>{
+          if(!scannedCodes.has(code)){
+            scannedCodes.add(code);
+            addScanToHistory(code);
+          }
+        });
+
         saveScannedCodes();
-        historyList.innerHTML = '';
-        scannedCodes.forEach(code => addScanToHistory(code));
 
-        // 2️⃣ Envoyer les scans locaux manquants à Firebase
-        pendingScans = pendingScans.filter(({ code, timestamp }) => {
-          if (!firebaseCodes.has(code)) {
-            const scanRef = database.ref(`scan_dossards/${code}`);
-            scanRef.transaction(current => current === null ? { dateTime: timestamp } : undefined)
-              .catch(() => pendingScans.push({ code, timestamp }));
-            return false; // supprimé de pending car envoyé
+        // Envoyer les scans locaux non présents sur Firebase
+        pendingScans = pendingScans.filter(({code,timestamp})=>{
+          if(!firebaseCodes.has(code)){
+            const scanRef=database.ref(`scan_dossards/${code}`);
+            scanRef.transaction(current=>current===null?{dateTime:timestamp}:undefined)
+              .catch(()=>pendingScans.push({code,timestamp}));
+            return false;
           }
           return true;
         });
@@ -160,25 +158,24 @@
       });
     }
 
-    function resetCacheIfFirebaseEmpty() {
-      return database.ref('scan_dossards').once('value').then(snapshot => {
-        if (!snapshot.exists()) {
+    function resetCacheIfFirebaseEmpty(){
+      return database.ref('scan_dossards').once('value').then(snapshot=>{
+        if(!snapshot.exists()){
           scannedCodes.clear();
-          pendingScans = [];
+          pendingScans=[];
           localStorage.removeItem('scannedCodes');
           localStorage.removeItem('pendingScans');
-          historyList.innerHTML = '';
+          historyList.innerHTML='';
         }
       });
     }
 
-    // ------------------- ÉCOUTEUR TEMPS RÉEL -------------------
-    function listenRealtimeScans() {
-      database.ref('scan_dossards')
-        .limitToLast(1)
-        .on('child_added', snapshot => {
-          const code = snapshot.key;
-          if (!scannedCodes.has(code)) {
+    // Temps réel
+    function listenRealtimeScans(){
+      database.ref('scan_dossards').limitToLast(1)
+        .on('child_added',snapshot=>{
+          const code=snapshot.key;
+          if(!scannedCodes.has(code)){
             scannedCodes.add(code);
             saveScannedCodes();
             addScanToHistory(code);
@@ -186,23 +183,25 @@
         });
     }
 
-    function startCamera() {
-      Html5Qrcode.getCameras().then(cameras => {
-        if (!cameras.length) return;
-        const rear = cameras.find(c => c.label.toLowerCase().includes("back")) || cameras[0];
-        if (!qrScanner) qrScanner = new Html5Qrcode("reader");
+    function startCamera(){
+      Html5Qrcode.getCameras().then(cameras=>{
+        if(!cameras.length) return;
+        const rear=cameras.find(c=>c.label.toLowerCase().includes("back"))||cameras[0];
+        if(!qrScanner) qrScanner=new Html5Qrcode("reader");
 
         qrScanner.start(
-          { deviceId: { exact: rear.id } },
-          { fps: 30, qrbox: { width: 400, height: 400 }, disableFlip: true, experimentalFeatures: { useBarCodeDetectorIfSupported: true } },
+          {deviceId:{exact:rear.id}},
+          {fps:30,qrbox:{width:400,height:400},disableFlip:true,experimentalFeatures:{useBarCodeDetectorIfSupported:true}},
           handleNewScan,
-          () => {}
+          ()=>{}
         );
       });
     }
 
-    function startApp() {
-      resetCacheIfFirebaseEmpty().then(() => {
+    function startApp(){
+      resetCacheIfFirebaseEmpty().then(()=>{
+        historyList.innerHTML='';
+        scannedCodes.forEach(code=>addScanToHistory(code));
         syncFirebaseWithLocal();
         listenRealtimeScans();
         startCamera();
@@ -210,20 +209,21 @@
       });
     }
 
-    // ------------------- SYNCHRO QUAND ONLINE -------------------
-    window.addEventListener('online', () => {
+    // Sync online
+    window.addEventListener('online',()=>{
       syncPendingScans();
       syncFirebaseWithLocal();
     });
 
-    // ------------------- MAX DOSSARD -------------------
-    database.ref('data/participants').once('value').then(snapshot => {
-      const val = snapshot.val();
-      if (val && !isNaN(parseInt(val, 10))) maxDossard = parseInt(val, 10);
+    // Max dossard
+    database.ref('data/participants').once('value').then(snapshot=>{
+      const val=snapshot.val();
+      if(val&&!isNaN(parseInt(val,10))) maxDossard=parseInt(val,10);
     });
 
-    auth.onAuthStateChanged(user => { if (user) startApp(); });
-    auth.signInAnonymously().catch(err => alert("Erreur d'authentification: " + err.message));
+    auth.onAuthStateChanged(user=>{ if(user) startApp(); });
+    auth.signInAnonymously().catch(err=>alert("Erreur d'authentification: "+err.message));
+
   </script>
 </body>
 </html>
