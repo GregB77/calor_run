@@ -121,11 +121,11 @@
       </table>
     </div>
   </div>
-
+  
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
+    
     const firebaseConfig = {
       apiKey: "AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
       authDomain: "calor-run.firebaseapp.com",
@@ -136,24 +136,24 @@
       appId: "1:329949291334:web:c71ef20268c609cf953b47",
       measurementId: "G-YVQPW6JGPK"
     };
-
+    
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dbRef = ref(db, "participants");
-
+    
     const AppState = {
       allData: [], filteredData: [],
       currentSort: { column: 'dossard', direction: 'asc' },
       isLoading: true
     };
-
+    
     const elements = {
       tbody: document.getElementById("table-body"),
       searchInput: document.getElementById("search"),
       counter: document.getElementById("counter"),
       headers: document.querySelectorAll("th[data-column]")
     };
-
+    
     const utils = {
       debounce(func, wait) {
         let timeout;
@@ -166,7 +166,7 @@
         return str.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
       }
     };
-
+    
     function renderTable() {
       if (AppState.isLoading) return;
       if (AppState.filteredData.length === 0) {
@@ -193,7 +193,7 @@
       elements.tbody.appendChild(fragment);
       updateCounter();
     }
-
+    
     function updateCounter() {
       const km10 = AppState.filteredData.filter(p => p.course == "10").length;
       const km20 = AppState.filteredData.filter(p => p.course == "20").length;
@@ -203,7 +203,7 @@
         <span class="counter-20km">20 km : ${km20}</span><span> • </span>
         <span>Total : ${total}</span>`;
     }
-
+    
     function updateSortIndicators() {
       elements.headers.forEach(h => {
         h.classList.remove('sorted','asc','desc');
@@ -214,7 +214,7 @@
         }
       });
     }
-
+    
     function sortData(column, direction=null) {
       if (!direction) {
         direction = AppState.currentSort.column === column && AppState.currentSort.direction === 'asc' ? 'desc':'asc';
@@ -230,44 +230,69 @@
       });
       updateSortIndicators(); renderTable();
     }
-
+    
     function filterData(searchTerm) {
-      const terms = searchTerm
-        .split(/\s+/)
-        .map(utils.normalizeString)
-        .filter(Boolean);
-    
-      if (terms.length === 0) {
+      const raw = searchTerm || "";
+      const norm = utils.normalizeString(raw);
+      
+      if (!norm) {
         AppState.filteredData = [...AppState.allData];
-      } else {
-        AppState.filteredData = AppState.allData.filter(p => {
-          return terms.every(term => {
-    
-            // Cas 1 : recherche genre+catégorie (ex: HM0, FSE)
-            if (/^(h|f)([a-z0-9]+)$/i.test(term)) {
-              const m = term.match(/^(h|f)([a-z0-9]+)$/i);
-              const g = (p.genre || "").toUpperCase();
-              const c = (p.categorie || "").toUpperCase();
-              return g === m[1].toUpperCase() && c === m[2].toUpperCase();
-            }
-
-            // Cas 2 : recherche sur la course (ex: "10 km", "20 km")
-            if (/^\d+\s*km$/.test(term)) {
-              return utils.normalizeString(`${p.course} km`).includes(term);
-            }
-
-            // Cas 3 : recherche texte générique
-            return Object.entries(p).some(([k, v]) => {
-              return utils.normalizeString(v).includes(term);
-            });
-          });
-        });
+        sortData(AppState.currentSort.column, AppState.currentSort.direction);
+        return;
       }
-
+      
+      // --- Extraire genre+cat (ex: "hm0", "fse") ---
+      const gcMatch = norm.match(/\b([hf])([a-z0-9]+)\b/);
+      const genreFilter = gcMatch ? gcMatch[1].toUpperCase() : null;
+      const catFilter = gcMatch ? gcMatch[2].toUpperCase() : null;
+      
+      // --- Extraire course ONLY si "km" présent (ex: "10 km" ou "10km") ---
+      const courseMatch = norm.match(/\b(\d+)\s*km\b/);
+      const courseFilter = courseMatch ? courseMatch[1] : null;
+      
+      // --- Supprimer les parties reconnues pour ne garder que les mots libres ---
+      let remaining = norm;
+      if (courseMatch) remaining = remaining.replace(/\b(\d+)\s*km\b/, " ");
+      if (gcMatch) remaining = remaining.replace(/\b([hf])([a-z0-9]+)\b/, " ");
+      
+      // --- Mots libres (on ignore les tokens purement numériques pour éviter "10" tout seul) ---
+      const textTerms = remaining
+        .split(/\s+/)
+        .map(t => t.trim())
+        .filter(Boolean);
+        
+      AppState.filteredData = AppState.allData.filter(p => {
+        // genre/catégorie
+        if (genreFilter) {
+          if ((p.genre || "").toUpperCase() !== genreFilter) return false;
+          if (catFilter && (p.categorie || "").toUpperCase() !== catFilter) return false;
+        }
+        
+        // course (strict : doit être "10 km" avec "km")
+        if (courseFilter) {
+          if (String(p.course) !== courseFilter) return false;
+        }
+        
+        // mots libres : chaque mot doit être trouvé dans au moins un champ
+        for (const term of textTerms) {
+          const found = Object.entries(p).some(([k, v]) => {
+            if (v === null || v === undefined) return false;
+            if (k === "course") {
+              const courseWithKm = `${v} km`;
+              return utils.normalizeString(courseWithKm).includes(term) ||
+                     utils.normalizeString(String(v)).includes(term);
+            }
+            return utils.normalizeString(String(v)).includes(term);
+          });
+          if (!found) return false;
+        }
+        
+        return true;
+      });
+      
       sortData(AppState.currentSort.column, AppState.currentSort.direction);
     }
-
-
+    
     const debouncedFilter = utils.debounce(searchTerm => filterData(searchTerm), 300);
     elements.searchInput.addEventListener("input", e => debouncedFilter(e.target.value));
     elements.headers.forEach(h => h.addEventListener("click", () => sortData(h.dataset.column)));
