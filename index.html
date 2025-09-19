@@ -1,91 +1,107 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tableau de bord Calor Run</title>
-  <style>
-    :root{--bg:#f7f8fc;--card:#ffffff;--accent:#1f6feb;--muted:#6b7280}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;background:var(--bg);color:#111}
-    .container{max-width:980px;margin:28px auto;padding:18px}
-    .header{
-      background:linear-gradient(90deg,#0ea5e9 0%, #6366f1 100%);
-      border-radius:12px;
-      overflow:hidden;
-      box-shadow:0 6px 18px rgba(15,23,42,0.08);
-      text-align:center;
-      padding:0;
-    }
-    .header img{
-      width:100%;
-      height:auto;
-      display:block;
-    }
-    .card{background:var(--card);border-radius:12px;padding:18px;margin-top:-20px;box-shadow:0 6px 24px rgba(15,23,42,0.06)}
-    .title{display:flex;align-items:center;gap:12px}
-    .title h1{margin:0;font-size:18px}
-    .buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:14px}
-    .buttons-center{display:flex;justify-content:center;gap:12px;margin-top:14px}
-    .separator{
-      border-top:1px solid #ddd;
-      margin:30px 0; /* plus d'espace au-dessus et en-dessous */
-    }
-    .btn{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(249,250,251,0.9));cursor:pointer;font-weight:600;text-decoration:none;color:inherit;justify-content:center}
-    .btn:active{transform:translateY(1px)}
-    .btn svg{width:20px;height:20px;flex-shrink:0}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calor Run</title>
+<link rel="icon" type="image/png" href="ico.png">
+<style>
+:root {
+  --primary-color: #215E99;
+  --secondary-color: #E61780;
+  --bg-white: #fff;
+  --shadow: rgba(0,0,0,0.15);
+  --border-radius: 0.5rem;
+  --max-width: 62.5rem;
+  --text-dark: #333;
+}
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 1.25rem;
+  position: relative;
+}
+body::before {
+  content:''; position: fixed; inset:0;
+  background: linear-gradient(0.25turn, var(--primary-color), var(--secondary-color));
+  opacity:0.3;
+  z-index:-1;
+  pointer-events: none;
+}
+.container { max-width: var(--max-width); margin:0 auto; }
+.header {
+  text-align:center;
+  margin-bottom:1rem;
+  color: var(--primary-color);
+  font-size:1.3rem;
+  font-weight:bold;
+  padding:1.25rem 1.25rem 3.75rem;
+  background:url('calor.png') center/contain no-repeat;
+}
+
+/* Styles boutons */
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.button-row .button {
+  flex: 0 0 auto;       /* largeur auto, ne s'étire pas */
+  min-width: max-content; /* largeur selon contenu le plus long */
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--border-radius);
+  background: var(--primary-color);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 0.25rem 0.5rem var(--shadow);
+  transition: background 0.3s;
+  display: inline-block;
+}
+.button-row .button:hover {
+  background: var(--secondary-color);
+}
+
+@media(max-width:768px){
+  .header { padding:0.5rem; font-size:1rem; margin-bottom:1rem; }
+  .button-row { flex-direction: column; gap:0.5rem; }
+  .button-row .button { width: 100%; min-width: auto; }
+}
+</style>
 </head>
 <body>
-  <main class="container">
-    <section class="header" aria-label="Bannière">
-      <img src="calor.png" alt="Calor Run" />
-    </section>
 
-    <section class="card" aria-labelledby="main-title">
-      <div class="title">
-        <h1 id="main-title">Tableau de bord — Calor Run</h1>
-      </div>
+<div class="container">
+  <div class="header" id="page-title"></div>
 
-      <!-- Première ligne de boutons -->
-      <div class="buttons" role="group" aria-label="Actions principales">
-        <a class="btn" href="https://gregb77.github.io/calor_run/participants.html">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM6 20c0-2.21 3.58-4 6-4s6 1.79 6 4v1H6v-1z" stroke="currentColor" stroke-width="0.7"/></svg>
-          Participants
-        </a>
+  <!-- Ligne 1 : 3 boutons -->
+  <div class="button-row">
+    <a href="https://gregb77.github.io/calor_run/live_trail.html" class="button">Live Trail</a>
+    <a href="https://gregb77.github.io/calor_run/participants.html" class="button">Participants</a>
+    <a href="https://gregb77.github.io/calor_run/statistiques.html" class="button">Statistiques</a>
+  </div>
 
-        <a class="btn" href="https://gregb77.github.io/calor_run/statistiques.html">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 13h4v7H3v-7zM10 7h4v13h-4V7zM17 3h4v17h-4V3z" stroke="currentColor" stroke-width="0.7"/></svg>
-          Statistiques
-        </a>
+  <!-- Ligne 2 : 2 boutons -->
+  <div class="button-row">
+    <a href="https://gregb77.github.io/calor_run/resultats.html?distance=10" class="button">Résultats 10 km</a>
+    <a href="https://gregb77.github.io/calor_run/resultats.html?distance=20" class="button">Résultats 20 km</a>
+  </div>
+</div>
 
-        <a class="btn" href="https://gregb77.github.io/calor_run/live_trail.html">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="0.7"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" stroke="currentColor" stroke-width="0.7"/></svg>
-          Live Trail
-        </a>
+<script>
+  const year = new Date().getFullYear();
+  document.title = `Calor Run ${year}`;
+  document.getElementById("page-title").textContent = `CALOR RUN ${year}`;
+</script>
 
-        <a class="btn" href="https://gregb77.github.io/calor_run/scan_dossards.html">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="0.7"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="0.7"/><path d="M21 7v-2a1 1 0 0 0-1-1h-2" stroke="currentColor" stroke-width="0.7"/><path d="M3 17v2a1 1 0 0 0 1 1h2" stroke="currentColor" stroke-width="0.7"/></svg>
-          Scan Dossards
-        </a>
-      </div>
-
-      <!-- Ligne de séparation avec plus d'espace -->
-      <div class="separator"></div>
-
-      <!-- Deuxième ligne de boutons centrée avec icônes -->
-      <div class="buttons-center" role="group" aria-label="Résultats courses">
-        <a class="btn" href="https://gregb77.github.io/calor_run/resultats.html?distance=10">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13h14v2H5v-2zm0-4h14v2H5V9z" stroke="currentColor" stroke-width="0.7"/></svg>
-          Résultats 10km
-        </a>
-        <a class="btn" href="https://gregb77.github.io/calor_run/resultats.html?distance=20">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13h14v2H5v-2zm0-4h14v2H5V9z" stroke="currentColor" stroke-width="0.7"/></svg>
-          Résultats 20km
-        </a>
-      </div>
-
-    </section>
-  </main>
 </body>
 </html>
