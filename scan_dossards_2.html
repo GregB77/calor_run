@@ -57,7 +57,6 @@
     const database = firebase.database();
     const auth = firebase.auth();
 
-    // DOM
     const beepSound = document.getElementById('beep-sound');
     const currentScanDiv = document.getElementById('current-scan');
     const counterDiv = document.getElementById('counter');
@@ -65,40 +64,38 @@
     const backButton = document.getElementById('back-button');
     const historyList = document.getElementById('history-list');
 
-    // STATE
-    let scannedCodes = new Set(JSON.parse(localStorage.getItem('scannedCodes') || "[]"));
-    let pendingScans = JSON.parse(localStorage.getItem('pendingScans') || "[]");
+    let scannedCodes = new Set();
+    let pendingScans = [];
     let lastScan = "", lastScanTime = 0, maxDossard;
     let qrScanner;
 
-    // UI
-    counterDiv.onclick = () => resultsDiv.style.display = 'block';
-    backButton.onclick = () => resultsDiv.style.display = 'none';
+    counterDiv.onclick = () => resultsDiv.style.display='block';
+    backButton.onclick = () => resultsDiv.style.display='none';
 
     function saveScannedCodes() { localStorage.setItem('scannedCodes', JSON.stringify(Array.from(scannedCodes))); }
     function savePendingScans() { localStorage.setItem('pendingScans', JSON.stringify(pendingScans)); }
 
-    function addScanToHistory(code) {
+    function addScanToHistory(code){
       const entry = document.createElement('div');
       entry.className = 'scan-entry';
       entry.textContent = code;
       const codeInt = parseInt(code,10);
-      if(codeInt>=1&&codeInt<=300) entry.style.color='var(--primary-color)';
-      else if(codeInt>=301&&codeInt<=600) entry.style.color='var(--secondary-color)';
+      if(codeInt>=1 && codeInt<=300) entry.style.color='var(--primary-color)';
+      else if(codeInt>=301 && codeInt<=600) entry.style.color='var(--secondary-color)';
       else entry.style.color='#fff';
       historyList.prepend(entry);
       if(historyList.childNodes.length>100) historyList.removeChild(historyList.lastChild);
     }
 
-    function canScan(code) {
+    function canScan(code){
       const now = Date.now();
       if(scannedCodes.has(code)) return false;
-      if(code === lastScan && (now - lastScanTime) < 3000) return false;
+      if(code === lastScan && (now-lastScanTime)<3000) return false;
       lastScan = code; lastScanTime = now;
       return true;
     }
 
-    function isValidCode(codeInt){ return !isNaN(codeInt) && codeInt >=1 && codeInt <= maxDossard; }
+    function isValidCode(codeInt){ return !isNaN(codeInt) && codeInt>=1 && codeInt<=maxDossard; }
 
     function handleNewScan(code){
       const codeInt = parseInt(code,10);
@@ -113,7 +110,7 @@
       setTimeout(()=>currentScanDiv.textContent="---",2000);
 
       const scanRef = database.ref(`scan_dossards/${code}`);
-      scanRef.transaction(current => current===null?{dateTime:Date.now()}:undefined)
+      scanRef.transaction(current => current===null ? {dateTime:Date.now()} : undefined)
         .catch(()=>{ pendingScans.push({code,timestamp:Date.now()}); savePendingScans(); });
     }
 
@@ -129,51 +126,29 @@
       });
     }
 
-    // ------------------- SYNCHRO CORRIGÉE -------------------
-    function syncFirebaseWithLocal(){
-      database.ref('scan_dossards').once('value').then(snapshot=>{
-        const firebaseCodes = [];
-        snapshot.forEach(child => firebaseCodes.push(child.key));
-        firebaseCodes.sort((a,b)=>parseInt(a,10)-parseInt(b,10));
+    function loadAllFirebaseScans(){
+      scannedCodes.clear();
+      pendingScans = [];
+      historyList.innerHTML='';
+      localStorage.removeItem('scannedCodes');
+      localStorage.removeItem('pendingScans');
 
-        firebaseCodes.forEach(code=>{
-          if(!scannedCodes.has(code)){
+      database.ref('scan_dossards').orderByKey().once('value')
+        .then(snapshot => {
+          const codes = [];
+          snapshot.forEach(child => codes.push(child.key));
+          codes.sort((a,b)=>parseInt(a,10)-parseInt(b,10));
+          codes.forEach(code => {
             scannedCodes.add(code);
             addScanToHistory(code);
-          }
+          });
+          saveScannedCodes();
         });
-        saveScannedCodes();
-
-        // Envoyer les scans locaux manquants
-        pendingScans = pendingScans.filter(({code,timestamp})=>{
-          if(!firebaseCodes.includes(code)){
-            const scanRef = database.ref(`scan_dossards/${code}`);
-            scanRef.transaction(current=>current===null?{dateTime:timestamp}:undefined)
-              .catch(()=>pendingScans.push({code,timestamp}));
-            return false;
-          }
-          return true;
-        });
-        savePendingScans();
-      });
     }
 
-    function resetCacheIfFirebaseEmpty(){
-      return database.ref('scan_dossards').once('value').then(snapshot=>{
-        if(!snapshot.exists()){
-          scannedCodes.clear();
-          pendingScans=[];
-          localStorage.removeItem('scannedCodes');
-          localStorage.removeItem('pendingScans');
-          historyList.innerHTML='';
-        }
-      });
-    }
-
-    // Temps réel : uniquement pour nouveaux scans après le chargement initial
     function listenRealtimeScans(){
       database.ref('scan_dossards').limitToLast(1)
-        .on('child_added', snapshot=>{
+        .on('child_added', snapshot => {
           const code = snapshot.key;
           if(!scannedCodes.has(code)){
             scannedCodes.add(code);
@@ -199,28 +174,23 @@
     }
 
     function startApp(){
-      resetCacheIfFirebaseEmpty().then(()=>{
-        historyList.innerHTML='';
-        scannedCodes.forEach(code=>addScanToHistory(code));
-        syncFirebaseWithLocal();
+      database.ref('data/participants').once('value').then(snapshot=>{
+        const val = snapshot.val();
+        if(val && !isNaN(parseInt(val,10))) maxDossard = parseInt(val,10);
+      }).finally(()=>{
+        loadAllFirebaseScans();
         listenRealtimeScans();
         startCamera();
         syncPendingScans();
       });
     }
 
-    window.addEventListener('online',()=>{
+    window.addEventListener('online', ()=>{
       syncPendingScans();
-      syncFirebaseWithLocal();
+      loadAllFirebaseScans();
     });
 
-    // Max dossard
-    database.ref('data/participants').once('value').then(snapshot=>{
-      const val=snapshot.val();
-      if(val&&!isNaN(parseInt(val,10))) maxDossard=parseInt(val,10);
-    });
-
-    auth.onAuthStateChanged(user=>{ if(user) startApp(); });
+    auth.onAuthStateChanged(user => { if(user) startApp(); });
     auth.signInAnonymously().catch(err=>alert("Erreur d'authentification: "+err.message));
   </script>
 </body>
