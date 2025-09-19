@@ -220,26 +220,43 @@
     }
     window.addEventListener('online', syncPendingScans);
 
-    function loadInitialScans(limit = 50) {
-      scannedCodes.forEach(code => addScanToHistory(code));
-      database.ref('scan_dossards').orderByKey().limitToLast(limit).once('value', snapshot => {
-        snapshot.forEach(child => {
-          if (!scannedCodes.has(child.key)) {
-            scannedCodes.add(child.key);
-            saveScannedCodes();
-            addScanToHistory(child.key);
-          }
-        });
-      });
-
-      database.ref('scan_dossards').limitToLast(1).on('child_added', snapshot => {
-        const code = snapshot.key;
-        if (!scannedCodes.has(code)) {
-          scannedCodes.add(code);
-          saveScannedCodes();
-          addScanToHistory(code);
+    function resetCacheIfFirebaseEmpty() {
+      return database.ref('scan_dossards').once('value').then(snapshot => {
+        if (!snapshot.exists()) {
+          scannedCodes.clear();
+          pendingScans = [];
+          localStorage.removeItem('scannedCodes');
+          localStorage.removeItem('pendingScans');
+          historyList.innerHTML = '';
         }
       });
+    }
+
+    function loadInitialScans(limit = 50) {
+      scannedCodes.forEach(code => addScanToHistory(code));
+      database.ref('scan_dossards')
+        .orderByKey()
+        .limitToLast(limit)
+        .once('value', snapshot => {
+          snapshot.forEach(child => {
+            if (!scannedCodes.has(child.key)) {
+              scannedCodes.add(child.key);
+              saveScannedCodes();
+              addScanToHistory(child.key);
+            }
+          });
+        });
+
+      database.ref('scan_dossards')
+        .limitToLast(1)
+        .on('child_added', snapshot => {
+          const code = snapshot.key;
+          if (!scannedCodes.has(code)) {
+            scannedCodes.add(code);
+            saveScannedCodes();
+            addScanToHistory(code);
+          }
+        });
     }
 
     function startCamera() {
@@ -258,9 +275,11 @@
     }
 
     function startApp() {
-      loadInitialScans();
-      startCamera();
-      syncPendingScans();
+      resetCacheIfFirebaseEmpty().then(() => {
+        loadInitialScans();
+        startCamera();
+        syncPendingScans();
+      });
     }
 
     database.ref('data/participants').once('value').then(snapshot => {
