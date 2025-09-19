@@ -147,6 +147,7 @@ const firebaseConfig = {
   messagingSenderId:"329949291334",
   appId:"1:329949291334:web:c71ef20268c609cf953b47"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
@@ -155,8 +156,7 @@ const el = {
   age10: document.querySelector('#tbl-age-10 tbody'),
   age20: document.querySelector('#tbl-age-20 tbody'),
   err: document.getElementById('err'),
-  updateTime: document.getElementById('update-time'),
-  themeToggle: document.getElementById('theme-toggle')
+  updateTime: document.getElementById('update-time') // facultatif si tu veux afficher l'heure
 };
 
 const orderCat = ['CA','JU','ES','SE','M0','M1','M2','M3','M4','M5','M6','M7','M8','M9','M10'];
@@ -185,9 +185,9 @@ function renderCats(body, data){
     const total = t10+t20;
     rows.push(`<tr>
       <td>${cat}</td>
-      <td class="sep">${v10.f}</td><td>${v10.h}</td><td class="total">${t10}</td>
-      <td class="sep">${v20.f}</td><td>${v20.h}</td><td class="total">${t20}</td>
-      <td class="sep total">${total}</td>
+      <td>${v10.f}</td><td>${v10.h}</td><td>${t10}</td>
+      <td>${v20.f}</td><td>${v20.h}</td><td>${t20}</td>
+      <td>${total}</td>
     </tr>`);
     tot10f+=v10.f; tot10h+=v10.h;
     tot20f+=v20.f; tot20h+=v20.h;
@@ -199,13 +199,13 @@ function renderCats(body, data){
 
   rows.push(`<tr style="font-weight:700">
     <td>Totaux</td>
-    <td class="sep">${tot10f} (${Math.round(100*tot10f/tot10||0)}%)</td>
+    <td>${tot10f} (${Math.round(100*tot10f/tot10||0)}%)</td>
     <td>${tot10h} (${Math.round(100*tot10h/tot10||0)}%)</td>
-    <td class="total">${tot10}</td>
-    <td class="sep">${tot20f} (${Math.round(100*tot20f/tot20||0)}%)</td>
+    <td>${tot10}</td>
+    <td>${tot20f} (${Math.round(100*tot20f/tot20||0)}%)</td>
     <td>${tot20h} (${Math.round(100*tot20h/tot20||0)}%)</td>
-    <td class="total">${tot20}</td>
-    <td class="sep total">${grandTotal}</td>
+    <td>${tot20}</td>
+    <td>${grandTotal}</td>
   </tr>`);
 
   body.innerHTML = rows.join('');
@@ -234,39 +234,26 @@ function renderAges(body10, body20, data){
   body20.innerHTML=buildRows(ages[20]);
 }
 
-function showError(msg){el.err.style.display='block';el.err.textContent=msg;}
+function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
 
 db.ref('participants').on('value',snap=>{
   try{
     const data = snap.val()||{};
     renderCats(el.cat,data);
     renderAges(el.age10,el.age20,data);
-    const now = new Date();
-    el.updateTime.textContent = now.toLocaleTimeString('fr-FR');
+    if(el.updateTime){
+      const now = new Date();
+      el.updateTime.textContent = now.toLocaleTimeString('fr-FR');
+    }
   }catch(e){
     console.error(e);
     showError("Erreur traitement : "+e.message);
   }
-},err=>{console.error(err);showError("Erreur Firebase : "+err.message);});
-
-// Bascule thème
-el.themeToggle.addEventListener('click', e=>{
-  e.preventDefault();
-  document.body.classList.toggle('dark');
+}, err=>{
+  console.error(err);
+  showError("Erreur Firebase : "+err.message);
 });
-
-// Dark theme
-const style = document.createElement('style');
-style.innerHTML = `
-body.dark { background:#121212; color:#eee; }
-body.dark .card { background:#1e1e1e; border-color:#333; }
-body.dark th { color:#fff; }
-body.dark tbody tr:nth-child(odd){background:#1e1e1e;}
-body.dark tbody tr:nth-child(even){background:#2a2a2a;}
-`;
-document.head.appendChild(style);
 </script>
-
 </body>
 </html>
 
