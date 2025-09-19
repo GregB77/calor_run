@@ -262,11 +262,12 @@ function renderAges(body10, body20, data){
 function renderClubs(body, data){
   const clubsCount = {};
   Object.values(data||{}).forEach(p=>{
-    const club = p.club || '—';
+    const club = (p.club || '').trim(); // <- trim pour enlever espaces
+    if(!club) return; // <- ignorer si vide
     clubsCount[club] = (clubsCount[club]||0) + 1;
   });
 
-  // Filtrer les clubs avec 0 participants
+  // Convertir en tableau et filtrer uniquement les clubs avec participants
   const filteredClubs = Object.entries(clubsCount).filter(([club, count]) => count > 0);
 
   // Trier : nombre décroissant, puis alphabétique
