@@ -12,7 +12,7 @@
   --bg-white: #fff;
   --bg-light: #f9f9f9;
   --shadow: rgba(0,0,0,0.15);
-  --radius: 0.5rem;
+  --border-radius: 0.5rem;
   --max-width: 62.5rem;
   --text-dark: #333;
   --border-light: #ddd;
@@ -84,7 +84,7 @@ body::before {
   overflow-x:auto;
   margin:0 auto 1.25rem;
   background: var(--bg-white);
-  border-radius: var(--radius);
+  border-radius: var(--border-radius); /* remplacé */
   box-shadow: 0 0.25rem 0.75rem var(--shadow);
 }
 table { width:100%; border-collapse: collapse; min-width:43.75rem; }
@@ -153,7 +153,6 @@ firebase.initializeApp(FIREBASE_CONFIG);
 // === Détection distance depuis URL ===
 const urlParams = new URLSearchParams(window.location.search);
 let COURSE_DISTANCE = parseInt(urlParams.get('distance'), 10) || 10;
-document.title = `Résultats ${COURSE_DISTANCE} km Calor Run`;
 document.getElementById('header-title').textContent = `RÉSULTATS ${COURSE_DISTANCE} KM`;
 
 // === Références Firebase ===
