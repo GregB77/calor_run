@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #215E99;
-            --primary-pink: #E61780;
+            --primary-color: #215E99;
+            --secondary-color: #E61780;
             --bg-white: #fff;
             --bg-light: #f9f9f9;
             --shadow: rgba(0, 0, 0, 0.15);
@@ -38,7 +38,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(0.25turn, var(--primary-blue), var(--primary-pink));
+            background: linear-gradient(0.25turn, var(--primary-color), var(--secondary-color));
             opacity: 0.3;
             z-index: -1;
         }
@@ -48,7 +48,7 @@
         .header {
             text-align: center;
             margin-bottom: 5px;
-            color: var(--primary-blue);
+            color: var(--primary-color);
             font-size: 1.3rem;
             font-weight: normal;
             padding: 20px 20px 60px 20px;
@@ -70,8 +70,8 @@
 
         .counter-line { text-align: center; margin-bottom: 15px; font-size: 1rem; }
         .counter-line span { margin: 0 6px; }
-        .counter-10km { color: var(--primary-blue); }
-        .counter-20km { color: var(--primary-pink); }
+        .counter-10km { color: var(--primary-color); }
+        .counter-20km { color: var(--secondary-color); }
 
         .counter-error {
             animation: blinker 2s linear infinite;
@@ -103,7 +103,7 @@
         }
         tbody tr:nth-child(even) { background: var(--bg-light); }
         .text-center { text-align: center; }
-        .loading { text-align: center; padding: 40px; font-size: 1.1rem; color: var(--primary-blue); }
+        .loading { text-align: center; padding: 40px; font-size: 1.1rem; color: var(--primary-color); }
         .last-update { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-dark); }
         .hidden { display: none; }
 
@@ -250,7 +250,6 @@
         return tr;
     }
 
-    // ✅ version modifiée avec arrivés + inscrits
     function calculatePositions(classement) {
         const scratchCounter = {};
         const genreCounter = {};
@@ -261,14 +260,12 @@
         let total10 = 0;   // inscrits 10 km
         let total20 = 0;   // inscrits 20 km
 
-        // Compter les inscrits depuis participants
         Object.values(participants).forEach(p => {
             const courseNormalized = COURSE_ALIASES[String(p.course).trim()] || p.course;
             if (courseNormalized === '10km') total10++;
             else if (courseNormalized === '20km') total20++;
         });
 
-        // Compter arrivés + positions
         for (let i = classement.length - 1; i >= 0; i--) {
             const participant = classement[i];
 
@@ -303,7 +300,6 @@
         elements.compteurs.classList.remove('hidden');
         elements.tableContainer.classList.remove('hidden');
 
-        // 🔹 affichage arrivés/total
         elements.counter10km.textContent = `10 km : ${count10}/${total10}`;
         elements.counter20km.textContent = `20 km : ${count20}/${total20}`;
         elements.counterTotal.textContent = `Total : ${classement.length}/${total10 + total20}`;
@@ -340,7 +336,6 @@
                 };
             }).sort((a, b) => b.tempsMs - a.tempsMs);
 
-            // ✅ récupère arrivés et inscrits
             const { count10, count20, total10, total20 } = calculatePositions(classement);
             displayData(classement, count10, count20, total10, total20);
         } catch (error) {
