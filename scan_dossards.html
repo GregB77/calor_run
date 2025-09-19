@@ -251,7 +251,7 @@
         qrScanner.start(
           { deviceId: { exact: rear.id } },
           { fps: 30, qrbox: { width: 400, height: 400 }, disableFlip: true, experimentalFeatures: { useBarCodeDetectorIfSupported: true } },
-          handleNewScan
+          handleNewScan,
           () => {}
         );
       });
