@@ -49,6 +49,7 @@ body::before {
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  grid-auto-columns: max-content; /* chaque bouton prend la largeur du plus grand bouton de la ligne */
 }
 
 .button-row .button {
@@ -70,8 +71,8 @@ body::before {
 
 @media(max-width:768px){
   .header { padding:0.5rem; font-size:1rem; margin-bottom:1rem; }
-  .button-row { flex-direction: column; gap:0.5rem; }
-  .button-row .button { width: 100%; min-width: auto; }
+  .button-row { display: flex; flex-direction: column; gap:0.5rem; }
+  .button-row .button { width: 100%; }
 }
 </style>
 </head>
