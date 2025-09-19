@@ -264,9 +264,16 @@ function renderClubs(body, data){
     const club = p.club || '—';
     clubsCount[club] = (clubsCount[club]||0) + 1;
   });
-  const sortedClubs = Object.entries(clubsCount)
-    .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
+
+  // Filtrer les clubs avec 0 participants
+  const filteredClubs = Object.entries(clubsCount).filter(([club, count]) => count > 0);
+
+  // Trier : nombre décroissant, puis alphabétique
+  const sortedClubs = filteredClubs.sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
+
+  // Générer les lignes
   const rows = sortedClubs.map((c,i)=>`<tr><td>${i+1}</td><td>${c[0]}</td><td>${c[1]}</td></tr>`);
+
   body.innerHTML = rows.join('') || '<tr><td colspan="3" class="muted">Aucune donnée.</td></tr>';
 }
 
@@ -282,10 +289,8 @@ db.ref('participants').on('value',snap=>{
     console.error(e);
     showError("Erreur traitement : "+e.message);
   }
-}, err=>{
-  console.error(err);
-  showError("Erreur Firebase : "+err.message);
-});
+},err=>{console.error(err);showError("Erreur Firebase : "+err.message);});
 </script>
+
 </body>
 </html>
