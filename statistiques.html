@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stats Calor Run</title>
+<title>STATISTIQUES</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -39,13 +39,28 @@ body::before {
 
 .container { max-width:1200px; margin:0 auto; }
 
+/* Header style code 2 simplifié */
 .header {
-  text-align:center;
-  font-size:1.5rem;
-  font-weight:bold;
-  color: var(--primary-color);
-  margin-bottom:1.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    padding: 3rem 1rem 5rem;
+    background: url('calor.png') center/contain no-repeat;
+    background-size: contain;
 }
+
+/* Card style */
+.card {
+  margin-bottom:1.5rem;
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
+  box-shadow:0 0.25rem 0.75rem var(--shadow);
+  padding:1rem;
+}
+
+.card h2 { margin-bottom:1rem; color: var(--primary-color); }
 
 .table-container {
   margin-bottom:1.5rem;
@@ -67,16 +82,6 @@ th { font-weight:600; position:sticky; top:0; z-index:10; }
 tbody tr:nth-child(even) { background: var(--bg-light); }
 .muted { color:#777; }
 
-.card {
-  margin-bottom:1.5rem;
-  background: var(--bg-white);
-  border-radius: var(--border-radius);
-  box-shadow:0 0.25rem 0.75rem var(--shadow);
-  padding:1rem;
-}
-
-.card h2 { margin-bottom:1rem; color: var(--primary-color); }
-
 @media (max-width:768px){
   table { min-width:auto; font-size:0.85rem; }
 }
@@ -85,7 +90,7 @@ tbody tr:nth-child(even) { background: var(--bg-light); }
 <body>
 
 <div class="container">
-  <div class="header">Stats Calor Run</div>
+  <div class="header">STATISTIQUES</div>
 
   <section class="card">
     <h2>Répartition par catégories</h2>
@@ -154,8 +159,7 @@ const el = {
   cat: document.querySelector('#tbl-cat tbody'),
   age10: document.querySelector('#tbl-age-10 tbody'),
   age20: document.querySelector('#tbl-age-20 tbody'),
-  err: document.getElementById('err'),
-  updateTime: null // facultatif
+  err: document.getElementById('err')
 };
 
 const orderCat = ['CA','JU','ES','SE','M0','M1','M2','M3','M4','M5','M6','M7','M8','M9','M10'];
