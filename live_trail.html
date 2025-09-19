@@ -77,8 +77,8 @@
         .hidden { display:none; }
 
         @media (max-width: 768px) {
-            .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
-            .counter-line { margin-bottom: 5px; }
+            .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:0.75rem; }
+            .counter-line { margin-bottom: 5px; font-size:0.75rem; }
             .table-container { width: 98vw; overflow-x: auto; }
             table { width: auto; font-size: 0.85rem; }
             th, td { padding:0.375rem 0.5rem; }
@@ -92,12 +92,12 @@
                 <span id="chrono-text">--:--:--</span>
             </div>
         </div>
-        <div id="loading" class="loading">Connexion en temps réel...</div>
+        <div id="loading" class="loading">Connexion...</div>
         <div id="compteurs" class="counter-line hidden">
             <span class="counter-10km">10 km : 0</span>
             <span>•</span>
             <span class="counter-20km">20 km : 0</span>
-            <span>•</span>
+            <span> • </span>
             <span>Total : 0</span>
         </div>
     </div>
@@ -120,12 +120,6 @@
             </thead>
             <tbody></tbody>
         </table>
-    </div>
-
-    <div class="container">
-        <p class="last-update hidden" id="last-update">
-            Dernière mise à jour : <span id="update-time">--:--:--</span>
-        </p>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
