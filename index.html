@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calor Run</title>
-<link rel="icon" type="image/png" href="ico.png">
+<link rel="icon" type="image/png" href="ico.png?v=1">
 <style>
 :root {
   --primary-color: #215E99;
@@ -42,18 +42,18 @@ body::before {
   background:url('calor.png') center/contain no-repeat;
 }
 
-/* Styles boutons */
+/* Styles boutons fixes */
 .button-row {
-  display: grid;
-  grid-auto-flow: column;
+  display: flex;
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
-  grid-auto-columns: max-content; /* chaque bouton prend la largeur du plus grand bouton de la ligne */
+  flex-wrap: wrap;
 }
 
 .button-row .button {
-  padding: 0.75rem 1.25rem;
+  width: 15em;               /* largeur fixe */
+  padding: 0.75rem 1rem;
   border-radius: var(--border-radius);
   background: var(--primary-color);
   color: #fff;
@@ -69,10 +69,18 @@ body::before {
   background: var(--secondary-color);
 }
 
+/* Responsive */
 @media(max-width:768px){
   .header { padding:0.5rem; font-size:1rem; margin-bottom:1rem; }
-  .button-row { display: flex; flex-direction: column; gap:0.5rem; }
-  .button-row .button { width: 100%; }
+  .button-row {
+    flex-direction: column; /* boutons en colonne */
+    gap: 0.5rem;
+    align-items: center;    /* centrer horizontalement */
+  }
+  .button-row .button {
+    width: 90%;             /* boutons adaptatifs sur mobile */
+    max-width: 15em;        /* ne dépassent pas 15em */
+  }
 }
 </style>
 </head>
