@@ -97,8 +97,8 @@
     <div class="search-counter-container">
       <input type="text" id="search" placeholder="Rechercher par nom, prénom, club ou catégorie (ex: HM0, FSE)" autocomplete="off">
       <div id="counter">
-        <span class="counter-10km">10 km : 0</span><span>•</span>
-        <span class="counter-20km">20 km : 0</span><span>•</span>
+        <span class="counter-10km">10 km : 0</span><span> • </span>
+        <span class="counter-20km">20 km : 0</span><span> • </span>
         <span>Total : 0</span>
       </div>
     </div>
@@ -199,8 +199,8 @@
       const km20 = AppState.filteredData.filter(p => p.course == "20").length;
       const total = AppState.filteredData.length;
       elements.counter.innerHTML = `
-        <span class="counter-10km">10 km : ${km10}</span><span>•</span>
-        <span class="counter-20km">20 km : ${km20}</span><span>•</span>
+        <span class="counter-10km">10 km : ${km10}</span><span> • </span>
+        <span class="counter-20km">20 km : ${km20}</span><span> • </span>
         <span>Total : ${total}</span>`;
     }
 
