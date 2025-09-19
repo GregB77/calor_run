@@ -232,30 +232,35 @@
     }
 
     function filterData(searchTerm) {
-      const term = utils.normalizeString(searchTerm);
-      if (!term) {
+      const terms = searchTerm
+        .split(/\s+/)               // découpe en mots séparés par espaces
+        .map(utils.normalizeString) // normalise (minuscules, accents, espaces)
+        .filter(Boolean);           // enlève les vides
+
+      if (terms.length === 0) {
         AppState.filteredData = [...AppState.allData];
       } else {
         AppState.filteredData = AppState.allData.filter(p => {
-          let genre="", cat="", rest=term;
-          if (/^(h|f)([a-z0-9]+)$/i.test(term)) {
-            const m = term.match(/^(h|f)([a-z0-9]+)$/i);
-            genre = m[1].toUpperCase(); cat = m[2].toUpperCase(); rest="";
-          }
-          const g=(p.genre||"").toUpperCase(), c=(p.categorie||"").toUpperCase();
-          let ok=true;
-          if (genre) ok = g===genre;
-          if (ok && cat) ok = c===cat;
-          if (ok && rest) {
-            ok = Object.entries(p).some(([k,v])=>{
-              if (k==="course") {
-                const ckm=`${v} km`;
-                return utils.normalizeString(ckm).includes(rest)||utils.normalizeString(v).includes(rest);
-              }
-              return utils.normalizeString(v).includes(rest);
+          return terms.every(term => {
+            
+            // Cas 1 : recherche genre+catégorie (ex: HM0, FSE)
+            if (/^(h|f)([a-z0-9]+)$/i.test(term)) {
+              const m = term.match(/^(h|f)([a-z0-9]+)$/i);
+              const g = (p.genre || "").toUpperCase();
+              const c = (p.categorie || "").toUpperCase();
+              return g === m[1].toUpperCase() && c === m[2].toUpperCase();
+            }
+
+            // Cas 2 : recherche sur la course (ex: "10", "10km", "10 km")
+            if (/^\d+\s*km?$/.test(term)) {
+              return utils.normalizeString(`${p.course} km`).includes(term);
+            }
+
+            // Cas 3 : recherche texte générique (nom, prénom, club…)
+            return Object.entries(p).some(([k, v]) => {
+            return utils.normalizeString(v).includes(term);
             });
-          }
-          return ok;
+          });
         });
       }
       sortData(AppState.currentSort.column, AppState.currentSort.direction);
