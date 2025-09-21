@@ -231,10 +231,12 @@ function renderAges(body, data){
   });
 
   function getOldestYoungest(arr){
-    if(!arr.length) return [{},{ }]; 
-    arr.sort((a,b)=>b.age-a.age);
-    const oldest = arr[0];
-    const youngest = arr[arr.length-1];
+    if(!arr.length) return [{},{}];
+    let oldest = arr[0], youngest = arr[0];
+    for(const p of arr){
+      if(p.age > oldest.age) oldest = p;
+      if(p.age < youngest.age) youngest = p;
+    }
     return [oldest, youngest];
   }
 
