@@ -42,7 +42,6 @@ body::before {
   background:url('calor.png') center/contain no-repeat;
 }
 
-/* Styles boutons fixes */
 .button-row {
   display: flex;
   justify-content: center;
@@ -52,7 +51,7 @@ body::before {
 }
 
 .button-row .button {
-  width: 17ch; /* largeur pour environ 15 caractères */
+  width: 17ch;
   padding: 0.75rem 1rem;
   border-radius: var(--border-radius);
   background: var(--primary-color);
@@ -70,24 +69,23 @@ body::before {
 
 .separator {
   border: none;
-  border-top: 2px solid var(--primary-color); /* couleur de séparation */
-  margin: 1.5rem 0; /* espace au-dessus et en dessous */
-  width: 50%; /* largeur de la ligne */
+  border-top: 2px solid var(--primary-color);
+  margin: 1.5rem 0;
+  width: 50%;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Responsive */
 @media(max-width:768px){
   .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
   .button-row {
-    flex-direction: column; /* boutons en colonne */
+    flex-direction: column;
     gap: 0.5rem;
-    align-items: center;    /* centrer horizontalement */
+    align-items: center;
   }
   .button-row .button {
-    width: 90%;             /* boutons adaptatifs sur mobile */
-    max-width: 15em;        /* ne dépassent pas 15em */
+    width: 90%;
+    max-width: 15em;
   }
 }
 </style>
@@ -97,17 +95,18 @@ body::before {
 <div class="container">
   <div class="header" id="page-title"></div>
 
-  <!-- Ligne 1 : 3 boutons -->
   <div class="button-row">
     <a href="https://gregb77.github.io/calor_run/live_trail.html" class="button">Live Trail</a>
     <a href="https://gregb77.github.io/calor_run/participants.html" class="button">Participants</a>
     <a href="https://gregb77.github.io/calor_run/statistiques.html" class="button">Statistiques</a>
   </div>
 
-  <!-- Ligne de séparation -->
   <hr class="separator">
+
+  <div class="button-row">
+    <a href="https://gregb77.github.io/calor_run/podiums.html" class="button">Podiums</a>
+  </div>
   
-  <!-- Ligne 2 : 2 boutons -->
   <div class="button-row">
     <a href="https://gregb77.github.io/calor_run/resultats.html?distance=10" class="button">Résultats 10 km</a>
     <a href="https://gregb77.github.io/calor_run/resultats.html?distance=20" class="button">Résultats 20 km</a>
