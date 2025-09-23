@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Podiums Calor Run</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥇</text></svg>">
+<title>Stats Calor Run</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -60,28 +60,14 @@ body::before {
   margin-bottom: 0.5rem;
   color: var(--primary-color);
 }
-table { width:100%; border-collapse: collapse; min-width:20rem; }
+table { width:100%; border-collapse: collapse; min-width:43.75rem; }
 th, td { padding:0.375rem 0.5rem; border-bottom:1px solid var(--border-light); text-align:left; white-space: nowrap; }
 th { background: var(--header-bg); font-weight:600; position:sticky; top:0; z-index:10; }
-
 tbody tr:nth-child(even){ background: var(--bg-light); }
 .muted { color:#777; }
-
-#tbl-age th:nth-child(1),#tbl-age td:nth-child(1), #tbl-age th:nth-child(4), #tbl-age td:nth-child(4), #tbl-age th:nth-child(5), #tbl-age td:nth-child(5), #tbl-age th:nth-child(8), #tbl-age td:nth-child(8) { text-align: center; }
-#tbl-clubs th:nth-child(1), #tbl-clubs td:nth-child(1), #tbl-clubs th:nth-child(3), #tbl-clubs td:nth-child(3) { text-align: center; }
-  
-/* Ligne verticale séparatrice pour le tableau des âges */
-#tbl-age th.separator,
-#tbl-age td.separator {
-  border-left: 2px solid var(--primary-color);
-  padding-left: 0.75rem;
-}
-
-.filters { text-align:center; margin:1rem 0; }
-.filters span { cursor:pointer; margin:0 0.5rem; font-weight:bold; color:var(--primary-color); }
-.filters span.active { text-decoration: underline; }
-.filters select { margin-left:1rem; padding:0.25rem; }
-
+.filter-container { text-align:center; margin-bottom:1rem; }
+.filter-container span { cursor:pointer; margin:0 0.5rem; color:var(--primary-color); font-weight:bold; }
+.filter-container select { padding:0.25rem; margin-left:0.5rem; }
 @media (max-width:768px){
   .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
   table { min-width:auto; font-size:0.85rem; }
@@ -92,57 +78,34 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
 <body>
 
 <div class="container">
-  <div class="header">PODIUMS CALOR RUN</div>
+  <div class="header">STATISTIQUES CALOR RUN</div>
 
-  <!-- Zone de filtres -->
-  <div class="filters">
-    <span id="filter10" class="active">10 km</span>|
-    <span id="filter20">20 km</span>
-    <select id="filterCat"><option value="">Toutes CAT</option></select>
+  <!-- Filtres -->
+  <div class="filter-container">
+    Course : <span id="filter10">10 km</span> / <span id="filter20">20 km</span>
+    Catégorie : 
+    <select id="filterCat"><option value="Toutes">Toutes</option></select>
   </div>
 
-  <!-- Podiums -->
+  <!-- Tableau Podium Hommes -->
   <div class="table-container">
     <div class="table-title">Podium Hommes</div>
-    <table id="tbl-podium-h">
-      <thead><tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr></thead>
+    <table id="tblPodH">
+      <thead>
+        <tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr>
+      </thead>
       <tbody><tr><td colspan="5" class="muted">Chargement…</td></tr></tbody>
     </table>
   </div>
+
+  <!-- Tableau Podium Femmes -->
   <div class="table-container">
     <div class="table-title">Podium Femmes</div>
-    <table id="tbl-podium-f">
-      <thead><tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr></thead>
+    <table id="tblPodF">
+      <thead>
+        <tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr>
+      </thead>
       <tbody><tr><td colspan="5" class="muted">Chargement…</td></tr></tbody>
-    </table>
-  </div>
-
-  <!-- Tableau 2 : Âges fusionné -->
-  <div class="table-container">
-    <div class="table-title">Plus et moins âgés 10 et 20 km</div>
-    <table id="tbl-age">
-      <thead>
-        <tr>
-          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
-          <th class="separator">Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
-        </tr>
-      </thead>
-      <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
-    </table>
-  </div>
-
-  <!-- Tableau 3 : Classement des clubs -->
-  <div class="table-container">
-    <div class="table-title">Clubs les plus représentés</div>
-    <table id="tbl-clubs">
-      <thead>
-        <tr>
-          <th>Rang</th>
-          <th>Club</th>
-          <th>Participants</th>
-        </tr>
-      </thead>
-      <tbody><tr><td colspan="3" class="muted">Chargement…</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -166,112 +129,83 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const el = {
-  podiumH: document.querySelector('#tbl-podium-h tbody'),
-  podiumF: document.querySelector('#tbl-podium-f tbody'),
-  age: document.querySelector('#tbl-age tbody'),
-  clubs: document.querySelector('#tbl-clubs tbody'),
-  err: document.getElementById('err'),
   filter10: document.getElementById('filter10'),
   filter20: document.getElementById('filter20'),
-  filterCat: document.getElementById('filterCat')
+  filterCat: document.getElementById('filterCat'),
+  podH: document.querySelector('#tblPodH tbody'),
+  podF: document.querySelector('#tblPodF tbody'),
+  err: document.getElementById('err')
 };
 
 let currentCourse = 10;
-let currentCat = '';
+let currentCat = 'Toutes';
+let participantsData = [];
+let scanTimesData = [];
 
-function parseDate(d){if(!d)return null;const dt=new Date(d);return isNaN(dt.getTime())?null:dt;}
-function computeAge(d){if(!d)return null;const today=new Date();let a=today.getFullYear()-d.getFullYear();if(today.getMonth()<d.getMonth()||(today.getMonth()===d.getMonth()&&today.getDate()<d.getDate()))a--;return a;}
-
-function renderPodium(body, data, genre){
-  const filtered = Object.values(data||{}).filter(p=>{
-    return Number(p.course)===currentCourse && (currentCat===''||p.categorie===currentCat) && (p.genre||'').toLowerCase().startsWith(genre);
-  });
-
-  filtered.sort((a,b)=> (a.temps||'').localeCompare(b.temps||''));
-  const top3 = filtered.slice(0,3);
-  if(!top3.length){ body.innerHTML = '<tr><td colspan="5" class="muted">Aucune donnée.</td></tr>'; return; }
-
-  const labels=['1er','2nd','3ème'];
-  body.innerHTML = top3.map((p,i)=>`<tr>
-    <td>${labels[i]}</td>
-    <td>${p.nom||''}</td>
-    <td>${p.prenom||''}</td>
-    <td>${p.temps||''}</td>
-    <td>${p.categorie||''}</td>
-  </tr>`).join('');
+function formatTime(ts){
+  if(!ts) return '';
+  const s = Math.floor(ts/1000);
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
+  return (h>0?h+'h ':'') + (m>0?m+'m ':'') + sec+'s';
 }
 
-function renderAges(body, data){
-  const ages = {10: [], 20: []};
-  Object.values(data||{}).forEach(p=>{
+function renderPodiums(){
+  const podH = [];
+  const podF = [];
+  participantsData.forEach(p => {
+    if(!p.genre || !p.cat) return;
+    if(currentCat !== 'Toutes' && p.cat !== currentCat) return;
     const course = Number(p.course)||0;
-    const birth = parseDate(p.date_naiss);
-    const age = computeAge(birth);
-    if(!birth || age===null) return;
-    const pack = {dossard:p.dossard||'', prenom:p.prenom||'', nom:p.nom||'', age};
-    if(course===10) ages[10].push(pack);
-    if(course===20) ages[20].push(pack);
+    if(course !== currentCourse) return;
+    const scan = scanTimesData.find(s => s.dossard == p.dossard);
+    if(!scan || scan.temps == null) return;
+    const entry = {nom:p.nom||'', prenom:p.prenom||'', cat:p.cat, temps:scan.temps};
+    if(p.genre.toLowerCase().startsWith('f')) podF.push(entry);
+    else podH.push(entry);
   });
 
-  function getOldestYoungest(arr){
-    if(!arr.length) return [{},{ }];
-    arr.sort((a,b)=>b.age-a.age);
-    return [arr[0], arr[arr.length-1]];
+  podH.sort((a,b)=>a.temps-b.temps);
+  podF.sort((a,b)=>a.temps-b.temps);
+
+  function fillTable(body, arr){
+    const podium = ['1er','2nd','3ème'];
+    const rows = [];
+    for(let i=0;i<3;i++){
+      const e = arr[i];
+      rows.push(`<tr>
+        <td>${podium[i]}</td>
+        <td>${e?e.nom:''}</td>
+        <td>${e?e.prenom:''}</td>
+        <td>${e?formatTime(e.temps):''}</td>
+        <td>${e?e.cat:''}</td>
+      </tr>`);
+    }
+    body.innerHTML = rows.join('');
   }
-
-  const rows10 = getOldestYoungest(ages[10]);
-  const rows20 = getOldestYoungest(ages[20]);
-
-  body.innerHTML = `
-    <tr>
-      <td>${rows10[0]?.dossard||''}</td><td>${rows10[0]?.prenom||''}</td><td>${rows10[0]?.nom||''}</td><td>${rows10[0]?.age||''}</td>
-      <td class="separator">${rows20[0]?.dossard||''}</td><td>${rows20[0]?.prenom||''}</td><td>${rows20[0]?.nom||''}</td><td>${rows20[0]?.age||''}</td>
-    </tr>
-    <tr>
-      <td>${rows10[1]?.dossard||''}</td><td>${rows10[1]?.prenom||''}</td><td>${rows10[1]?.nom||''}</td><td>${rows10[1]?.age||''}</td>
-      <td class="separator">${rows20[1]?.dossard||''}</td><td>${rows20[1]?.prenom||''}</td><td>${rows20[1]?.nom||''}</td><td>${rows20[1]?.age||''}</td>
-    </tr>`;
+  fillTable(el.podH, podH);
+  fillTable(el.podF, podF);
 }
 
-function renderClubs(body, data){
-  const clubsCount = {};
-  Object.values(data||{}).forEach(p=>{
-    const club = (p.club || '').trim();
-    if(!club) return;
-    clubsCount[club] = (clubsCount[club]||0) + 1;
-  });
-  const sortedClubs = Object.entries(clubsCount)
-    .filter(([club,count])=>count>0)
-    .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
-  const rows = sortedClubs.map((c,i)=>`<tr><td>${i+1}</td><td>${c[0]}</td><td>${c[1]}</td></tr>`);
-  body.innerHTML = rows.join('') || '<tr><td colspan="3" class="muted">Aucune donnée.</td></tr>';
-}
+// filtres
+el.filter10.addEventListener('click',()=>{currentCourse=10; renderPodiums();});
+el.filter20.addEventListener('click',()=>{currentCourse=20; renderPodiums();});
+el.filterCat.addEventListener('change',()=>{currentCat=el.filterCat.value; renderPodiums();});
 
-function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
+// charger données Firebase
+db.ref('participants').once('value').then(snap=>{
+  participantsData = Object.values(snap.val()||{});
+  // remplir catégories automatiquement
+  const cats = Array.from(new Set(participantsData.map(p=>p.cat).filter(Boolean))).sort();
+  el.filterCat.innerHTML = '<option value="Toutes">Toutes</option>';
+  cats.forEach(c=>{ const opt = document.createElement('option'); opt.value=c; opt.textContent=c; el.filterCat.appendChild(opt); });
 
-let participants = {};
-
-function refresh(){
-  renderPodium(el.podiumH, participants, 'h');
-  renderPodium(el.podiumF, participants, 'f');
-  renderAges(el.age, participants);
-  renderClubs(el.clubs, participants);
-}
-
-db.ref('participants').on('value',snap=>{
-  try{
-    participants = snap.val()||{};
-    // Remplir liste des catégories
-    const cats=[...new Set(Object.values(participants).map(p=>p.categorie).filter(Boolean))];
-    el.filterCat.innerHTML = '<option value="">Toutes CAT</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-    refresh();
-  }catch(e){ console.error(e); showError("Erreur traitement : "+e.message); }
-},err=>{console.error(err);showError("Erreur Firebase : "+err.message);});
-
-// Filtres
-el.filter10.addEventListener('click',()=>{currentCourse=10; el.filter10.classList.add('active'); el.filter20.classList.remove('active'); refresh();});
-el.filter20.addEventListener('click',()=>{currentCourse=20; el.filter20.classList.add('active'); el.filter10.classList.remove('active'); refresh();});
-el.filterCat.addEventListener('change',e=>{currentCat=e.target.value; refresh();});
+  return db.ref('scan_dossards').once('value');
+}).then(snap2=>{
+  scanTimesData = Object.values(snap2.val()||{});
+  renderPodiums();
+}).catch(err=>{el.err.style.display='block'; el.err.textContent="Erreur Firebase : "+err.message;});
 </script>
 
 </body>
