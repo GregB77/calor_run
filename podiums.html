@@ -92,7 +92,7 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
     <div class="table-title">Podium Hommes</div>
     <table id="tblPodH">
       <thead>
-        <tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Catégories</th></tr>
+        <tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr>
       </thead>
       <tbody><tr><td colspan="5" class="muted">Chargement…</td></tr></tbody>
     </table>
@@ -140,6 +140,7 @@ let currentCourse = 10;
 let currentCat = 'Toutes';
 let participantsData = null;
 let scanTimesData = null;
+let ready = false;
 
 function formatTime(ts){
   if(!ts) return '';
@@ -171,10 +172,10 @@ function renderPodiums(){
     if(!scan || scan.temps == null) return;
 
     let temps = Number(scan.temps);
-    if(temps < 1000000) temps *= 1000;
+    if(temps < 1000000) temps *= 1000; // timestamp en ms
 
     const entry = {nom:p.nom||'', prenom:p.prenom||'', cat:p.categorie, temps};
-    if(p.genre.toLowerCase().startsWith('f')) podF.push(entry);
+    if(p.genre && p.genre.toLowerCase().startsWith('f')) podF.push(entry);
     else podH.push(entry);
   });
 
@@ -201,32 +202,36 @@ function renderPodiums(){
   fillTable(el.podF, podF);
 }
 
-el.filter10.addEventListener('click',()=>{currentCourse=10; renderPodiums();});
-el.filter20.addEventListener('click',()=>{currentCourse=20; renderPodiums();});
-el.filterCat.addEventListener('change',()=>{currentCat=el.filterCat.value; renderPodiums();});
-
-function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
+function attachFilterEvents(){
+  el.filter10.onclick = ()=>{ currentCourse=10; renderPodiums(); };
+  el.filter20.onclick = ()=>{ currentCourse=20; renderPodiums(); };
+  el.filterCat.onchange = ()=>{ currentCat=el.filterCat.value; renderPodiums(); };
+}
 
 function tryRender(){
   if(participantsData && scanTimesData){
+    ready = true;
+    // remplir la liste des catégories
+    const cats = Array.from(new Set(participantsData.map(p=>p.categorie).filter(c=>c))).sort();
+    el.filterCat.innerHTML = '<option value="Toutes">Toutes</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+    attachFilterEvents();
     renderPodiums();
   }
 }
 
-// Charger participants
+function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
+
+// listeners Firebase
 db.ref('participants').on('value', snap=>{
   participantsData = Object.values(snap.val()||{});
-  const cats = Array.from(new Set(participantsData.map(p=>p.categorie).filter(c=>c))).sort();
-  el.filterCat.innerHTML = '<option value="Toutes">Toutes</option>'+cats.map(c=>`<option>${c}</option>`).join('');
   tryRender();
 }, err=>showError("Erreur participants : "+err.message));
 
-// Charger scan_dossards
 db.ref('scan_dossards').on('value', snap=>{
   scanTimesData = Object.values(snap.val()||{});
   tryRender();
 }, err=>showError("Erreur scan_dossards : "+err.message));
-
 </script>
 </body>
 </html>
+
