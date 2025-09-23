@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Calor Run</title>
+<title>Podiums Calor Run</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -37,29 +37,9 @@ body::before {
   z-index:-1;
   pointer-events: none;
 }
-.container { max-width: var(--max-width); margin: 0 auto; }
-.header {
-  text-align:center;
-  margin-bottom:0.625rem;
-  color: var(--primary-color);
-  font-size:1.3rem;
-  font-weight:bold;
-  padding:1.25rem 1.25rem 3.75rem;
-  background:url('calor.png') center/contain no-repeat;
-}
-.chrono-time {
-    font-family: 'Share Tech Mono', monospace;
-    font-variant-numeric: tabular-nums;
-    color: var(--primary-color);
-}
-.chrono-time.paused { opacity: 0.7; }
-.counter-line { text-align: center; margin-bottom: 15px; font-size: 1rem; }
-.counter-10km { color: var(--primary-color); cursor:pointer; }
-.counter-20km { color: var(--secondary-color); cursor:pointer; }
-.counter-total { color: #000; }
-.counter-error { animation: blinker 2s linear infinite; color: red; }
-@keyframes blinker { 50% { opacity: 0; } }
-
+.container { max-width: var(--max-width); margin: 0 auto; text-align:center; }
+.header { margin-bottom:1rem; color: var(--primary-color); font-size:1.8rem; font-weight:bold; }
+.chrono-time { font-family: 'Share Tech Mono', monospace; font-variant-numeric: tabular-nums; color: var(--primary-color); }
 .table-container { width: 96vw; max-width: 1400px; overflow-x:auto; margin:1rem auto; background: var(--bg-white); border-radius: var(--border-radius); box-shadow: 0 0.25rem 0.75rem var(--shadow); }
 table { width: 100%; border-collapse: collapse; min-width:300px; margin-bottom:2rem; }
 th, td { padding:0.375rem 0.5rem; border-bottom:1px solid var(--border-light); text-align:left; }
@@ -70,32 +50,19 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
 .hidden { display:none; }
 
 .filter-bar { text-align:center; margin-bottom:1rem; }
-.filter-bar select, .filter-bar button { margin:0 0.25rem; padding:0.25rem 0.5rem; font-size:0.9rem; }
+.filter-bar select, .filter-bar button { margin:0 0.25rem; padding:0.25rem 0.5rem; font-size:0.9rem; cursor:pointer; }
+.filter-bar button.active { font-weight:bold; border:2px solid var(--primary-color); border-radius:0.25rem; }
 
 @media (max-width: 768px) {
-    .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:0.75rem; }
-    .counter-line { margin-bottom: 5px; font-size:0.75rem; }
-    .table-container { width: 98vw; overflow-x: auto; }
-    table { width: auto; font-size: 0.85rem; }
-    th, td { padding:0.375rem 0.5rem; }
+    .header { font-size:1.2rem; margin-bottom:0.5rem; }
+    table { font-size: 0.85rem; }
 }
 </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="chrono-time paused" id="chrono-time">
-            <span id="chrono-text">--:--:--</span>
-        </div>
-    </div>
+    <div class="header">PODIUMS CALOR RUN</div>
     <div id="loading" class="loading">Connexion...</div>
-    <div id="compteurs" class="counter-line hidden">
-        <span class="counter-10km">10 km : 0</span>
-        <span>•</span>
-        <span class="counter-20km">20 km : 0</span>
-        <span> • </span>
-        <span class="counter-total">Total : 0</span>
-    </div>
 
     <div class="filter-bar hidden" id="filter-bar">
         <button data-course="10km" class="filter-course">10 km</button>
@@ -152,19 +119,10 @@ const FIREBASE_CONFIG = {
     measurementId: "G-YVQPW6JGPK"
 };
 
-const COURSE_ALIASES = {
-    '10': '10km', '10km': '10km', '10 km': '10km',
-    '20': '20km', '20km': '20km', '20 km': '20km'
-};
+const COURSE_ALIASES = { '10': '10km', '10km': '10km', '10 km': '10km', '20': '20km', '20km': '20km', '20 km': '20km' };
 
 const elements = {
-    chronoTime: document.getElementById('chrono-time'),
-    chronoText: document.getElementById('chrono-text'),
     loading: document.getElementById('loading'),
-    compteurs: document.getElementById('compteurs'),
-    counter10km: document.querySelector('.counter-10km'),
-    counter20km: document.querySelector('.counter-20km'),
-    counterTotal: document.querySelector('.counter-total'),
     filterBar: document.getElementById('filter-bar'),
     filterCat: document.getElementById('filter-cat'),
     tables: document.getElementById('tables'),
@@ -175,7 +133,7 @@ const elements = {
 let departureTimestamp = null;
 let participants = {};
 let scans = {};
-let chronoInterval = null;
+let selectedCourse = '';
 
 const app = firebase.initializeApp(FIREBASE_CONFIG);
 const db = firebase.database();
@@ -186,19 +144,6 @@ function formatTime(ms) {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-}
-
-function startChrono() {
-    clearInterval(chronoInterval);
-    if(!departureTimestamp){
-        elements.chronoText.textContent="--:--:--";
-        elements.chronoTime.classList.add('paused');
-        return;
-    }
-    elements.chronoTime.classList.remove('paused');
-    const updateChrono = ()=>{ elements.chronoText.textContent = formatTime(Date.now()-departureTimestamp); };
-    updateChrono();
-    chronoInterval = setInterval(updateChrono,1000);
 }
 
 function getTop3Filtered(courseFilter, catFilter, genreFilter){
@@ -212,7 +157,7 @@ function getTop3Filtered(courseFilter, catFilter, genreFilter){
         const courseOk = !courseFilter || courseNorm === courseFilter;
         const genreOk = !genreFilter || p.genre===genreFilter;
         return catOk && courseOk && genreOk;
-    }).sort((a,b)=>a.tempsMs-b.tempsMs); // meilleur temps premier
+    }).sort((a,b)=>a.tempsMs-b.tempsMs);
     return classement.slice(0,3);
 }
 
@@ -232,9 +177,8 @@ function renderTable(tbody, data){
 
 function updateTables(){
     const catFilter = elements.filterCat.value;
-    const courseFilter = window.selectedCourse || '';
-    const topH = getTop3Filtered(courseFilter, catFilter, 'H');
-    const topF = getTop3Filtered(courseFilter, catFilter, 'F');
+    const topH = getTop3Filtered(selectedCourse, catFilter, 'H');
+    const topF = getTop3Filtered(selectedCourse, catFilter, 'F');
     renderTable(elements.tableHomme, topH);
     renderTable(elements.tableFemme, topF);
 }
@@ -247,11 +191,11 @@ function populateCategories(){
 
 db.ref('data/depart_course').on('value', snapshot=>{
     departureTimestamp=snapshot.exists()?new Date(snapshot.val()).getTime():null;
-    if(departureTimestamp) startChrono();
 });
 
 db.ref('participants').on('value', snapshot=>{
     participants=snapshot.val()||{};
+    elements.loading.classList.add('hidden');
     elements.filterBar.classList.remove('hidden');
     elements.tables.classList.remove('hidden');
     populateCategories();
@@ -266,12 +210,12 @@ db.ref('scan_dossards').on('value', snapshot=>{
 elements.filterCat.addEventListener('change', updateTables);
 document.querySelectorAll('.filter-course').forEach(btn=>{
     btn.addEventListener('click', e=>{
-        window.selectedCourse = e.target.dataset.course;
+        selectedCourse = e.target.dataset.course;
+        document.querySelectorAll('.filter-course').forEach(b=>b.classList.remove('active'));
+        e.target.classList.add('active');
         updateTables();
     });
 });
-
-window.addEventListener('beforeunload', ()=>{ if(chronoInterval) clearInterval(chronoInterval); });
 </script>
 </body>
 </html>
