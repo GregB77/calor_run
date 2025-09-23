@@ -94,35 +94,43 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
     </div>
 </div>
 
-<div class="table-container hidden" id="tables">
-    <h3 style="color:var(--primary-color);">&nbsp;Podium Hommes</h3>
-    <table id="table-homme">
-        <thead>
-            <tr>
-                <th>Podium</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Temps</th>
-                <th>Catégorie</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div id="tables" class="hidden">
 
-    <h3 style="color:var(--secondary-color);">&nbsp;Podium Femmes</h3>
-    <table id="table-femme">
-        <thead>
-            <tr>
-                <th>Podium</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Temps</th>
-                <th>Catégorie</th>
-            </tr>
-        </thead>
-            <tbody></tbody>
-    </table>
-    <div id="loading" class="loading">Connexion...</div>
+  <!-- Tableau Hommes -->
+  <div class="table-container">
+      <h3 style="color:var(--primary-color);">&nbsp;Podium Hommes</h3>
+      <table id="table-homme">
+          <thead>
+              <tr>
+                  <th>Podium</th>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Temps</th>
+                  <th>Catégorie</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+  </div>
+
+  <!-- Tableau Femmes -->
+  <div class="table-container">
+      <h3 style="color:var(--secondary-color);">&nbsp;Podium Femmes</h3>
+      <table id="table-femme">
+          <thead>
+              <tr>
+                  <th>Podium</th>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Temps</th>
+                  <th>Catégorie</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+  </div>
+  <div id="loading" class="loading">Connexion...</div>
+</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
