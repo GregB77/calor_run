@@ -167,15 +167,53 @@ const el = {
 
 const orderCat = ['CA','JU','ES','SE','M0','M1','M2','M3','M4','M5','M6','M7','M8','M9','M10'];
 
-function parseDate(d){if(!d)return null;const dt=new Date(d);return isNaN(dt.getTime())?null:dt;}
-function computeAge(d){if(!d)return null;const today=new Date();let a=today.getFullYear()-d.getFullYear();if(today.getMonth()<d.getMonth()||(today.getMonth()===d.getMonth()&&today.getDate()<d.getDate()))a--;return a;}
+// Robust date parser: accepts ISO (YYYY-MM-DD), European (DD/MM/YYYY), timestamps, etc.
+function parseDate(d){
+  if(!d && d !== 0) return null;
+  if(d instanceof Date && !isNaN(d.getTime())) return d;
+  // numeric (timestamp in ms or sec)
+  if(typeof d === 'number' && !isNaN(d)) return new Date(d);
+  const s = String(d).trim();
+  if(/^[0-9]+$/.test(s)){
+    const n = Number(s);
+    // assume milliseconds if looks large, else try both
+    if(s.length >= 12) return new Date(n);
+    // try seconds -> ms
+    const dtSec = new Date(n * 1000);
+    if(!isNaN(dtSec.getTime())) return dtSec;
+  }
+  // ISO like  YYYY-MM-DD or YYYY/MM/DD
+  let m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if(m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  // European DD/MM/YYYY or DD-MM-YYYY
+  m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  // fallback native parser
+  const dt = new Date(s);
+  return isNaN(dt.getTime()) ? null : dt;
+}
+
+function computeAge(d){
+  if(!d || !(d instanceof Date) || isNaN(d.getTime())) return null;
+  const today = new Date();
+  let a = today.getFullYear() - d.getFullYear();
+  if(today.getMonth() < d.getMonth() || (today.getMonth() === d.getMonth() && today.getDate() < d.getDate())) a--;
+  return a;
+}
 
 function renderCats(body, data){
   const counts = {10:{},20:{}};
   Object.values(data||{}).forEach(p=>{
-    const course = Number(p.course)||0;
+    // robust course parsing (accept "20", "20km", "20 km", etc.)
+    let course = 0;
+    if(typeof p.course === 'number') course = p.course;
+    else if(typeof p.course === 'string'){
+      const m = p.course.match(/(\d{1,3})/);
+      course = m ? Number(m[1]) : 0;
+    }
     const cat = p.categorie||'—';
     const genre = (p.genre||'').toLowerCase();
+    counts[course] = counts[course] || {};
     counts[course][cat] = counts[course][cat]||{f:0,h:0};
     if(genre==='f' || genre==='femme') counts[course][cat].f++;
     else counts[course][cat].h++;
@@ -184,8 +222,8 @@ function renderCats(body, data){
   const rows=[];
   let tot10f=0,tot10h=0,tot20f=0,tot20h=0;
   orderCat.forEach(cat=>{
-    const v10 = counts[10][cat]||{f:0,h:0};
-    const v20 = counts[20][cat]||{f:0,h:0};
+    const v10 = counts[10] && counts[10][cat] ? counts[10][cat] : {f:0,h:0};
+    const v20 = counts[20] && counts[20][cat] ? counts[20][cat] : {f:0,h:0};
     const t10 = v10.f+v10.h;
     const t20 = v20.f+v20.h;
     const total = t10+t20;
@@ -205,11 +243,11 @@ function renderCats(body, data){
 
   rows.push(`<tr style="font-weight:700">
     <td>Totaux</td>
-    <td>${tot10f} (${Math.round(100*tot10f/tot10||0)}%)</td>
-    <td>${tot10h} (${Math.round(100*tot10h/tot10||0)}%)</td>
+    <td>${tot10f} (${Math.round(100*tot10f/(tot10||1)||0)}%)</td>
+    <td>${tot10h} (${Math.round(100*tot10h/(tot10||1)||0)}%)</td>
     <td>${tot10}</td>
-    <td>${tot20f} (${Math.round(100*tot20f/tot20||0)}%)</td>
-    <td>${tot20h} (${Math.round(100*tot20h/tot20||0)}%)</td>
+    <td>${tot20f} (${Math.round(100*tot20f/(tot20||1)||0)}%)</td>
+    <td>${tot20h} (${Math.round(100*tot20h/(tot20||1)||0)}%)</td>
     <td>${tot20}</td>
     <td>${grandTotal}</td>
   </tr>`);
@@ -219,38 +257,53 @@ function renderCats(body, data){
 
 function renderAges(body, data){
   const ages = {10: [], 20: []};
-  
   Object.values(data||{}).forEach(p=>{
-    const course = Number(p.course)||0;
+    // robust course parsing
+    let course = 0;
+    if(typeof p.course === 'number') course = p.course;
+    else if(typeof p.course === 'string'){
+      const m = p.course.match(/(\d{1,3})/);
+      course = m ? Number(m[1]) : 0;
+    }
+
     const birth = parseDate(p.date_naiss);
     const age = computeAge(birth);
-    if(!birth || age===null) return;
-    const pack = {dossard:p.dossard||'', prenom:p.prenom||'', nom:p.nom||'', age};
-    if(course===10) ages[10].push(pack);
-    if(course===20) ages[20].push(pack);
+    if(birth === null || age === null) return; // skip invalid
+
+    const pack = {dossard: p.dossard||'', prenom: p.prenom||'', nom: p.nom||'', age};
+    if(course === 10) ages[10].push(pack);
+    if(course === 20) ages[20].push(pack);
   });
 
   function getOldestYoungest(arr){
-    if(!arr.length) return [{},{}];
-    let oldest = arr[0], youngest = arr[0];
-    for(const p of arr){
-      if(p.age > oldest.age) oldest = p;
-      if(p.age < youngest.age) youngest = p;
-    }
+    if(!arr || !arr.length) return [null, null];
+    // sort ascending by age (youngest first)
+    const copy = arr.slice().sort((a,b)=> a.age - b.age);
+    const youngest = copy[0];
+    const oldest = copy[copy.length - 1];
     return [oldest, youngest];
   }
 
   const rows10 = getOldestYoungest(ages[10]);
   const rows20 = getOldestYoungest(ages[20]);
 
+  // helper to print a cell or placeholder
+  const cell = (p, key) => (p && p[key]) ? p[key] : '';
+
+  // If there's NO data at all for a course, show a muted row
+  if(!ages[10].length && !ages[20].length){
+    body.innerHTML = '<tr><td colspan="8" class="muted">Aucune donnée d\'âge disponible.</td></tr>';
+    return;
+  }
+
   body.innerHTML = `
     <tr>
-      <td>${rows10[0]?.dossard||''}</td><td>${rows10[0]?.prenom||''}</td><td>${rows10[0]?.nom||''}</td><td>${rows10[0]?.age||''}</td>
-      <td class="separator">${rows20[0]?.dossard||''}</td><td>${rows20[0]?.prenom||''}</td><td>${rows20[0]?.nom||''}</td><td>${rows20[0]?.age||''}</td>
+      <td>${cell(rows10[0],'dossard')}</td><td>${cell(rows10[0],'prenom')}</td><td>${cell(rows10[0],'nom')}</td><td>${rows10[0] && rows10[0].age != null ? rows10[0].age : ''}</td>
+      <td class="separator">${cell(rows20[0],'dossard')}</td><td>${cell(rows20[0],'prenom')}</td><td>${cell(rows20[0],'nom')}</td><td>${rows20[0] && rows20[0].age != null ? rows20[0].age : ''}</td>
     </tr>
     <tr>
-      <td>${rows10[1]?.dossard||''}</td><td>${rows10[1]?.prenom||''}</td><td>${rows10[1]?.nom||''}</td><td>${rows10[1]?.age||''}</td>
-      <td class="separator">${rows20[1]?.dossard||''}</td><td>${rows20[1]?.prenom||''}</td><td>${rows20[1]?.nom||''}</td><td>${rows20[1]?.age||''}</td>
+      <td>${cell(rows10[1],'dossard')}</td><td>${cell(rows10[1],'prenom')}</td><td>${cell(rows10[1],'nom')}</td><td>${rows10[1] && rows10[1].age != null ? rows10[1].age : ''}</td>
+      <td class="separator">${cell(rows20[1],'dossard')}</td><td>${cell(rows20[1],'prenom')}</td><td>${cell(rows20[1],'nom')}</td><td>${rows20[1] && rows20[1].age != null ? rows20[1].age : ''}</td>
     </tr>
   `;
 }
@@ -273,6 +326,7 @@ function renderClubs(body, data){
 
 function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
 
+// realtime listener
 db.ref('participants').on('value',snap=>{
   try{
     const data = snap.val()||{};
