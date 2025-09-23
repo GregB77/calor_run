@@ -92,7 +92,7 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
     <div class="table-title">Podium Hommes</div>
     <table id="tblPodH">
       <thead>
-        <tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr>
+        <tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Catégories</th></tr>
       </thead>
       <tbody><tr><td colspan="5" class="muted">Chargement…</td></tr></tbody>
     </table>
@@ -138,8 +138,8 @@ const el = {
 
 let currentCourse = 10;
 let currentCat = 'Toutes';
-let participantsData = [];
-let scanTimesData = [];
+let participantsData = null;
+let scanTimesData = null;
 
 function formatTime(ts){
   if(!ts) return '';
@@ -151,10 +151,12 @@ function formatTime(ts){
 }
 
 function renderPodiums(){
+  if(!participantsData || !scanTimesData) return;
   const podH = [];
   const podF = [];
-  participantsData.forEach(p => {
-    if(!p.genre || !p.categorie) return;
+
+  participantsData.forEach(p=>{
+    if(!p.dossard) return;
     if(currentCat !== 'Toutes' && p.categorie !== currentCat) return;
 
     let course = 0;
@@ -165,7 +167,7 @@ function renderPodiums(){
     }
     if(course !== currentCourse) return;
 
-    const scan = scanTimesData.find(s => s.dossard == p.dossard);
+    const scan = scanTimesData.find(s=>s.dossard==p.dossard);
     if(!scan || scan.temps == null) return;
 
     let temps = Number(scan.temps);
@@ -194,6 +196,7 @@ function renderPodiums(){
     }
     body.innerHTML = rows.join('');
   }
+
   fillTable(el.podH, podH);
   fillTable(el.podF, podF);
 }
@@ -204,20 +207,26 @@ el.filterCat.addEventListener('change',()=>{currentCat=el.filterCat.value; rende
 
 function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
 
-// Charger participants et scan_dossards
-db.ref('participants').on('value',snap=>{
+function tryRender(){
+  if(participantsData && scanTimesData){
+    renderPodiums();
+  }
+}
+
+// Charger participants
+db.ref('participants').on('value', snap=>{
   participantsData = Object.values(snap.val()||{});
-  // remplir filtre catégories
   const cats = Array.from(new Set(participantsData.map(p=>p.categorie).filter(c=>c))).sort();
   el.filterCat.innerHTML = '<option value="Toutes">Toutes</option>'+cats.map(c=>`<option>${c}</option>`).join('');
-  renderPodiums();
-},err=>showError("Erreur participants : "+err.message));
+  tryRender();
+}, err=>showError("Erreur participants : "+err.message));
 
-db.ref('scan_dossards').on('value',snap=>{
+// Charger scan_dossards
+db.ref('scan_dossards').on('value', snap=>{
   scanTimesData = Object.values(snap.val()||{});
-  renderPodiums();
-},err=>showError("Erreur scan_dossards : "+err.message));
-</script>
+  tryRender();
+}, err=>showError("Erreur scan_dossards : "+err.message));
 
+</script>
 </body>
 </html>
