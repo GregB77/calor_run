@@ -95,7 +95,7 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
 </div>
 
 <div class="table-container hidden" id="tables">
-    <h3 style="color:var(--primary-color);padding-left: 1rem;">Podium Hommes</h3>
+    <h3 style="color:var(--primary-color);padding-left: 0,5rem;">Podium Hommes</h3>
     <table id="table-homme">
         <thead>
             <tr>
@@ -109,7 +109,7 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
         <tbody></tbody>
     </table>
 
-    <h3 style="color:var(--secondary-color);padding-left: 1rem;">Podium Femmes</h3>
+    <h3 style="color:var(--secondary-color);padding-left: 0,5rem;">Podium Femmes</h3>
     <table id="table-femme">
         <thead>
             <tr>
@@ -188,7 +188,7 @@ function renderTable(tbody, data){
     ['🥇 1er','🥈 2ème','🥉 3ème'].forEach((podium,i)=>{
         const p = data[i];
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td class="text-center">${podium}</td>
+        tr.innerHTML = `<td>${podium}</td>
                         <td>${p?p.nom:''}</td>
                         <td>${p?p.prenom:''}</td>
                         <td>${p?p.tempsStr:''}</td>
