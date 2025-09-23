@@ -71,30 +71,23 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
 .loading { text-align:center; padding:1.25rem 0; font-size:1rem; }
 .hidden { display:none; }
 
-.filter-bar {
-  text-align:center;
-  margin-bottom:1rem;
+.filter-bar { text-align:center; margin-bottom:1rem; }
+.filter-bar a {
+    margin:0 0.5rem;
+    font-size:1rem;
+    cursor:pointer;
+    text-decoration:none;
+    color: var(--primary-color);
 }
-.filter-course {
-  cursor:pointer;
-  margin:0 0.5rem;
-  color: var(--primary-color);
-}
-.filter-course.active {
-  font-weight:bold;
-  text-decoration: underline;
-}
-#filter-cat {
-  border: 1px solid var(--primary-color);
-  border-radius: var(--border-radius);
-  padding: 0.25rem 0.5rem;
-  background: var(--bg-white);
-  color: var(--text-dark);
-  font-size: 0.9rem;
-}
-#filter-cat:focus {
-  outline: none;
-  border-color: var(--secondary-color);
+.filter-bar a.active { font-weight:bold; }
+.filter-bar select {
+    margin-left:1rem;
+    padding:0.25rem 0.5rem;
+    font-size:0.9rem;
+    border:1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-white);
+    color: var(--text-dark);
 }
 
 @media (max-width: 768px) {
@@ -108,9 +101,11 @@ tbody tr:nth-child(even){ background: var(--bg-light); }
 <div class="container">
     <div class="header">PODIUMS CALOR RUN</div>
     <div class="filter-bar hidden" id="filter-bar">
-        <span class="filter-course" data-course="10km">10 km</span> | 
-        <span class="filter-course" data-course="20km">20 km</span>
-        <select id="filter-cat"></select>
+        <a data-course="10km" class="filter-course">10 km</a> |
+        <a data-course="20km" class="filter-course">20 km</a>
+        <select id="filter-cat">
+            <option value="">Toutes catégories</option>
+        </select>
     </div>
 </div>
 
@@ -183,7 +178,7 @@ const elements = {
 let departureTimestamp = null;
 let participants = {};
 let scans = {};
-let selectedCourse = '';
+let selectedCourse = '10km'; // par défaut
 
 const app = firebase.initializeApp(FIREBASE_CONFIG);
 const db = firebase.database();
@@ -211,13 +206,10 @@ function getTop3Filtered(courseFilter, catFilter, genreFilter){
     return classement.slice(0,3);
 }
 
-function renderTable(tbody, data, genre){
+function renderTable(tbody, data, isFemme=false){
     tbody.innerHTML='';
-    const podiumLabels = genre === 'F' 
-        ? ['🥇 1ère','🥈 2ème','🥉 3ème'] 
-        : ['🥇 1er','🥈 2ème','🥉 3ème'];
-
-    podiumLabels.forEach((podium,i)=>{
+    const podiums = isFemme ? ['🥇 1ère','🥈 2ème','🥉 3ème'] : ['🥇 1er','🥈 2ème','🥉 3ème'];
+    podiums.forEach((podium,i)=>{
         const p = data[i];
         const tr = document.createElement('tr');
         tr.innerHTML = `<td>${podium}</td>
@@ -233,14 +225,31 @@ function updateTables(){
     const catFilter = elements.filterCat.value;
     const topH = getTop3Filtered(selectedCourse, catFilter, 'H');
     const topF = getTop3Filtered(selectedCourse, catFilter, 'F');
-    renderTable(elements.tableHomme, topH, 'H');
-    renderTable(elements.tableFemme, topF, 'F');
+    renderTable(elements.tableHomme, topH, false);
+    renderTable(elements.tableFemme, topF, true);
 }
 
 function populateCategories(){
     const cats = new Set(Object.values(participants).map(p=>p.categorie).filter(Boolean));
-    const order = ["CA","JU","ES","SE","M0","M1","M2","M3"];
-    elements.filterCat.innerHTML = '<option value="">Toutes catégories</option>';
+
+    // Trouver le plus grand Mx présent
+    let maxM = 0;
+    cats.forEach(c=>{
+        if(/^M\d+$/.test(c)){
+            const num = parseInt(c.slice(1));
+            if(num > maxM) maxM = num;
+        }
+    });
+
+    // Ordre fixe
+    const order = ["CA","JU","ES","SE"];
+
+    // Ajout dynamique des Mx (jusqu'au max existant, max 10)
+    for(let i=0; i<=Math.min(maxM,10); i++){
+        order.push("M"+i);
+    }
+
+    elements.filterCat.innerHTML='<option value="">Toutes catégories</option>';
     order.forEach(c=>{
         if(cats.has(c)){
             const opt=document.createElement('option');
@@ -262,6 +271,11 @@ db.ref('participants').on('value', snapshot=>{
     elements.tables.classList.remove('hidden');
     populateCategories();
     updateTables();
+
+    // Marquer le 10 km actif par défaut
+    document.querySelectorAll('.filter-course').forEach(a=>{
+        if(a.dataset.course === selectedCourse) a.classList.add('active');
+    });
 });
 
 db.ref('scan_dossards').on('value', snapshot=>{
@@ -270,9 +284,8 @@ db.ref('scan_dossards').on('value', snapshot=>{
 });
 
 elements.filterCat.addEventListener('change', updateTables);
-
-document.querySelectorAll('.filter-course').forEach(el=>{
-    el.addEventListener('click', e=>{
+document.querySelectorAll('.filter-course').forEach(link=>{
+    link.addEventListener('click', e=>{
         selectedCourse = e.target.dataset.course;
         document.querySelectorAll('.filter-course').forEach(b=>b.classList.remove('active'));
         e.target.classList.add('active');
