@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Podiums Calor Run</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥇</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-color: #215E99;
+  --secondary-color: #E61780;
+  --bg-white: #fff;
+  --bg-light: #f9f9f9;
+  --shadow: rgba(0,0,0,0.15);
+  --border-radius: 0.5rem;
+  --max-width: 62.5rem;
+  --text-dark: #333;
+  --border-light: #ddd;
+  --header-bg: #e0e0e0;
+}
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 1.25rem;
+  position: relative;
+}
+body::before {
+  content:''; position: fixed; inset:0;
+  background: linear-gradient(0.25turn, var(--primary-color), var(--secondary-color));
+  opacity:0.3;
+  z-index:-1;
+  pointer-events: none;
+}
+.container { max-width: var(--max-width); margin:0 auto; }
+.header {
+  text-align:center;
+  margin-bottom:0.625rem;
+  color: var(--primary-color);
+  font-size:1.3rem;
+  font-weight:bold;
+  padding:1.25rem 1.25rem 3.75rem;
+  background:url('calor.png') center/contain no-repeat;
+}
+.table-container {
+  max-width: var(--max-width);
+  overflow-x:auto;
+  margin:0 auto 1.25rem;
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0.25rem 0.75rem var(--shadow);
+  padding: 0.5rem;
+}
+.table-title {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+table { width:100%; border-collapse: collapse; min-width:20rem; }
+th, td { padding:0.375rem 0.5rem; border-bottom:1px solid var(--border-light); text-align:left; white-space: nowrap; }
+th { background: var(--header-bg); font-weight:600; position:sticky; top:0; z-index:10; }
+
+tbody tr:nth-child(even){ background: var(--bg-light); }
+.muted { color:#777; }
+
+#tbl-age th:nth-child(1),#tbl-age td:nth-child(1), #tbl-age th:nth-child(4), #tbl-age td:nth-child(4), #tbl-age th:nth-child(5), #tbl-age td:nth-child(5), #tbl-age th:nth-child(8), #tbl-age td:nth-child(8) { text-align: center; }
+#tbl-clubs th:nth-child(1), #tbl-clubs td:nth-child(1), #tbl-clubs th:nth-child(3), #tbl-clubs td:nth-child(3) { text-align: center; }
+  
+/* Ligne verticale séparatrice pour le tableau des âges */
+#tbl-age th.separator,
+#tbl-age td.separator {
+  border-left: 2px solid var(--primary-color);
+  padding-left: 0.75rem;
+}
+
+.filters { text-align:center; margin:1rem 0; }
+.filters span { cursor:pointer; margin:0 0.5rem; font-weight:bold; color:var(--primary-color); }
+.filters span.active { text-decoration: underline; }
+.filters select { margin-left:1rem; padding:0.25rem; }
+
+@media (max-width:768px){
+  .header { margin-bottom:0.625rem; padding:0rem 0rem 1.5rem; font-size:1rem; }
+  table { min-width:auto; font-size:0.85rem; }
+  th, td { padding:0.375rem 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">PODIUMS CALOR RUN</div>
+
+  <!-- Zone de filtres -->
+  <div class="filters">
+    <span id="filter10" class="active">10 km</span>|
+    <span id="filter20">20 km</span>
+    <select id="filterCat"><option value="">Toutes CAT</option></select>
+  </div>
+
+  <!-- Podiums -->
+  <div class="table-container">
+    <div class="table-title">Podium Hommes</div>
+    <table id="tbl-podium-h">
+      <thead><tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr></thead>
+      <tbody><tr><td colspan="5" class="muted">Chargement…</td></tr></tbody>
+    </table>
+  </div>
+  <div class="table-container">
+    <div class="table-title">Podium Femmes</div>
+    <table id="tbl-podium-f">
+      <thead><tr><th>Podium</th><th>Nom</th><th>Prénom</th><th>Temps</th><th>Cat</th></tr></thead>
+      <tbody><tr><td colspan="5" class="muted">Chargement…</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- Tableau 2 : Âges fusionné -->
+  <div class="table-container">
+    <div class="table-title">Plus et moins âgés 10 et 20 km</div>
+    <table id="tbl-age">
+      <thead>
+        <tr>
+          <th>Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+          <th class="separator">Dossard</th><th>Prénom</th><th>Nom</th><th>Âge</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="8" class="muted">Chargement…</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- Tableau 3 : Classement des clubs -->
+  <div class="table-container">
+    <div class="table-title">Clubs les plus représentés</div>
+    <table id="tbl-clubs">
+      <thead>
+        <tr>
+          <th>Rang</th>
+          <th>Club</th>
+          <th>Participants</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="3" class="muted">Chargement…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="err" class="error" style="display:none;color:red;text-align:center;margin-top:1rem;"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey:"AIzaSyAIAAz51gEGKQd0EoqA3yUhvnqw3DkQiIo",
+  authDomain:"calor-run.firebaseapp.com",
+  databaseURL:"https://calor-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"calor-run",
+  storageBucket:"calor-run.firebasestorage.app",
+  messagingSenderId:"329949291334",
+  appId:"1:329949291334:web:c71ef20268c609cf953b47"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const el = {
+  podiumH: document.querySelector('#tbl-podium-h tbody'),
+  podiumF: document.querySelector('#tbl-podium-f tbody'),
+  age: document.querySelector('#tbl-age tbody'),
+  clubs: document.querySelector('#tbl-clubs tbody'),
+  err: document.getElementById('err'),
+  filter10: document.getElementById('filter10'),
+  filter20: document.getElementById('filter20'),
+  filterCat: document.getElementById('filterCat')
+};
+
+let currentCourse = 10;
+let currentCat = '';
+
+function parseDate(d){if(!d)return null;const dt=new Date(d);return isNaN(dt.getTime())?null:dt;}
+function computeAge(d){if(!d)return null;const today=new Date();let a=today.getFullYear()-d.getFullYear();if(today.getMonth()<d.getMonth()||(today.getMonth()===d.getMonth()&&today.getDate()<d.getDate()))a--;return a;}
+
+function renderPodium(body, data, genre){
+  const filtered = Object.values(data||{}).filter(p=>{
+    return Number(p.course)===currentCourse && (currentCat===''||p.categorie===currentCat) && (p.genre||'').toLowerCase().startsWith(genre);
+  });
+
+  filtered.sort((a,b)=> (a.temps||'').localeCompare(b.temps||''));
+  const top3 = filtered.slice(0,3);
+  if(!top3.length){ body.innerHTML = '<tr><td colspan="5" class="muted">Aucune donnée.</td></tr>'; return; }
+
+  const labels=['1er','2nd','3ème'];
+  body.innerHTML = top3.map((p,i)=>`<tr>
+    <td>${labels[i]}</td>
+    <td>${p.nom||''}</td>
+    <td>${p.prenom||''}</td>
+    <td>${p.temps||''}</td>
+    <td>${p.categorie||''}</td>
+  </tr>`).join('');
+}
+
+function renderAges(body, data){
+  const ages = {10: [], 20: []};
+  Object.values(data||{}).forEach(p=>{
+    const course = Number(p.course)||0;
+    const birth = parseDate(p.date_naiss);
+    const age = computeAge(birth);
+    if(!birth || age===null) return;
+    const pack = {dossard:p.dossard||'', prenom:p.prenom||'', nom:p.nom||'', age};
+    if(course===10) ages[10].push(pack);
+    if(course===20) ages[20].push(pack);
+  });
+
+  function getOldestYoungest(arr){
+    if(!arr.length) return [{},{ }];
+    arr.sort((a,b)=>b.age-a.age);
+    return [arr[0], arr[arr.length-1]];
+  }
+
+  const rows10 = getOldestYoungest(ages[10]);
+  const rows20 = getOldestYoungest(ages[20]);
+
+  body.innerHTML = `
+    <tr>
+      <td>${rows10[0]?.dossard||''}</td><td>${rows10[0]?.prenom||''}</td><td>${rows10[0]?.nom||''}</td><td>${rows10[0]?.age||''}</td>
+      <td class="separator">${rows20[0]?.dossard||''}</td><td>${rows20[0]?.prenom||''}</td><td>${rows20[0]?.nom||''}</td><td>${rows20[0]?.age||''}</td>
+    </tr>
+    <tr>
+      <td>${rows10[1]?.dossard||''}</td><td>${rows10[1]?.prenom||''}</td><td>${rows10[1]?.nom||''}</td><td>${rows10[1]?.age||''}</td>
+      <td class="separator">${rows20[1]?.dossard||''}</td><td>${rows20[1]?.prenom||''}</td><td>${rows20[1]?.nom||''}</td><td>${rows20[1]?.age||''}</td>
+    </tr>`;
+}
+
+function renderClubs(body, data){
+  const clubsCount = {};
+  Object.values(data||{}).forEach(p=>{
+    const club = (p.club || '').trim();
+    if(!club) return;
+    clubsCount[club] = (clubsCount[club]||0) + 1;
+  });
+  const sortedClubs = Object.entries(clubsCount)
+    .filter(([club,count])=>count>0)
+    .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]));
+  const rows = sortedClubs.map((c,i)=>`<tr><td>${i+1}</td><td>${c[0]}</td><td>${c[1]}</td></tr>`);
+  body.innerHTML = rows.join('') || '<tr><td colspan="3" class="muted">Aucune donnée.</td></tr>';
+}
+
+function showError(msg){el.err.style.display='block'; el.err.textContent=msg;}
+
+let participants = {};
+
+function refresh(){
+  renderPodium(el.podiumH, participants, 'h');
+  renderPodium(el.podiumF, participants, 'f');
+  renderAges(el.age, participants);
+  renderClubs(el.clubs, participants);
+}
+
+db.ref('participants').on('value',snap=>{
+  try{
+    participants = snap.val()||{};
+    // Remplir liste des catégories
+    const cats=[...new Set(Object.values(participants).map(p=>p.categorie).filter(Boolean))];
+    el.filterCat.innerHTML = '<option value="">Toutes CAT</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+    refresh();
+  }catch(e){ console.error(e); showError("Erreur traitement : "+e.message); }
+},err=>{console.error(err);showError("Erreur Firebase : "+err.message);});
+
+// Filtres
+el.filter10.addEventListener('click',()=>{currentCourse=10; el.filter10.classList.add('active'); el.filter20.classList.remove('active'); refresh();});
+el.filter20.addEventListener('click',()=>{currentCourse=20; el.filter20.classList.add('active'); el.filter10.classList.remove('active'); refresh();});
+el.filterCat.addEventListener('change',e=>{currentCat=e.target.value; refresh();});
+</script>
+
+</body>
+</html>
