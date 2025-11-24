@@ -3,61 +3,130 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Carte + Profil Altimétrique (HeightGraph)</title>
+    <title>Carte + Profil Altimétrique (HeightGraph corrigé)</title>
 
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Leaflet.HeightGraph -->
+    <!-- HeightGraph -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.heightgraph/dist/L.Control.Heightgraph.min.css" />
     <script src="https://unpkg.com/leaflet.heightgraph/dist/L.Control.Heightgraph.min.js"></script>
 
     <style>
-        body { margin: 0; }
+        body { margin: 0; font-family: Arial; background:#f5f5f5; }
         #map { height: 50vh; }
-        #heightgraph { height: 45vh; }
+        #stats { padding:15px; background:white; margin:10px; border-radius:12px; }
+        #heightgraph { height:40vh; background:white; margin:10px; border-radius:12px; }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
+<div id="stats"><h2>Statistiques</h2><div id="statsContent">Chargement…</div></div>
 <div id="heightgraph"></div>
 
 <script>
-    const map = L.map('map');
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+const map = L.map("map");
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
 
-    const geojsonFile = "TRAIL 10KM.geojson";
+const focusMarker = L.circleMarker([0,0], {
+    radius: 7, color: "#007bff", weight: 2, fillColor:"#fff", fillOpacity:1, opacity:1
+}).addTo(map);
 
-    async function loadGeoJSON() {
-        const response = await fetch(geojsonFile);
-        const data = await response.json();
+function computeSlopeColor(p){
+    const a=Math.abs(p);
+    if(a<2)return"#4CAF50";
+    if(a<5)return"#FFEB3B";
+    if(a<10)return"#FF9800";
+    return"#F44336";
+}
 
-        const layer = L.geoJSON(data, {
-            style: { color: '#007bff', weight: 4 }
-        }).addTo(map);
+async function loadGeoJSON(){
+    const response = await fetch("TRAIL 10KM.geojson");
+    const data = await response.json();
 
-        map.fitBounds(layer.getBounds());
+    let coords = [];
+    let geom = null;
 
-        const hg = L.control.heightgraph({
-            width: "95%",
-            height: 280,
-            position: "bottomleft",
-            mappings: {
-                elevation: {
-                    text: "Altitude",
-                    type: "linear",
-                    unit: "m"
-                }
-            }
-        });
-        hg.addTo(map);
-        hg.addData(data);
+    if(data.type==="FeatureCollection"){
+        const f=data.features.find(f=>f.geometry && (f.geometry.type==="LineString"||f.geometry.type==="MultiLineString"));
+        geom=f?f.geometry:null;
+    } else if(data.type==="Feature") geom=data.geometry;
+    else geom=data;
+
+    if(geom.type==="LineString") coords=geom.coordinates;
+    else coords=geom.coordinates.flat(1);
+
+    const latlngs = coords.map(c=>{
+        const ll=L.latLng(c[1],c[0]); ll.ele=c[2]; return ll;
+    });
+
+    const poly = L.polyline(latlngs,{color:"#007bff",weight:4}).addTo(map);
+    map.fitBounds(poly.getBounds());
+
+    const distances=[], elevations=[], slopes=[];
+    let dTot=0, up=0, down=0;
+
+    for(let i=0;i<latlngs.length;i++){
+        if(i>0){
+            const d = latlngs[i-1].distanceTo(latlngs[i]);
+            dTot+=d;
+            const diff = latlngs[i].ele - latlngs[i-1].ele;
+            if(diff>0) up+=diff; else down+=Math.abs(diff);
+            slopes.push((diff/d)*100);
+        }
+        distances.push(dTot/1000);
+        elevations.push(latlngs[i].ele);
     }
 
-    loadGeoJSON();
+    document.getElementById("statsContent").innerHTML = `Distance: ${(dTot/1000).toFixed(2)} km<br>D+: ${Math.round(up)} m<br>D-: ${Math.round(down)} m`;
+
+    const hg = L.control.heightgraph({
+        position:"bottomleft",
+        expand:true,
+        mappings:{ elevation:{ text:"Altitude", unit:"m" } }
+    });
+    hg.addTo(map);
+
+    const hgData = {
+        type:"FeatureCollection",
+        features:[{
+            type:"Feature",
+            geometry:{ type:"LineString", coordinates: coords.map(c=>[c[0],c[1]]) },
+            properties:{
+                style:{ color:"#007bff" },
+                values: coords.map((c,i)=>({
+                    lat:c[1],
+                    lng:c[0],
+                    alt:c[2],
+                    slope:i>0?slopes[i-1]:0,
+                    color:i>0?computeSlopeColor(slopes[i-1]):"#4CAF50"
+                }))
+            }
+        }]
+    };
+
+    hg.addData(hgData);
+
+    hg.on("hg:mouseover", e=>{
+        const i=e.detail.index;
+        focusMarker.setLatLng(latlngs[i]);
+    });
+
+    map.on("mousemove", e=>{
+        let best=-1, bestD=Infinity;
+        latlngs.forEach((p,i)=>{const d=e.latlng.distanceTo(p); if(d<bestD){bestD=d; best=i;}});
+        if(bestD<40){
+            focusMarker.setLatLng(latlngs[best]);
+            hg.highlight(best);
+        }
+    });
+
+    map.on("mouseout",()=>{hg.clearHighlight();});
+}
+
+loadGeoJSON();
 </script>
 
 </body>
