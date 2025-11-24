@@ -42,8 +42,8 @@ const elevation = L.control.elevation({
     elevationDiv: "#profile",
     followMarker: true,
     theme: "steelblue-theme",
-    slope: true,                 // coloration selon la pente
-    summary: true,               // stats auto
+    slope: true,
+    summary: true,
     useHeightIndicator: true,
     autofitBounds: true,
     time: false,
@@ -52,7 +52,7 @@ const elevation = L.control.elevation({
 }).addTo(map);
 
 // --- Charger GPX ---
-const gpx = "TRAIL 10KM.gpx"; // ton fichier GPX (http://localhost/...)
+const gpx = "TRAIL 10KM.gpx"; // ton fichier GPX
 
 // --- Point synchronisé sur la carte ---
 let hoverMarker = null;
@@ -73,13 +73,10 @@ new L.GPX(gpx, {
     // Ajouter la trace au panneau elevation
     elevation.addData(e.line);
 
-    // Événement : survol de la carte → curseur sur profil
-    e.line.on("mousemove", function(ev) {
-        elevation.showPosition(ev.latlng);
-    });
+    // On supprime l'appel à showPosition qui n'existe plus
+    // Si tu veux gérer un survol carte → profil, il faudrait calculer la distance
 })
 .addTo(map);
-
 
 // --- Synchronisation PROFIL → CARTE ---
 elevation.on("elemousemove", function(ev){
@@ -110,8 +107,9 @@ elevation._xTickFormat = function(d){
 elevation._distanceFormat = function(d) {
     return (d/1000).toFixed(2) + " km";
 };
-
 </script>
+
 </body>
 </html>
+
 
