@@ -1,62 +1,190 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Affichage GPX avec Leaflet</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Leaflet CSS -->
-  <link 
-    rel="stylesheet" 
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <title>Carte + Profil Altimétrique + Stats</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- GPX Parser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
+
+  <!-- Chart.js pour profil -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
     #map {
-      height: 600px;
+      height: 50vh;
       width: 100%;
+    }
+
+    #stats {
+      background: white;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    #profileContainer {
+      width: 95%;
+      margin: auto;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    canvas {
+      width: 100% !important;
+      max-height: 280px;
+    }
+
+    @media (max-width: 600px) {
+      #map { height: 45vh; }
+      canvas { max-height: 220px; }
     }
   </style>
 </head>
+
 <body>
 
-<h2>Affichage d'un parcours GPX avec Leaflet</h2>
 <div id="map"></div>
 
-<!-- Leaflet JS -->
-<script 
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin="">
-</script>
+<div id="stats">
+  <h2>Statistiques</h2>
+  <div id="statsContent">Chargement…</div>
+</div>
 
-<!-- Plugin GPX -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
+<div id="profileContainer">
+  <h2>Profil Altimétrique (couleurs = pente)</h2>
+  <canvas id="elevationChart"></canvas>
+</div>
 
 <script>
-  // Initialisation de la carte
-  var map = L.map('map');
-
-  // Fond de plan OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  // ----------------------------------------------------------
+  // Initialisation Leaflet
+  // ----------------------------------------------------------
+  const map = L.map("map");
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
-    attribution: '© OpenStreetMap'
+    attribution: "© OpenStreetMap",
   }).addTo(map);
 
-  // Chargement du fichier GPX
-  var gpx = 'TRAIL 10km.gpx';
-  var gpxLayer = new L.GPX(gpx, {
+  // Couleurs selon pente (%)
+  function colorForSlope(p) {
+    if (p < 4) return "green";
+    if (p < 7) return "yellow";
+    if (p < 12) return "orange";
+    return "red";
+  }
+
+  // ----------------------------------------------------------
+  // Chargement GPX
+  // ----------------------------------------------------------
+  const gpxFile = "TRAIL 10KM.gpx";
+
+  const gpx = new L.GPX(gpxFile, {
     async: true,
-    marker_options: {
-      startIconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/pin-icon-start.png',
-      endIconUrl:   'https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/pin-icon-end.png',
-      shadowUrl:    'https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/pin-shadow.png'
-    }
-  }).on('loaded', function(e) {
-    map.fitBounds(e.target.getBounds());
-  }).addTo(map);
+    polyline_options: {
+      color: "#d00",
+      weight: 4,
+      opacity: 0.9,
+    },
+  })
+    .on("loaded", function (e) {
+      map.fitBounds(e.target.getBounds());
+    })
+    .on("addline", function (e) {
+      const line = e.line;
+      const latlngs = line.getLatLngs();
+
+      // Extraction distances & altitudes
+      const distances = [];
+      const elevations = [];
+      const slopes = [];
+
+      let totalDist = 0;
+      let totalUP = 0;
+      let totalDOWN = 0;
+
+      for (let i = 0; i < latlngs.length; i++) {
+        if (i > 0) {
+          const d = latlngs[i - 1].distanceTo(latlngs[i]);
+          totalDist += d;
+
+          const diff = latlngs[i].meta.ele - latlngs[i - 1].meta.ele;
+          if (diff > 0) totalUP += diff;
+          else totalDOWN += Math.abs(diff);
+
+          const slope = (diff / d) * 100; // pente %
+          slopes.push(slope);
+        }
+
+        distances.push(totalDist / 1000); // km
+        elevations.push(latlngs[i].meta.ele);
+      }
+
+      // --------------------------------------
+      // STATISTIQUES
+      // --------------------------------------
+      document.getElementById("statsContent").innerHTML = `
+        <b>Distance :</b> ${(totalDist / 1000).toFixed(2)} km<br>
+        <b>Dénivelé + :</b> ${Math.round(totalUP)} m<br>
+        <b>Dénivelé – :</b> ${Math.round(totalDOWN)} m<br>
+        <b>Pente max :</b> ${Math.max(...slopes.map(s => Math.abs(s))).toFixed(1)} %<br>
+      `;
+
+      // --------------------------------------
+      // PROFIL ALTIMÉTRIQUE AVEC COULEUR SELON PENTE
+      // --------------------------------------
+      const ctx = document.getElementById("elevationChart").getContext("2d");
+
+      const gradientColor = elevations.map((_, i) =>
+        i === 0 ? "green" : colorForSlope(slopes[i - 1])
+      );
+
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: distances,
+          datasets: [
+            {
+              label: "Altitude (m)",
+              data: elevations,
+              segment: {
+                borderColor: ctx => gradientColor[ctx.p0DataIndex],
+                borderWidth: 3,
+              },
+              pointRadius: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: "Distance (km)" } },
+            y: { title: { display: true, text: "Altitude (m)" } },
+          },
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+        },
+      });
+    })
+    .addTo(map);
+
 </script>
 
 </body>
