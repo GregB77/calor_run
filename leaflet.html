@@ -1,201 +1,116 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>GPX + Profil interactif</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Carte + Profil Altimétrique + Stats</title>
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- GPX plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
 
-  <!-- GPX Parser -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
+<!-- Elevation plugin -->
+<link rel="stylesheet" href="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.min.css" />
+<script src="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.min.js"></script>
 
-  <!-- Chart.js pour profil -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
+<style>
+    body { margin:0; font-family:Arial; }
+    #map { height: 50vh; }
+    #profile { height: 40vh; }
+    @media (max-width: 700px){
+        #map { height: 40vh; }
+        #profile { height: 35vh; }
     }
-
-    #map {
-      height: 50vh;
-      width: 100%;
-    }
-
-    #stats {
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-    }
-
-    #profileContainer {
-      width: 95%;
-      margin: auto;
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-    }
-
-    canvas {
-      width: 100% !important;
-      max-height: 280px;
-    }
-
-    @media (max-width: 600px) {
-      #map { height: 45vh; }
-      canvas { max-height: 220px; }
-    }
-  </style>
+</style>
 </head>
 
 <body>
 
 <div id="map"></div>
-
-<div id="stats">
-  <h2>Statistiques</h2>
-  <div id="statsContent">Chargement…</div>
-</div>
-
-<div id="profileContainer">
-  <h2>Profil Altimétrique (couleurs = pente)</h2>
-  <canvas id="elevationChart"></canvas>
-</div>
+<div id="profile"></div>
 
 <script>
-  // ----------------------------------------------------------
-  // Initialisation Leaflet
-  // ----------------------------------------------------------
-  const map = L.map("map");
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "© OpenStreetMap",
-  }).addTo(map);
+// --- Initialisation Leaflet ---
+const map = L.map("map");
 
-  // Couleurs selon pente (%)
-  function colorForSlope(p) {
-    if (p < 4) return "green";
-    if (p < 7) return "yellow";
-    if (p < 12) return "orange";
-    return "red";
-  }
+// --- Profil (Elevation plugin) ---
+const elevation = L.control.elevation({
+    container: "#profile",
+    elevationDiv: "#profile",
+    followMarker: true,
+    theme: "steelblue-theme",
+    slope: true,                 // coloration selon la pente
+    summary: true,               // stats auto
+    useHeightIndicator: true,
+    autofitBounds: true,
+    time: false,
+    legend: false,
+    distanceMarkers: true
+}).addTo(map);
 
-  // ----------------------------------------------------------
-  // Chargement GPX
-  // ----------------------------------------------------------
-  const gpxFile = "TRAIL 10km.gpx";
+// --- Charger GPX ---
+const gpx = "trace.gpx"; // ton fichier GPX (http://localhost/...)
 
-  const gpx = new L.GPX(gpxFile, {
+// --- Point synchronisé sur la carte ---
+let hoverMarker = null;
+
+// --- Ajouter la trace sur la carte ---
+new L.GPX(gpx, {
     async: true,
-
-    // ---- Icônes désactivées (pas d’erreur 404) ----
     marker_options: {
-      startIconUrl: "",
-      endIconUrl: "",
-      shadowUrl: ""
-    },
+        startIconUrl: null,
+        endIconUrl: null,
+        shadowUrl: null
+    }
+})
+.on("loaded", function(e) {
+    map.fitBounds(e.target.getBounds());
+})
+.on("addline", function(e) {
+    // Ajouter la trace au panneau elevation
+    elevation.addData(e.line);
 
-    polyline_options: {
-      color: "#d00",
-      weight: 4,
-      opacity: 0.9
-    },
-  })
+    // Événement : survol de la carte → curseur sur profil
+    e.line.on("mousemove", function(ev) {
+        elevation.showPosition(ev.latlng);
+    });
+})
+.addTo(map);
 
-    .on("loaded", function (e) {
-      map.fitBounds(e.target.getBounds());
-    })
 
-    .on("addline", function (e) {
-      const line = e.line;
-      const latlngs = line.getLatLngs();
+// --- Synchronisation PROFIL → CARTE ---
+elevation.on("elemousemove", function(ev){
+    const latlng = ev.latlng;
+    if (!latlng) return;
 
-      // Extraction distances & altitudes
-      const distances = [];
-      const elevations = [];
-      const slopes = [];
+    if (!hoverMarker) {
+        hoverMarker = L.circleMarker(latlng, {
+            radius: 6,
+            weight: 2,
+            color: "red",
+            fillColor: "white",
+            fillOpacity: 0.9
+        }).addTo(map);
+    } else {
+        hoverMarker.setLatLng(latlng);
+    }
+});
 
-      let totalDist = 0;
-      let totalUP = 0;
-      let totalDOWN = 0;
+// --- Personnalisation de l’axe X (km entiers) ---
+elevation.options.xTicks = 10; // 1 tick / km environ
+const originalXTickFormat = elevation._xTickFormat;
+elevation._xTickFormat = function(d){
+    return Math.floor(d / 1000); // km entiers sans décimales
+};
 
-      for (let i = 0; i < latlngs.length; i++) {
-        if (i > 0) {
-          const d = latlngs[i - 1].distanceTo(latlngs[i]);
-          totalDist += d;
-
-          const diff = latlngs[i].meta.ele - latlngs[i - 1].meta.ele;
-          if (diff > 0) totalUP += diff;
-          else totalDOWN += Math.abs(diff);
-
-          const slope = (diff / d) * 100; // pente %
-          slopes.push(slope);
-        }
-
-        distances.push(totalDist / 1000); // km
-        elevations.push(latlngs[i].meta.ele);
-      }
-
-      // --------------------------------------
-      // STATISTIQUES
-      // --------------------------------------
-      document.getElementById("statsContent").innerHTML = `
-        <b>Distance :</b> ${(totalDist / 1000).toFixed(2)} km<br>
-        <b>Dénivelé + :</b> ${Math.round(totalUP)} m<br>
-        <b>Dénivelé – :</b> ${Math.round(totalDOWN)} m<br>
-        <b>Pente max :</b> ${Math.max(...slopes.map(s => Math.abs(s))).toFixed(1)} %<br>
-      `;
-
-      // --------------------------------------
-      // PROFIL ALTIMÉTRIQUE COLORÉ
-      // --------------------------------------
-      const ctx = document.getElementById("elevationChart").getContext("2d");
-
-      const gradientColor = elevations.map((_, i) =>
-        i === 0 ? "green" : colorForSlope(slopes[i - 1])
-      );
-
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: distances,
-          datasets: [
-            {
-              label: "Altitude (m)",
-              data: elevations,
-              segment: {
-                borderColor: ctx => gradientColor[ctx.p0DataIndex],
-                borderWidth: 3,
-              },
-              pointRadius: 0,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            x: { title: { display: true, text: "Distance (km)" } },
-            y: { title: { display: true, text: "Altitude (m)" } },
-          },
-          interaction: {
-            mode: "index",
-            intersect: false,
-          },
-        },
-      });
-    })
-    .addTo(map);
+// --- Tooltip distance personnalisée (2 décimales + " km") ---
+elevation._distanceFormat = function(d) {
+    return (d/1000).toFixed(2) + " km";
+};
 
 </script>
-
 </body>
 </html>
