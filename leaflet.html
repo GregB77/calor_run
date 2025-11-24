@@ -96,15 +96,25 @@
 
   const gpx = new L.GPX(gpxFile, {
     async: true,
+
+    // ---- Icônes désactivées (pas d’erreur 404) ----
+    marker_options: {
+      startIconUrl: "",
+      endIconUrl: "",
+      shadowUrl: ""
+    },
+
     polyline_options: {
       color: "#d00",
       weight: 4,
-      opacity: 0.9,
+      opacity: 0.9
     },
   })
+
     .on("loaded", function (e) {
       map.fitBounds(e.target.getBounds());
     })
+
     .on("addline", function (e) {
       const line = e.line;
       const latlngs = line.getLatLngs();
@@ -146,7 +156,7 @@
       `;
 
       // --------------------------------------
-      // PROFIL ALTIMÉTRIQUE AVEC COULEUR SELON PENTE
+      // PROFIL ALTIMÉTRIQUE COLORÉ
       // --------------------------------------
       const ctx = document.getElementById("elevationChart").getContext("2d");
 
@@ -189,4 +199,3 @@
 
 </body>
 </html>
-
