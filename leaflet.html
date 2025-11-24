@@ -36,13 +36,18 @@
 // --- Initialisation Leaflet ---
 const map = L.map("map");
 
+// --- Ajouter fond de carte ---
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors'
+}).addTo(map);
+
 // --- Profil (Elevation plugin) ---
 const elevation = L.control.elevation({
     container: "#profile",
     elevationDiv: "#profile",
     followMarker: true,
     theme: "steelblue-theme",
-    slope: true,
+    slope: false,           // tracé bleu uniforme
     summary: true,
     useHeightIndicator: true,
     autofitBounds: true,
@@ -111,5 +116,6 @@ elevation._distanceFormat = function(d) {
 
 </body>
 </html>
+
 
 
