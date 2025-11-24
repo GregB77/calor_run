@@ -1,78 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Carte + Profil Altimétrique Synchronisé + Stats</title>
+  <title>Carte + Profil Altimétrique Synchronisés</title>
 
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- GPX Parser -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
 
-    <!-- Chart.js pour profil -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        #map {
-            height: 50vh;
-            width: 100%;
-        }
-
-        #stats {
-            background: white;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-        }
-
-        #profileContainer {
-            width: 95%;
-            margin: auto;
-            margin-bottom: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-            flex-grow: 1; /* Permet au conteneur de profil de prendre l'espace restant */
-        }
-
-        canvas {
-            width: 100% !important;
-            max-height: 300px; /* Légèrement augmenté pour le confort */
-        }
-        
-        /* Style pour le marqueur de suivi */
-        .follow-marker {
-            background-color: #007bff;
-            width: 12px;
-            height: 12px;
-            display: block;
-            position: relative;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-            opacity: 0.9;
-        }
-
-        @media (max-width: 600px) {
-            #map { height: 45vh; }
-            canvas { max-height: 250px; }
-        }
-    </style>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f4f4; }
+    #map { height: 50vh; width: 100%; cursor: crosshair; } /* Curseur changé pour indiquer l'interactivité */
+    #stats { background: white; padding: 15px; margin: 10px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+    #profileContainer { width: 95%; margin: auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+    canvas { width: 100% !important; max-height: 280px; }
+    @media (max-width: 600px) { #map { height: 45vh; } canvas { max-height: 220px; } }
+  </style>
 </head>
 
 <body>
@@ -80,278 +28,192 @@
 <div id="map"></div>
 
 <div id="stats">
-    <h2>Statistiques</h2>
-    <div id="statsContent">Chargement…</div>
+  <h2>Statistiques</h2>
+  <div id="statsContent">Chargement…</div>
 </div>
 
 <div id="profileContainer">
-    <h2>Profil Altimétrique (couleurs = pente)</h2>
-    <canvas id="elevationChart"></canvas>
+  <h2>Profil Altimétrique (Interactif)</h2>
+  <canvas id="elevationChart"></canvas>
 </div>
 
 <script>
-    // Variables globales pour l'application
-    // FIX: Remplacement du chemin local non valide "TRAIL 10km.gpx" par une URL publique stable
-    const gpxFile = "TRAIL 10KM.gpx";
-    
-    let chartInstance = null;
-    let elevationData = []; // Stocke les données de distance, altitude et latlng
-    let map;
-    let followMarker = null; // Marqueur de suivi sur la carte
+  // ----------------------------------------------------------
+  // 1. Initialisation Leaflet
+  // ----------------------------------------------------------
+  const map = L.map("map");
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "© OpenStreetMap",
+  }).addTo(map);
 
-    // ----------------------------------------------------------
-    // Initialisation Leaflet
-    // ----------------------------------------------------------
-    map = L.map("map");
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap",
-    }).addTo(map);
+  // Création d'un marqueur de suivi (point bleu)
+  // Il est initialement caché (opacity 0)
+  const focusMarker = L.circleMarker([0, 0], {
+    radius: 8,
+    color: 'white',
+    weight: 2,
+    fillColor: '#007bff',
+    fillOpacity: 1
+  }).addTo(map);
+  
+  // On cache le marker au début tant qu'on ne survole pas
+  focusMarker.getElement().style.display = 'none'; 
 
-    // Fonction de style pour le marqueur de suivi
-    const followIcon = L.divIcon({
-        className: 'follow-marker',
-        iconSize: [12, 12],
-        iconAnchor: [6, 6]
-    });
+  function colorForSlope(p) {
+    if (p < 4) return "green";
+    if (p < 7) return "yellow";
+    if (p < 12) return "orange";
+    return "red";
+  }
 
-    // Couleurs selon pente (%)
-    function colorForSlope(p) {
-        if (p < 4) return "#38a169"; // Vert - Doux
-        if (p < 7) return "#f6e05e"; // Jaune - Moyen
-        if (p < 12) return "#ed8936"; // Orange - Difficile
-        return "#c53030"; // Rouge - Très difficile
-    }
+  // ----------------------------------------------------------
+  // 2. Chargement GPX
+  // ----------------------------------------------------------
+  // REMPLACEZ CECI PAR VOTRE FICHIER
+  const gpxFile = "TRAIL 10KM.gpx"; 
 
-    // ----------------------------------------------------------
-    // Synchronisation : Met à jour le marqueur sur la carte
-    // ----------------------------------------------------------
-    function updateMapMarker(pointIndex) {
-        if (pointIndex < 0 || pointIndex >= elevationData.length) return;
+  const gpx = new L.GPX(gpxFile, {
+    async: true,
+    marker_options: { startIconUrl: "", endIconUrl: "", shadowUrl: "" },
+    polyline_options: { color: "#d00", weight: 4, opacity: 0.9 },
+  })
+  .on("loaded", function (e) {
+      map.fitBounds(e.target.getBounds());
+  })
+  .on("addline", function (e) {
+      const line = e.line;
+      const latlngs = line.getLatLngs();
 
-        const { latlng } = elevationData[pointIndex];
+      // --- Préparation des données ---
+      const distances = [];
+      const elevations = [];
+      const slopes = [];
+      let totalDist = 0;
+      let totalUP = 0;
+      let totalDOWN = 0;
 
-        if (followMarker) {
-            followMarker.setLatLng(latlng);
-        } else {
-            // Crée le marqueur s'il n'existe pas encore
-            followMarker = L.marker(latlng, { icon: followIcon }).addTo(map);
+      for (let i = 0; i < latlngs.length; i++) {
+        if (i > 0) {
+          const d = latlngs[i - 1].distanceTo(latlngs[i]);
+          totalDist += d;
+          const diff = latlngs[i].meta.ele - latlngs[i - 1].meta.ele;
+          if (diff > 0) totalUP += diff; else totalDOWN += Math.abs(diff);
+          slopes.push((diff / d) * 100);
         }
-    }
+        distances.push(totalDist / 1000);
+        elevations.push(latlngs[i].meta.ele);
+      }
 
-    // ----------------------------------------------------------
-    // Chargement GPX
-    // ----------------------------------------------------------
-    const gpx = new L.GPX(gpxFile, {
-        async: true,
-        marker_options: { startIconUrl: "", endIconUrl: "", shadowUrl: "" },
-        polyline_options: { color: "#007bff", weight: 4, opacity: 0.9 },
-    })
-    .on("loaded", function (e) {
-        map.fitBounds(e.target.getBounds());
-    })
-    .on("addline", function (e) {
-        const line = e.line;
-        const latlngs = line.getLatLngs();
+      // --- Affichage Stats ---
+      document.getElementById("statsContent").innerHTML = `
+        <b>Distance :</b> ${(totalDist / 1000).toFixed(2)} km | 
+        <b>D+ :</b> ${Math.round(totalUP)} m | 
+        <b>D- :</b> ${Math.round(totalDOWN)} m
+      `;
 
-        // Extraction des données
-        let totalDist = 0;
-        let totalUP = 0;
-        let totalDOWN = 0;
-        const distances = [];
-        const elevations = [];
-        const slopes = [];
+      // --- Configuration Chart.js ---
+      const ctx = document.getElementById("elevationChart").getContext("2d");
+      const gradientColor = elevations.map((_, i) => i === 0 ? "green" : colorForSlope(slopes[i - 1]));
 
-        for (let i = 0; i < latlngs.length; i++) {
-            if (i > 0) {
-                const d = latlngs[i - 1].distanceTo(latlngs[i]); // distance en mètres
-                totalDist += d;
-
-                const diff = latlngs[i].meta.ele - latlngs[i - 1].meta.ele;
-                if (diff > 0) totalUP += diff;
-                else totalDOWN += Math.abs(diff);
-
-                const slope = (diff / d) * 100; // pente %
-                slopes.push(slope);
-            } else {
-                slopes.push(0); // Pente au départ
+      const myChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: distances,
+          datasets: [{
+            label: "Altitude (m)",
+            data: elevations,
+            segment: {
+              borderColor: ctx => gradientColor[ctx.p0DataIndex],
+              borderWidth: 3,
+            },
+            pointRadius: 0,
+            pointHoverRadius: 5, // Plus gros quand survolé
+            fill: true,
+            backgroundColor: 'rgba(0,0,0,0.05)'
+          }],
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          plugins: {
+            tooltip: {
+                enabled: true, // On garde l'infobulle
+                animation: false // Plus fluide pour la synchro
             }
-
-            const distKm = totalDist / 1000;
-            distances.push(distKm); // km
-            elevations.push(latlngs[i].meta.ele);
-
-            // Stockage global des données
-            elevationData.push({
-                distance: distKm,
-                elevation: latlngs[i].meta.ele,
-                latlng: latlngs[i],
-                slope: slopes[i] || 0
-            });
-        }
-
-        // --------------------------------------
-        // STATISTIQUES
-        // --------------------------------------
-        document.getElementById("statsContent").innerHTML = `
-            <b>Distance Totale :</b> ${totalDist < 1000 ? `${totalDist.toFixed(0)} m` : `${(totalDist / 1000).toFixed(2)} km`}<br>
-            <b>Dénivelé Positif (+):</b> ${Math.round(totalUP)} m<br>
-            <b>Dénivelé Négatif (–):</b> ${Math.round(totalDOWN)} m<br>
-            <b>Pente max :</b> ${Math.max(...slopes.map(s => Math.abs(s))).toFixed(1)} %<br>
-        `;
-
-        // --------------------------------------
-        // PROFIL ALTIMÉTRIQUE
-        // --------------------------------------
-        const ctx = document.getElementById("elevationChart").getContext("2d");
-
-        const gradientColor = elevationData.map((d, i) =>
-            i === 0 ? "#007bff" : colorForSlope(d.slope)
-        );
-        
-        // Destruction de l'ancienne instance si elle existe
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
-
-        chartInstance = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: distances,
-                datasets: [
-                    {
-                        label: "Altitude (m)",
-                        data: elevations,
-                        // Configuration des segments colorés par pente
-                        segment: {
-                            borderColor: ctx => gradientColor[ctx.p0DataIndex],
-                            borderWidth: 3,
-                        },
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        fill: 'origin',
-                        pointRadius: 0, // Cache les points pour un tracé lisse
-                        tension: 0.2 // Lissage de la courbe
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        title: { display: true, text: "Distance (km)" },
-                        type: 'linear', // Important pour l'échelle non-catégorique
-                        ticks: {
-                            // Afficher les ticks uniquement aux entiers (km)
-                            callback: function(value, index, values) {
-                                // Affiche l'étiquette si la valeur est un entier (un kilomètre exact)
-                                if (value % 1 === 0 || value === 0) {
-                                    return value.toFixed(0) + ' km';
-                                }
-                                return null;
-                            },
-                        },
-                        grid: {
-                            // Lignes de grille uniquement aux kilomètres exacts
-                            drawTicks: true,
-                            color: function(context) {
-                                if (context.tick.value % 1 === 0 || context.tick.value === 0) {
-                                    return 'rgba(0, 0, 0, 0.1)';
-                                }
-                                return 'rgba(0, 0, 0, 0.05)';
-                            },
-                        }
-                    },
-                    y: { 
-                        title: { display: true, text: "Altitude (m)" },
-                        beginAtZero: false,
-                    },
-                },
+          },
+          scales: {
+            x: { title: { display: true, text: "Distance (km)" }, ticks: { maxTicksLimit: 10 } },
+            y: { title: { display: true, text: "Altitude (m)" } },
+          },
+          
+          // --- SYNC CHART VERS MAP ---
+          onHover: (event, activeElements) => {
+            if (activeElements && activeElements.length > 0) {
+                const index = activeElements[0].index;
+                const coord = latlngs[index];
                 
-                // --------------------------------------
-                // GESTION DU SURVOL (SYNCHRONISATION)
-                // --------------------------------------
-                plugins: {
-                    tooltip: {
-                        mode: "index",
-                        intersect: false,
-                        callbacks: {
-                            title: function(tooltipItems) {
-                                // Utilise la distance réelle (axe X)
-                                return `Distance: ${tooltipItems[0].parsed.x.toFixed(2)} km`;
-                            },
-                            label: function(context) {
-                                // Affiche Altitude et Pente
-                                const altitude = context.parsed.y.toFixed(0);
-                                // L'index du point de données dans le tableau d'élévation
-                                const dataIndex = context.dataIndex;
-                                const slope = elevationData[dataIndex].slope.toFixed(1);
-                                return `Altitude: ${altitude} m | Pente: ${slope}%`;
-                            }
-                        },
-                        // Met à jour le marqueur de carte lors du survol
-                        external: function(context) {
-                            if (context.tooltip.dataPoints && context.tooltip.dataPoints.length > 0) {
-                                const dataIndex = context.tooltip.dataPoints[0].dataIndex;
-                                updateMapMarker(dataIndex);
-                            }
-                        }
-                    },
-                    // Marqueur de survol (ligne verticale)
-                    crosshair: {
-                        line: {
-                            color: '#007bff',
-                            dashPattern: [5, 5],
-                            width: 1
-                        },
-                        sync: {
-                            enabled: false
-                        },
-                        zoom: {
-                            enabled: false
-                        }
-                    }
-                },
-                // Configuration pour le suivi
-                interaction: {
-                    mode: "index",
-                    intersect: false,
-                },
-            },
-            plugins: [{
-                // Plugin simple pour ajouter la ligne de survol verticale au graphique
-                id: 'crosshair',
-                afterDraw: (chart, args, options) => {
-                    if (chart.tooltip._active && chart.tooltip._active.length > 0) {
-                        const ctx = chart.ctx;
-                        const activePoint = chart.tooltip._active[0];
-                        const x = activePoint.element.x;
-                        const yTop = chart.chartArea.top;
-                        const yBottom = chart.chartArea.bottom;
+                // Afficher et déplacer le marker
+                focusMarker.setLatLng(coord);
+                focusMarker.getElement().style.display = 'block';
+            } else {
+                // Optionnel : cacher si on sort du graph
+                // focusMarker.getElement().style.display = 'none';
+            }
+          }
+        },
+      });
 
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.moveTo(x, yTop);
-                        ctx.lineTo(x, yBottom);
-                        ctx.lineWidth = 1;
-                        ctx.strokeStyle = '#007bff';
-                        ctx.setLineDash([6, 6]);
-                        ctx.stroke();
-                        ctx.restore();
-                    }
-                }
-            }]
-        });
+      // --- SYNC MAP VERS CHART ---
+      // On écoute le mouvement de la souris sur la carte
+      map.on('mousemove', function(e) {
+        // 1. Trouver le point du tracé le plus proche de la souris
+        let closestIndex = -1;
+        let minDistance = Infinity;
 
-        // Initialiser le marqueur de suivi sur le point de départ
-        if (elevationData.length > 0) {
-            updateMapMarker(0);
+        // Note: Pour un tracé < 10 000 points, cette boucle est très rapide
+        // Pour des tracés énormes, il faudrait optimiser.
+        for (let i = 0; i < latlngs.length; i++) {
+            const d = e.latlng.distanceTo(latlngs[i]);
+            if (d < minDistance) {
+                minDistance = d;
+                closestIndex = i;
+            }
         }
-    })
-    .addTo(map);
+
+        // Si on est assez proche du tracé (ex: moins de 500m virtuels ou juste le plus proche)
+        // Ici on prend juste le plus proche pour l'effet fluide.
+        if (closestIndex > -1) {
+            // 2. Déplacer le marker bleu
+            const coord = latlngs[closestIndex];
+            focusMarker.setLatLng(coord);
+            focusMarker.getElement().style.display = 'block';
+
+            // 3. Activer l'infobulle du Chart
+            const chart = Chart.getChart("elevationChart");
+            
+            // Déclenche le hover visuel sur le graphique
+            chart.setActiveElements([{datasetIndex: 0, index: closestIndex}]);
+            chart.tooltip.setActiveElements([{datasetIndex: 0, index: closestIndex}]);
+            chart.update();
+        }
+      });
+      
+      // Cacher le marker si on sort de la carte
+      map.on('mouseout', function() {
+         focusMarker.getElement().style.display = 'none';
+         // Reset du chart si désiré
+         myChart.setActiveElements([]);
+         myChart.tooltip.setActiveElements([], {x: 0, y: 0});
+         myChart.update();
+      });
+
+  })
+  .addTo(map);
 
 </script>
-
 </body>
 </html>
-
