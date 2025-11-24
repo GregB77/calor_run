@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Affichage GPX avec Leaflet</title>
+
+  <!-- Leaflet CSS -->
+  <link 
+    rel="stylesheet" 
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <style>
+    #map {
+      height: 600px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Affichage d'un parcours GPX avec Leaflet</h2>
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script 
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin="">
+</script>
+
+<!-- Plugin GPX -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
+
+<script>
+  // Initialisation de la carte
+  var map = L.map('map');
+
+  // Fond de plan OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  // Chargement du fichier GPX
+  var gpx = 'TRAIL 10km.gpx';
+  var gpxLayer = new L.GPX(gpx, {
+    async: true,
+    marker_options: {
+      startIconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/pin-icon-start.png',
+      endIconUrl:   'https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/pin-icon-end.png',
+      shadowUrl:    'https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/pin-shadow.png'
+    }
+  }).on('loaded', function(e) {
+    map.fitBounds(e.target.getBounds());
+  }).addTo(map);
+</script>
+
+</body>
+</html>
