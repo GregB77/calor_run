@@ -9,104 +9,126 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- 2. Leaflet Heightgraph CSS & JS (Inclus D3 via le bundle si dispo, sinon d3 séparé) -->
-    <!-- On charge d'abord D3 v5 (nécessaire pour Heightgraph) -->
+    <!-- 2. D3.js (Version 5 est requise par Heightgraph) -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
     
-    <!-- CSS Heightgraph -->
+    <!-- 3. Leaflet Heightgraph CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.heightgraph/dist/L.Control.Heightgraph.min.css"/>
-    <!-- JS Heightgraph -->
     <script src="https://unpkg.com/leaflet.heightgraph/dist/L.Control.Heightgraph.min.js"></script>
 
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; height: 100vh; }
+        /* Mise en page Flexbox pour occuper tout l'écran */
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+        }
         
-        /* Header Stats */
+        /* Barre de Statistiques en haut */
         #header-stats {
             background: white;
-            padding: 15px 20px;
+            padding: 10px 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            z-index: 10;
+            z-index: 1000;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
+            gap: 20px;
             flex-wrap: wrap;
-            flex: 0 0 auto; /* Ne grandit pas */
+            flex: 0 0 auto;
         }
-        .stat-box { text-align: center; margin: 5px 10px; }
-        .stat-value { font-size: 1.4em; font-weight: bold; color: #2c3e50; }
-        .stat-label { font-size: 0.9em; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-box { 
+            text-align: center; 
+            padding: 5px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .stat-value { font-size: 1.2em; font-weight: 700; color: #2c3e50; }
+        .stat-label { font-size: 0.8em; color: #7f8c8d; text-transform: uppercase; margin-top: 2px; }
 
-        /* Container Carte + Graphique */
+        /* Conteneur principal */
         #content-wrapper {
             flex: 1;
             position: relative;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
+        /* Carte Leaflet */
         #map { 
-            flex: 2; /* Prend 2/3 de l'espace restant */
+            flex: 1; /* Prend l'espace restant */
             width: 100%; 
-            min-height: 300px;
+            min-height: 50%;
         }
 
-        /* Le conteneur spécifique où Heightgraph va s'injecter si on ne veut pas qu'il flotte sur la carte */
+        /* Conteneur pour le Heightgraph (pour éviter qu'il flotte sur la carte) */
         #heightgraph-container {
-            flex: 1; /* Prend 1/3 de l'espace restant */
+            height: 220px; /* Hauteur fixe pour le profil */
             width: 100%;
             background: #fff;
-            min-height: 250px;
+            border-top: 1px solid #ccc;
             position: relative;
+            flex: 0 0 auto; /* Ne s'étire pas */
         }
 
-        /* Personnalisation de Heightgraph pour qu'il remplisse notre div */
-        .heightgraph {
-            width: 100%;
-            height: 100%;
-            background: #fff;
+        /* Surcharge CSS pour adapter le plugin à notre div container */
+        .leaflet-control-heightgraph {
+            margin: 0 !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            width: 100% !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- Barre de statistiques calculées manuellement (Heightgraph le fait aussi, mais c'est bien de l'avoir en clair) -->
+    <!-- Header avec les stats globales -->
     <div id="header-stats">
         <div class="stat-box">
             <div class="stat-value" id="distDisplay">--</div>
             <div class="stat-label">Distance</div>
         </div>
         <div class="stat-box">
-            <div class="stat-value" id="eleMaxDisplay">--</div>
-            <div class="stat-label">Alt. Max</div>
-        </div>
-        <div class="stat-box">
             <div class="stat-value" id="gainDisplay">--</div>
-            <div class="stat-label">D+</div>
+            <div class="stat-label">D+ (Montée)</div>
         </div>
         <div class="stat-box">
             <div class="stat-value" id="lossDisplay">--</div>
-            <div class="stat-label">D-</div>
+            <div class="stat-label">D- (Descente)</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="eleMaxDisplay">--</div>
+            <div class="stat-label">Alt. Max</div>
         </div>
     </div>
 
     <div id="content-wrapper">
         <div id="map"></div>
-        <!-- On prépare une div distincte pour le graphe pour éviter qu'il ne cache la carte -->
+        <!-- Le graphique sera injecté ici par le script -->
         <div id="heightgraph-container"></div>
     </div>
 
 <script>
-    // --- 1. CONFIGURATION ---
-    const geojsonFile = "TRAIL 10KM.geojson";
-    
-    const map = L.map('map').setView([0, 0], 10); // Centrage temporaire
+    // ----------------------------------------------------------------
+    // CONFIGURATION
+    // ----------------------------------------------------------------
+    const geojsonFile = "TRAIL 10KM.geojson"; // Nom exact de votre fichier
+
+    // Initialisation carte
+    const map = L.map('map').setView([46.603354, 1.888334], 6); // Centrage par défaut (France)
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
     }).addTo(map);
 
-    // --- 2. FONCTION UTILITAIRE : Calcul Stats (D+, D-, Distance) ---
-    // Heightgraph fait de l'affichage, mais on calcule les stats globales nous-mêmes pour le header
+    // ----------------------------------------------------------------
+    // FONCTION : Calculer les stats manuelles (D+, D-, Distance)
+    // ----------------------------------------------------------------
     function calculateStats(coordinates) {
         let totalDist = 0;
         let totalGain = 0;
@@ -114,21 +136,24 @@
         let maxEle = -Infinity;
         let minEle = Infinity;
 
+        // Note: Cette fonction suppose que toutes les coordonnées passées sont valides [lon, lat, ele]
         for(let i = 0; i < coordinates.length; i++) {
             const [lon, lat, ele] = coordinates[i];
             
+            // Check alt max/min
             if(ele > maxEle) maxEle = ele;
             if(ele < minEle) minEle = ele;
 
             if (i > 0) {
                 const prev = coordinates[i-1];
-                // Formule de Haversine simplifiée ou via Leaflet
+                // Calcul distance via Leaflet
                 const p1 = L.latLng(prev[1], prev[0]);
                 const p2 = L.latLng(lat, lon);
                 const d = p1.distanceTo(p2);
                 
                 totalDist += d;
 
+                // Calcul D+ / D-
                 const diff = ele - prev[2];
                 if (diff > 0) totalGain += diff;
                 else totalLoss += Math.abs(diff);
@@ -143,93 +168,109 @@
         };
     }
 
-    // --- 3. CHARGEMENT & CONFIG HEIGHTGRAPH ---
+    // ----------------------------------------------------------------
+    // CHARGEMENT & INITIALISATION
+    // ----------------------------------------------------------------
     async function loadTrail() {
         try {
             const response = await fetch(geojsonFile);
-            if(!response.ok) throw new Error("Fichier introuvable");
+            if(!response.ok) throw new Error("Erreur de chargement: Fichier GeoJSON non trouvé ou erreur réseau. Status: " + response.status);
+            
             const data = await response.json();
 
-            // Extraction des coordonnées pour nos stats manuelles
-            // (Suppose une FeatureLineString simple ou le premier élément d'une collection)
-            let coords = [];
-            if (data.type === 'FeatureCollection') coords = data.features[0].geometry.coordinates;
-            else if (data.type === 'Feature') coords = data.geometry.coordinates;
-            else if (data.type === 'LineString') coords = data.coordinates;
+            // Fonction utilitaire pour extraire et filtrer les coordonnées 3D valides
+            const extractAndFilterCoords = (feature) => {
+                if (!feature || !feature.geometry) return [];
+                let c = feature.geometry.coordinates;
 
-            // Mise à jour du header HTML
+                // Aplatir si MultiLineString
+                if (feature.geometry.type === 'MultiLineString') {
+                    c = c.flat(1);
+                }
+                
+                // Filtrer: Seuls les points [lon, lat, ele] avec ele numérique et non NaN sont conservés
+                return c.filter(point => point.length === 3 && typeof point[2] === 'number' && !isNaN(point[2]));
+            };
+
+            // 1. Extraction des coordonnées pour stats
+            let rawCoords = [];
+            
+            if (data.type === 'FeatureCollection') {
+                // Tente de trouver la géométrie dans la première Feature qui est une ligne
+                const lineFeature = data.features.find(f => f.geometry && (f.geometry.type === 'LineString' || f.geometry.type === 'MultiLineString'));
+                rawCoords = extractAndFilterCoords(lineFeature);
+            } else {
+                rawCoords = extractAndFilterCoords(data);
+            }
+
+            const coords = rawCoords; // Coordonnées filtrées et prêtes pour les calculs
+
+            // Avertissement si les données sont insuffisantes
+            if (coords.length < 2) {
+                document.getElementById('header-stats').innerHTML = 
+                    '<div class="stat-box" style="background: #fdd; color: #a00; border: 1px solid #f00; width: 100%;">Erreur de données : Le tracé GeoJSON est trop court ou ne contient PAS L\'ALTITUDE (Z) pour le profil altimétrique. Vérifiez le fichier.</div>';
+                return;
+            }
+
+            // 2. Mise à jour de l'interface (Header)
             const stats = calculateStats(coords);
             document.getElementById('distDisplay').innerText = stats.distKm + " km";
             document.getElementById('gainDisplay').innerText = stats.gain + " m";
             document.getElementById('lossDisplay').innerText = stats.loss + " m";
             document.getElementById('eleMaxDisplay').innerText = stats.max + " m";
-
-            // Ajout de la trace "visuelle" sur la carte (Ligne bleue classique)
+            
+            // 3. Ajout de la trace sur la carte (Ligne rouge simple)
             const geoJsonLayer = L.geoJson(data, {
-                style: { color: "#007bff", weight: 4, opacity: 0.6 }
+                style: { color: "#FF0000", weight: 3, opacity: 0.8 }
             }).addTo(map);
             
             map.fitBounds(geoJsonLayer.getBounds());
 
-            // --- INIT HEIGHTGRAPH ---
-            // Le plugin s'attend à recevoir une FeatureCollection GeoJSON.
-            // Il va parser la propriété 'elevation' (la coord Z).
-            
+            // 4. Initialisation du plugin Heightgraph
             const hg = L.control.heightgraph({
-                width: document.getElementById('heightgraph-container').offsetWidth, // Largeur dynamique
-                height: 250,
-                margins: {
-                    top: 20,
-                    right: 30,
-                    bottom: 30,
-                    left: 50
-                },
-                position: "bottomright", // On va feinter et l'injecter dans notre div
-                expand: true, // Toujours ouvert
+                width: document.getElementById('heightgraph-container').offsetWidth,
+                height: 220,
+                margins: { top: 10, right: 30, bottom: 20, left: 50 },
+                position: "bottomright", // Position temporaire avant déplacement
+                expand: true, // Toujours étendu
                 translation: {
                     distance: "Distance",
                     elevation: "Altitude",
-                    segment_length: "Longueur segment",
-                    type: "Type",
+                    segment_length: "Segment",
+                    type: "Info",
                     legend: "Légende"
-                },
-                // xTicks: 10, // Nombre de ticks sur l'axe X
-                expandCallback: function() {
-                   // Callback si besoin lors de l'ouverture
                 }
             });
 
-            // Ajout du contrôle à la carte
             hg.addTo(map);
 
-            // ASTUCE : Pour placer le graphique dans notre div #heightgraph-container 
-            // au lieu de flotter sur la carte, on déplace l'élément DOM créé par Leaflet.
-            const hgContainer = document.querySelector('.leaflet-control-heightgraph');
-            if(hgContainer) {
-                // On empêche la propagation des clics pour ne pas bouger la carte quand on clique sur le graphe
-                L.DomEvent.disableClickPropagation(hgContainer);
-                document.getElementById('heightgraph-container').appendChild(hgContainer);
+            // 5. DATA INJECTION
+            // Heightgraph a besoin des données GeoJSON complètes
+            hg.addData(data);
+
+            // 6. DÉPLACEMENT DU GRAPHIQUE (Hack DOM)
+            // On déplace le contrôle Leaflet hors de la carte vers notre div dédiée
+            const hgControlDiv = document.querySelector('.leaflet-control-heightgraph');
+            const targetContainer = document.getElementById('heightgraph-container');
+            
+            if(hgControlDiv && targetContainer) {
+                // Désactive la propagation pour que cliquer sur le graphe ne bouge pas la carte
+                L.DomEvent.disableClickPropagation(hgControlDiv);
+                targetContainer.appendChild(hgControlDiv);
             }
 
-            // Chargement des données dans le graph
-            // Note: Heightgraph est parfois capricieux si les données ne sont pas "enrichies".
-            // Par défaut, il affichera l'altitude (Area chart).
-            // Pour colorer par pente (gradient), il faudrait pré-analyser le GeoJSON.
-            // Ici, nous utilisons le mode simple "elevation" qui utilise la coordonnée Z.
-            
-            hg.addData(data);
-            
-            // Gestion du redimensionnement fenêtre
+            // Gestion du redimensionnement de la fenêtre
             window.addEventListener('resize', () => {
                 hg.resize({
-                    width: document.getElementById('heightgraph-container').offsetWidth,
-                    height: 250
+                    width: targetContainer.offsetWidth,
+                    height: 220
                 });
             });
 
         } catch (e) {
-            console.error("Erreur", e);
-            alert("Impossible de charger le fichier GeoJSON. Vérifiez qu'il est bien présent.");
+            console.error("Erreur critique lors du chargement ou du traitement du GeoJSON:", e);
+            document.getElementById('header-stats').innerHTML = 
+                '<div class="stat-box" style="background: #fdd; color: #a00; border: 1px solid #f00; width: 100%;">ERREUR CRITIQUE. Le fichier GeoJSON n\'a pas pu être chargé (voir console pour les détails).</div>';
         }
     }
 
