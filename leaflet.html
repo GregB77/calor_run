@@ -2,17 +2,12 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>GPX + Profil interactif</title>
+<title>Profil coloré continu selon pente</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- GPX plugin -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
-
-<!-- Elevation plugin -->
 <link rel="stylesheet" href="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.min.css" />
 <script src="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.min.js"></script>
 
@@ -20,33 +15,23 @@
     body { margin:0; font-family:Arial; }
     #map { height: 50vh; }
     #profile { height: 40vh; }
-    @media (max-width: 700px){
-        #map { height: 40vh; }
-        #profile { height: 35vh; }
-    }
 </style>
 </head>
-
 <body>
 <div id="map"></div>
 <div id="profile"></div>
 
 <script>
-// --- Initialisation Leaflet ---
+// --- Carte ---
 const map = L.map("map");
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
 
-// --- Ajouter fond de carte ---
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors'
-}).addTo(map);
-
-// --- Profil (Elevation plugin) avec coloration par pente ---
+// --- Profil ---
 const elevation = L.control.elevation({
     container: "#profile",
     elevationDiv: "#profile",
     followMarker: true,
-    theme: "steelblue-theme",
-    slope: true,               // <-- coloration par pente activée
+    slope: false,  // désactive tracé slope rouge
     summary: true,
     useHeightIndicator: true,
     autofitBounds: true,
@@ -55,64 +40,61 @@ const elevation = L.control.elevation({
     distanceMarkers: true
 }).addTo(map);
 
-// --- Couleurs personnalisées selon pente (optionnel) ---
-elevation.options.slopeColors = [
-    { min: -100, max: 0, color: "#0000ff" }, // descente en bleu
-    { min: 0, max: 5, color: "#00ff00" },    // pente douce en vert
-    { min: 5, max: 100, color: "#ff0000" }   // montée forte en rouge
-];
-
-// --- Charger GPX ---
-const gpx = "TRAIL 10KM.gpx"; // fichier GPX
-
 let hoverMarker = null;
 
-// --- Ajouter la trace sur la carte ---
-new L.GPX(gpx, {
-    async: true,
-    marker_options: {
-        startIconUrl: null,
-        endIconUrl: null,
-        shadowUrl: null
+// Fonction couleur continue selon pente
+function getSlopeColor(slope){
+    if(slope < 0) return "#0000ff";
+    if(slope < 5) return "#00ff00";
+    return "#ff0000";
+}
+
+// --- Charger GPX ---
+const gpxFile = "TRAIL 10KM.gpx";
+
+new L.GPX(gpxFile, {async:true})
+.on("loaded", e => map.fitBounds(e.target.getBounds()))
+.on("addline", function(e){
+    const coords = e.line.getLatLngs();
+    const canvasLine = [];
+
+    for(let i=1; i<coords.length; i++){
+        const p1 = coords[i-1], p2 = coords[i];
+        const dist = map.distance(p1,p2);
+        const dz = p2.alt - p1.alt;
+        const slope = (dz/dist)*100;
+
+        // Stocke chaque segment avec sa couleur
+        canvasLine.push({from: p1, to: p2, color: getSlopeColor(slope)});
     }
-})
-.on("loaded", function(e) {
-    map.fitBounds(e.target.getBounds());
-})
-.on("addline", function(e) {
-    elevation.addData(e.line);
+
+    // Dessiner chaque segment dans le profil
+    canvasLine.forEach(seg => elevation.addData(L.polyline([seg.from, seg.to], {color: seg.color})));
+
+    // Survol carte → curseur sur profil
+    e.line.on("mousemove", ev => {
+        const latlng = ev.latlng;
+        if(!latlng) return;
+        if(!hoverMarker){
+            hoverMarker = L.circleMarker(latlng, {radius:6,weight:2,color:"red",fillColor:"white",fillOpacity:0.9}).addTo(map);
+        } else hoverMarker.setLatLng(latlng);
+    });
 })
 .addTo(map);
 
-// --- Synchronisation PROFIL → CARTE ---
-elevation.on("elemousemove", function(ev){
+// Survol profil → cercle sur carte
+elevation.on("elemousemove", ev => {
     const latlng = ev.latlng;
-    if (!latlng) return;
-
-    if (!hoverMarker) {
-        hoverMarker = L.circleMarker(latlng, {
-            radius: 6,
-            weight: 2,
-            color: "red",
-            fillColor: "white",
-            fillOpacity: 0.9
-        }).addTo(map);
-    } else {
-        hoverMarker.setLatLng(latlng);
-    }
+    if(!latlng) return;
+    if(!hoverMarker){
+        hoverMarker = L.circleMarker(latlng, {radius:6,weight:2,color:"red",fillColor:"white",fillOpacity:0.9}).addTo(map);
+    } else hoverMarker.setLatLng(latlng);
 });
 
-// --- Personnalisation de l’axe X (km entiers) ---
-elevation.options.xTicks = 10; // 1 tick / km environ
-const originalXTickFormat = elevation._xTickFormat;
-elevation._xTickFormat = function(d){
-    return Math.floor(d / 1000); // km entiers
-};
-
-// --- Tooltip distance personnalisée (2 décimales + " km") ---
-elevation._distanceFormat = function(d) {
-    return (d/1000).toFixed(2) + " km";
-};
+// Axe X et distance
+elevation.options.xTicks = 10;
+elevation._xTickFormat = d => Math.floor(d/1000);
+elevation._distanceFormat = d => (d/1000).toFixed(2) + " km";
 </script>
 </body>
 </html>
