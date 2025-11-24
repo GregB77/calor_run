@@ -4,339 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Carte + Profil Altimétrique Synchronisés (GeoJSON)</title>
+    <title>Carte + Profil Altimétrique (HeightGraph)</title>
 
-    <!-- Chargement Leaflet -->
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- REMPLACÉ: Plus besoin de leaflet-gpx.js -->
-    <!-- Chargement Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet.HeightGraph -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.heightgraph/dist/L.Control.Heightgraph.min.css" />
+    <script src="https://unpkg.com/leaflet.heightgraph/dist/L.Control.Heightgraph.min.js"></script>
 
     <style>
-        body { margin: 0; font-family: 'Inter', Arial, sans-serif; background: #f4f4f4; }
-        #map { height: 50vh; width: 100%; cursor: crosshair; }
-        #stats { background: white; padding: 15px; margin: 10px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
-        #profileContainer { width: 95%; margin: auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
-        canvas { width: 100% !important; max-height: 280px; }
-        .data-loading {
-            text-align: center;
-            padding: 20px;
-            font-size: 1.1em;
-            color: #666;
-        }
-        @media (max-width: 600px) { #map { height: 45vh; } canvas { max-height: 220px; } }
+        body { margin: 0; }
+        #map { height: 50vh; }
+        #heightgraph { height: 45vh; }
     </style>
 </head>
-
 <body>
 
 <div id="map"></div>
-
-<div id="stats">
-    <h2>Statistiques</h2>
-    <div id="statsContent" class="data-loading">Chargement des données GeoJSON...</div>
-</div>
-
-<div id="profileContainer">
-    <h2>Profil Altimétrique (Interactif)</h2>
-    <canvas id="elevationChart"></canvas>
-</div>
+<div id="heightgraph"></div>
 
 <script>
-    // ----------------------------------------------------------
-    // 1. Initialisation Leaflet
-    // ----------------------------------------------------------
-    const map = L.map("map");
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap",
-    }).addTo(map);
+    const map = L.map('map');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    const focusMarker = L.circleMarker([0, 0], {
-        radius: 8,
-        color: 'white',
-        weight: 2,
-        fillColor: '#007bff',
-        fillOpacity: 0,
-        opacity: 0
-    }).addTo(map);
-
-    function colorForSlope(p) {
-        // p est la pente en pourcentage
-        const absP = Math.abs(p);
-        if (absP < 2) return "#4CAF50"; // Plat / Léger (vert)
-        if (absP < 5) return "#FFEB3B"; // Moyen (jaune)
-        if (absP < 10) return "#FF9800"; // Fort (orange)
-        return "#F44336"; // Très fort (rouge)
-    }
-
-    // ----------------------------------------------------------
-    // 2. Chargement GeoJSON
-    // ----------------------------------------------------------
     const geojsonFile = "TRAIL 10KM.geojson";
 
-    /**
-     * Traite un tableau de coordonnées GeoJSON ([lon, lat, ele])
-     * et exécute la logique de tracé et de graphique.
-     * @param {Array<L.LatLng>} latlngs - Tableau d'objets L.LatLng avec la propriété 'meta.ele'
-     */
-    function processCoordinates(latlngs) {
-        // --- Création de la ligne sur la carte ---
-        const line = L.polyline(latlngs, {
-            color: "#007bff",
-            weight: 4,
-            opacity: 0.9,
-            lineCap: 'round'
+    async function loadGeoJSON() {
+        const response = await fetch(geojsonFile);
+        const data = await response.json();
+
+        const layer = L.geoJSON(data, {
+            style: { color: '#007bff', weight: 4 }
         }).addTo(map);
 
-        map.fitBounds(line.getBounds());
+        map.fitBounds(layer.getBounds());
 
-        // --- Préparation des données pour le graphique ---
-        const distances = [];
-        const elevations = [];
-        const slopes = [];
-        let totalDist = 0;
-        let totalUP = 0;
-        let totalDOWN = 0;
-
-        for (let i = 0; i < latlngs.length; i++) {
-            if (i > 0) {
-                // Leaflet calcule la distance en mètres entre deux points (lat, lng)
-                const d = latlngs[i - 1].distanceTo(latlngs[i]);
-                totalDist += d;
-
-                // On utilise .meta.ele, comme le faisait L.GPX, pour la compatibilité
-                const ele1 = latlngs[i - 1].meta.ele;
-                const ele2 = latlngs[i].meta.ele;
-                const diff = ele2 - ele1;
-
-                if (diff > 0) totalUP += diff; else totalDOWN += Math.abs(diff);
-
-                // Pente en pourcentage: (diff_élévation / distance_horizontale) * 100
-                slopes.push((diff / d) * 100);
-            }
-            distances.push(totalDist / 1000); // Conversion en km
-            elevations.push(latlngs[i].meta.ele);
-        }
-
-        // --- Affichage Stats ---
-        document.getElementById("statsContent").innerHTML = `
-            <div class="flex flex-col md:flex-row justify-between text-lg font-semibold">
-                <span>
-                    <span class="text-gray-500">Distance :</span> 
-                    <span class="text-blue-600">${(totalDist / 1000).toFixed(2)} km</span>
-                </span>
-                <span>
-                    <span class="text-gray-500">D+ (Montée) :</span> 
-                    <span class="text-green-600">${Math.round(totalUP)} m</span>
-                </span>
-                <span>
-                    <span class="text-gray-500">D- (Descente) :</span> 
-                    <span class="text-red-600">${Math.round(totalDOWN)} m</span>
-                </span>
-            </div>
-        `;
-
-        // --- Configuration Chart.js ---
-        const ctx = document.getElementById("elevationChart").getContext("2d");
-        // La couleur du segment i dépend de la pente calculée au point i-1
-        const segmentColors = elevations.map((_, i) => i === 0 ? "#4CAF50" : colorForSlope(slopes[i - 1]));
-
-        const myChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: distances,
-                datasets: [{
-                    label: "Altitude (m)",
-                    data: elevations,
-                    segment: {
-                        borderColor: ctx => segmentColors[ctx.p0DataIndex],
-                        borderWidth: 3,
-                    },
-                    pointRadius: 0,
-                    pointHoverRadius: 5,
-                    fill: true,
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    borderColor: 'rgba(0, 123, 255, 0.8)', // Couleur par défaut pour les segments plats
-                    tension: 0.1 // Ajouté pour un tracé plus lisse
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        enabled: true,
-                        animation: false,
-                        callbacks: {
-                            title: function(context) {
-                                let dist = context[0].parsed.x;
-                                return dist.toFixed(2) + " km";
-                            },
-                            label: function(context) {
-                                const index = context.dataIndex;
-                                const alt = context.parsed.y;
-                                // Récupérer la pente du segment PRÉCÉDENT (sauf au point de départ)
-                                const slope = index > 0 ? slopes[index - 1] : 0;
-                                return [
-                                    "Altitude : " + alt.toFixed(0) + " m",
-                                    "Pente : " + slope.toFixed(1) + " %"
-                                ];
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        type: 'linear',
-                        title: { display: true, text: "Distance (km)" },
-                        ticks: { stepSize: 0.5 }
-                    },
-                    y: {
-                        title: { display: true, text: "Altitude (m)" },
-                        beginAtZero: false
-                    },
-                },
-
-                // --- SYNC CHART VERS MAP ---
-                onHover: (event, activeElements) => {
-                    if (activeElements && activeElements.length > 0) {
-                        const index = activeElements[0].index;
-                        const coord = latlngs[index];
-
-                        focusMarker.setLatLng(coord);
-                        focusMarker.setStyle({ opacity: 1, fillOpacity: 1 });
-                    } else {
-                        focusMarker.setStyle({ opacity: 0, fillOpacity: 0 });
-                    }
-                }
-            },
-        });
-
-        // --- SYNC MAP VERS CHART ---
-        map.on('mousemove', function(e) {
-            let closestIndex = -1;
-            let minDistance = Infinity;
-            const maxSnapDistance = 50; // Distance max pour 'accrocher' (en mètres)
-
-            // Trouver le point le plus proche de la souris sur la carte
-            for (let i = 0; i < latlngs.length; i++) {
-                const d = e.latlng.distanceTo(latlngs[i]);
-                if (d < minDistance) {
-                    minDistance = d;
-                    closestIndex = i;
-                }
-            }
-
-            if (closestIndex > -1 && minDistance <= maxSnapDistance) {
-                const coord = latlngs[closestIndex];
-                focusMarker.setLatLng(coord);
-                focusMarker.setStyle({ opacity: 1, fillOpacity: 1 });
-
-                const chart = Chart.getChart("elevationChart");
-                // Mettre à jour le tooltip et le point actif du graphique
-                chart.setActiveElements([{datasetIndex: 0, index: closestIndex}]);
-                chart.tooltip.setActiveElements([{datasetIndex: 0, index: closestIndex}]);
-                chart.update();
-            } else {
-                // Si la souris est trop loin de la ligne, cacher le marqueur
-                focusMarker.setStyle({ opacity: 0, fillOpacity: 0 });
-                const chart = Chart.getChart("elevationChart");
-                if (chart) {
-                    chart.setActiveElements([]);
-                    chart.tooltip.setActiveElements([], {x: 0, y: 0});
-                    chart.update();
+        const hg = L.control.heightgraph({
+            width: "95%",
+            height: 280,
+            position: "bottomleft",
+            mappings: {
+                elevation: {
+                    text: "Altitude",
+                    type: "linear",
+                    unit: "m"
                 }
             }
         });
-
-        map.on('mouseout', function() {
-            focusMarker.setStyle({ opacity: 0, fillOpacity: 0 });
-            const chart = Chart.getChart("elevationChart");
-            if (chart) {
-                chart.setActiveElements([]);
-                chart.tooltip.setActiveElements([], {x: 0, y: 0});
-                chart.update();
-            }
-        });
+        hg.addTo(map);
+        hg.addData(data);
     }
 
-    /**
-     * Tente de charger le fichier GeoJSON et d'extraire les coordonnées 3D.
-     */
-    async function loadGeoJSON() {
-        try {
-            const response = await fetch(geojsonFile);
-            if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
-            const geojsonData = await response.json();
-
-            let coordinates = [];
-
-            // 1. Trouver la Feature contenant le tracé (LineString ou MultiLineString)
-            let geometry = null;
-            if (geojsonData.type === 'FeatureCollection') {
-                const trailFeature = geojsonData.features.find(f => 
-                    f.geometry && (f.geometry.type === 'LineString' || f.geometry.type === 'MultiLineString')
-                );
-                geometry = trailFeature ? trailFeature.geometry : null;
-            } else if (geojsonData.type === 'Feature') {
-                geometry = geojsonData.geometry;
-            } else if (geojsonData.type === 'LineString' || geojsonData.type === 'MultiLineString') {
-                geometry = geojsonData;
-            }
-
-            if (!geometry) {
-                document.getElementById("statsContent").innerHTML = 
-                    "<span style='color: red;'>Erreur: Aucune géométrie de type LineString ou MultiLineString trouvée dans le GeoJSON.</span>";
-                return;
-            }
-
-            // 2. Extraire les coordonnées
-            if (geometry.type === 'LineString') {
-                coordinates = geometry.coordinates;
-            } else if (geometry.type === 'MultiLineString') {
-                // Pour un MultiLineString, nous prenons toutes les coordonnées concaténées
-                coordinates = geometry.coordinates.flat(1); 
-            }
-
-            if (coordinates.length === 0 || coordinates[0].length < 3) {
-                 document.getElementById("statsContent").innerHTML = 
-                    "<span style='color: red;'>Erreur: Les coordonnées GeoJSON ne contiennent pas d'élévation (lon, lat, ele).</span>";
-                return;
-            }
-            
-            // 3. Convertir les coordonnées GeoJSON [lon, lat, ele] en L.LatLng avec metadata
-            const latlngsWithElevation = coordinates.map(coord => {
-                const lon = coord[0];
-                const lat = coord[1];
-                const ele = coord[2]; // L'élévation est le 3ème élément (indice 2)
-
-                // On crée un objet L.LatLng, puis on lui ajoute la propriété .meta.ele pour
-                // imiter la structure de données produite par leaflet-gpx.
-                const latlng = L.latLng(lat, lon);
-                latlng.meta = { ele: ele }; 
-                return latlng;
-            });
-
-            // 4. Lancer le traitement principal
-            processCoordinates(latlngsWithElevation);
-
-        } catch (error) {
-            console.error("Erreur de chargement ou de parsing GeoJSON:", error);
-            document.getElementById("statsContent").innerHTML = 
-                `<span style='color: red;'>Erreur lors du chargement ou du traitement du GeoJSON: ${error.message}. Vérifiez le nom et le format du fichier.</span>`;
-        }
-    }
-
-    // Lancer le chargement au démarrage
     loadGeoJSON();
-
 </script>
+
 </body>
 </html>
