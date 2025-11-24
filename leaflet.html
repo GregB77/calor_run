@@ -8,14 +8,12 @@
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #f4f4f4; }
-    #map { height: 50vh; width: 100%; cursor: crosshair; } /* Curseur changé pour indiquer l'interactivité */
+    #map { height: 50vh; width: 100%; cursor: crosshair; }
     #stats { background: white; padding: 15px; margin: 10px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
     #profileContainer { width: 95%; margin: auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
     canvas { width: 100% !important; max-height: 280px; }
@@ -47,18 +45,14 @@
     attribution: "© OpenStreetMap",
   }).addTo(map);
 
-  // --- CORRECTION ICI ---
-  // On crée le marker avec une opacité à 0 (invisible) au lieu de le cacher via CSS
   const focusMarker = L.circleMarker([0, 0], {
     radius: 8,
     color: 'white',
     weight: 2,
     fillColor: '#007bff',
-    fillOpacity: 0, // Invisible au départ
-    opacity: 0      // Invisible au départ
+    fillOpacity: 0, 
+    opacity: 0      
   }).addTo(map);
-
-  // La ligne qui posait problème (getElement...) a été supprimée.
 
   function colorForSlope(p) {
     if (p < 4) return "green";
@@ -70,7 +64,8 @@
   // ----------------------------------------------------------
   // 2. Chargement GPX
   // ----------------------------------------------------------
-  const gpxFile = "TRAIL 10KM.gpx"; // Assurez-vous que ce fichier existe
+  // REMARQUE: Assurez-vous que le fichier .gpx est dans le même dossier
+  const gpxFile = "TRAIL 10KM.gpx"; 
 
   const gpx = new L.GPX(gpxFile, {
     async: true,
@@ -139,25 +134,44 @@
             intersect: false,
           },
           plugins: {
-            tooltip: { enabled: true, animation: false }
+            // --- MODIFICATION 2 : Formatage Infobulle ---
+            tooltip: { 
+                enabled: true, 
+                animation: false,
+                callbacks: {
+                    title: function(context) {
+                        // context[0].parsed.x récupère la valeur numérique de la distance
+                        let val = context[0].parsed.x;
+                        return val.toFixed(2) + " km";
+                    },
+                    label: function(context) {
+                        return "Altitude : " + context.parsed.y + " m";
+                    }
+                }
+            }
           },
           scales: {
-            x: { title: { display: true, text: "Distance (km)" }, ticks: { maxTicksLimit: 10 } },
+            // --- MODIFICATION 1 : Axe X Linéaire tous les 0.5km ---
+            x: { 
+                type: 'linear', // Important pour gérer les nombres proprement
+                title: { display: true, text: "Distance (km)" }, 
+                ticks: { 
+                    stepSize: 0.5, // Force un label tous les 0.5 unités
+                    maxTicksLimit: 50 // Augmenté pour éviter de cacher des ticks si le trajet est long
+                } 
+            },
             y: { title: { display: true, text: "Altitude (m)" } },
           },
-          
+           
           // --- SYNC CHART VERS MAP ---
           onHover: (event, activeElements) => {
             if (activeElements && activeElements.length > 0) {
                 const index = activeElements[0].index;
                 const coord = latlngs[index];
                 
-                // Déplacer le marker
                 focusMarker.setLatLng(coord);
-                // Le rendre visible via Leaflet (pas de CSS direct)
                 focusMarker.setStyle({ opacity: 1, fillOpacity: 1 });
             } else {
-                // Le rendre invisible
                 focusMarker.setStyle({ opacity: 0, fillOpacity: 0 });
             }
           }
@@ -169,7 +183,6 @@
         let closestIndex = -1;
         let minDistance = Infinity;
 
-        // Trouver le point le plus proche
         for (let i = 0; i < latlngs.length; i++) {
             const d = e.latlng.distanceTo(latlngs[i]);
             if (d < minDistance) {
@@ -181,10 +194,8 @@
         if (closestIndex > -1) {
             const coord = latlngs[closestIndex];
             focusMarker.setLatLng(coord);
-            // Rendre visible
             focusMarker.setStyle({ opacity: 1, fillOpacity: 1 });
 
-            // Activer Chart
             const chart = Chart.getChart("elevationChart");
             chart.setActiveElements([{datasetIndex: 0, index: closestIndex}]);
             chart.tooltip.setActiveElements([{datasetIndex: 0, index: closestIndex}]);
@@ -192,11 +203,8 @@
         }
       });
       
-      // Cacher le marker si on sort de la carte
       map.on('mouseout', function() {
          focusMarker.setStyle({ opacity: 0, fillOpacity: 0 });
-         
-         // Reset Chart
          myChart.setActiveElements([]);
          myChart.tooltip.setActiveElements([], {x: 0, y: 0});
          myChart.update();
@@ -208,4 +216,3 @@
 </script>
 </body>
 </html>
-
