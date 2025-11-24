@@ -28,7 +28,6 @@
 </head>
 
 <body>
-
 <div id="map"></div>
 <div id="profile"></div>
 
@@ -41,13 +40,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors'
 }).addTo(map);
 
-// --- Profil (Elevation plugin) ---
+// --- Profil (Elevation plugin) avec coloration par pente ---
 const elevation = L.control.elevation({
     container: "#profile",
     elevationDiv: "#profile",
     followMarker: true,
     theme: "steelblue-theme",
-    slope: false,           // tracé bleu uniforme
+    slope: true,               // <-- coloration par pente activée
     summary: true,
     useHeightIndicator: true,
     autofitBounds: true,
@@ -56,10 +55,16 @@ const elevation = L.control.elevation({
     distanceMarkers: true
 }).addTo(map);
 
-// --- Charger GPX ---
-const gpx = "TRAIL 10KM.gpx"; // ton fichier GPX
+// --- Couleurs personnalisées selon pente (optionnel) ---
+elevation.options.slopeColors = [
+    { min: -100, max: 0, color: "#0000ff" }, // descente en bleu
+    { min: 0, max: 5, color: "#00ff00" },    // pente douce en vert
+    { min: 5, max: 100, color: "#ff0000" }   // montée forte en rouge
+];
 
-// --- Point synchronisé sur la carte ---
+// --- Charger GPX ---
+const gpx = "TRAIL 10KM.gpx"; // fichier GPX
+
 let hoverMarker = null;
 
 // --- Ajouter la trace sur la carte ---
@@ -75,11 +80,7 @@ new L.GPX(gpx, {
     map.fitBounds(e.target.getBounds());
 })
 .on("addline", function(e) {
-    // Ajouter la trace au panneau elevation
     elevation.addData(e.line);
-
-    // On supprime l'appel à showPosition qui n'existe plus
-    // Si tu veux gérer un survol carte → profil, il faudrait calculer la distance
 })
 .addTo(map);
 
@@ -105,7 +106,7 @@ elevation.on("elemousemove", function(ev){
 elevation.options.xTicks = 10; // 1 tick / km environ
 const originalXTickFormat = elevation._xTickFormat;
 elevation._xTickFormat = function(d){
-    return Math.floor(d / 1000); // km entiers sans décimales
+    return Math.floor(d / 1000); // km entiers
 };
 
 // --- Tooltip distance personnalisée (2 décimales + " km") ---
@@ -113,9 +114,5 @@ elevation._distanceFormat = function(d) {
     return (d/1000).toFixed(2) + " km";
 };
 </script>
-
 </body>
 </html>
-
-
-
