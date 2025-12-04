@@ -22,12 +22,32 @@
   <script>
     // Assurez-vous que le fichier trail_10km.geojson se trouve dans le même dossier que ce fichier HTML
 
-    const map = new maplibregl.Map({
-      container: 'map',
-      style: 'https://tiles.stadiamaps.com/styles/osm_bright.json', // style public MapLibre
-      center: [0,0],
-      zoom: 2
-    });
+const map = new maplibregl.Map({
+  container: 'map',
+  style: {
+    version: 8,
+    sources: {
+      'osm-tiles': {
+        type: 'raster',
+        tiles: [
+          'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+        ],
+        tileSize: 256,
+        attribution:
+          '© OpenStreetMap contributors'
+      }
+    },
+    layers: [
+      {
+        id: 'osm-tiles',
+        type: 'raster',
+        source: 'osm-tiles'
+      }
+    ]
+  },
+  center: [0, 0],
+  zoom: 2
+});
 
     // Ajoute les contrôles (zoom + rotation)
     map.addControl(new maplibregl.NavigationControl());
