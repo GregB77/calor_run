@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Affichage de trail_10km.geojson — MapLibre GL JS</title>
+  <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <style>
+    html,body { height:100%; margin:0; }
+    #map { position:absolute; top:0; bottom:0; right:0; left:0; }
+    .legend { position: absolute; right: 12px; top: 12px; background: rgba(255,255,255,0.9); padding:8px; border-radius:6px; font-family: Arial, sans-serif; font-size:13px; }
+    .legend .line { height:6px; width:36px; display:inline-block; vertical-align:middle; margin-right:8px; background:#e91e63; border-radius:3px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="legend">
+    <div><span class="line"></span> Trace 10 km</div>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+  <script>
+    // Assurez-vous que le fichier trail_10km.geojson se trouve dans le même dossier que ce fichier HTML
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: 'https://demotiles.maplibre.org/style.json', // style public MapLibre
+      center: [0,0],
+      zoom: 2
+    });
+
+    // Ajoute les contrôles (zoom + rotation)
+    map.addControl(new maplibregl.NavigationControl());
+
+    // Fonction utilitaire pour calculer l'emprise (bbox) d'un GeoJSON
+    function computeBBox(geojson) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      function inspectCoords(coords) {
+        if (typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+          const x = coords[0], y = coords[1];
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+        } else {
+          for (const c of coords) inspectCoords(c);
+        }
+      }
+      if (geojson.type === 'FeatureCollection') {
+        for (const f of geojson.features) {
+          if (f.geometry) inspectCoords(f.geometry.coordinates);
+        }
+      } else if (geojson.type === 'Feature') {
+        inspectCoords(geojson.geometry.coordinates);
+      } else {
+        inspectCoords(geojson.coordinates);
+      }
+      return [[minX, minY], [maxX, maxY]];
+    }
+
+    // Charge le GeoJSON local
+    fetch('trail_10km.geojson')
+      .then(resp => {
+        if (!resp.ok) throw new Error('Impossible de charger trail_10km.geojson — vérifiez le chemin et que le fichier est servi (pas en file://).');
+        return resp.json();
+      })
+      .then(geojson => {
+        // Ajoute la source
+        map.addSource('trail', { type: 'geojson', data: geojson });
+
+        // Ajoute une couche ligne
+        map.addLayer({
+          id: 'trail-line',
+          type: 'line',
+          source: 'trail',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': '#e91e63',
+            'line-width': 4
+          }
+        });
+
+        // Optionnel: ajoute une couche de points si le GeoJSON contient des points
+        map.addLayer({
+          id: 'trail-points',
+          type: 'circle',
+          source: 'trail',
+          filter: ['==', ['geometry-type'], 'Point'],
+          paint: {
+            'circle-radius': 6,
+            'circle-color': '#4169e1'
+          }
+        });
+
+        // Zoom sur la trace
+        const bbox = computeBBox(geojson);
+        if (isFinite(bbox[0][0])) {
+          map.fitBounds(bbox, { padding: 40 });
+        }
+
+        // Ajoute marqueurs start / end si la géométrie est une LineString
+        try {
+          let coords = null;
+          if (geojson.type === 'FeatureCollection') {
+            // Cherche première LineString
+            for (const f of geojson.features) {
+              if (f.geometry && f.geometry.type === 'LineString') { coords = f.geometry.coordinates; break; }
+            }
+          } else if (geojson.type === 'Feature' && geojson.geometry.type === 'LineString') {
+            coords = geojson.geometry.coordinates;
+          } else if (geojson.type === 'LineString') {
+            coords = geojson.coordinates;
+          }
+
+          if (coords && coords.length >= 2) {
+            const start = coords[0];
+            const end = coords[coords.length-1];
+
+            const startMarker = new maplibregl.Marker({ color: '#2ecc71' })
+              .setLngLat(start)
+              .setPopup(new maplibregl.Popup().setHTML('<strong>Départ</strong>'))
+              .addTo(map);
+
+            const endMarker = new maplibregl.Marker({ color: '#e74c3c' })
+              .setLngLat(end)
+              .setPopup(new maplibregl.Popup().setHTML('<strong>Arrivée</strong>'))
+              .addTo(map);
+          }
+        } catch (err) {
+          console.warn('Impossible de placer les marqueurs start/end :', err);
+        }
+
+        // Popup au clic sur la ligne — affiche les propriétés si présentes
+        map.on('click', 'trail-line', (e) => {
+          const props = (e.features && e.features[0] && e.features[0].properties) || {};
+          const html = Object.keys(props).length ?
+            '<table>' + Object.entries(props).map(([k,v]) => `<tr><td style="padding:4px 8px;font-weight:600">${k}</td><td style="padding:4px 8px">${v}</td></tr>`).join('') + '</table>' :
+            'Trace — aucune propriété disponible';
+
+          new maplibregl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(html)
+            .addTo(map);
+        });
+
+        // Change le curseur au survol
+        map.on('mouseenter', 'trail-line', () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', 'trail-line', () => { map.getCanvas().style.cursor = ''; });
+
+      })
+      .catch(err => {
+        console.error(err);
+        alert(err.message);
+      });
+  </script>
+</body>
+</html>
