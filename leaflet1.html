@@ -64,7 +64,7 @@
 
     map.addControl(new maplibregl.NavigationControl());
 
-    const GEOJSON_URL="./data/trail_10km.geojson";
+    const GEOJSON_URL="trail_10km.geojson";
 
     fetch(GEOJSON_URL).then(r=>r.json()).then(geojson=>{
       map.addSource('trail',{type:'geojson',data:geojson});
