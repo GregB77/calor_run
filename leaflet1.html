@@ -10,21 +10,42 @@
   <style>
     html,body { height:100%; margin:0; }
     #map { position:absolute; top:0; bottom:0; right:0; left:0; }
+
+    /* Panneau flottant pour le graphique */
+    #panel-toggle {
+      position:absolute;
+      bottom:230px;
+      right:20px;
+      z-index:9999;
+      background:white;
+      padding:8px 12px;
+      border-radius:6px;
+      cursor:pointer;
+      box-shadow:0 2px 5px rgba(0,0,0,0.3);
+      font-family:Arial;
+    }
+
     #chart-container {
       position:absolute;
-      bottom:0;
-      left:0;
-      right:0;
+      bottom:20px;
+      right:20px;
+      width:600px;
       height:220px;
       background:white;
+      border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.25);
+      padding:10px;
+      display:none; /* fermé par défaut */
       z-index:9999;
-      box-shadow:0 -2px 6px rgba(0,0,0,0.2);
     }
+
     canvas { width:100%; height:100%; }
   </style>
 </head>
 <body>
   <div id="map"></div>
+
+  <div id="panel-toggle">Ouvrir le profil</div>
   <div id="chart-container"><canvas id="elevChart"></canvas></div>
 
   <script>
@@ -56,11 +77,15 @@
       return [[minX,minY],[maxX,maxY]];
     }
 
-    fetch('trail_10km.geojson')
+    /* Permettre un chemin différent pour le GeoJSON */
+    const GEOJSON_URL = "./data/trail_10km.geojson";
+
+    fetch(GEOJSON_URL)
       .then(r=>r.json())
       .then(geojson=>{
         map.addSource('trail',{type:'geojson',data:geojson});
 
+        /* Ligne sans les points bleus → suppression totale de layer trail-points */
         map.addLayer({
           id:'trail-line', type:'line', source:'trail',
           paint:{'line-color':'#e91e63','line-width':4}
@@ -76,19 +101,21 @@
         const bbox=computeBBox(geojson);
         map.fitBounds(bbox,{padding:40});
 
+        /* Distances + altitudes */
         const distances=[0];
         const elevations=[];
         for(let i=0;i<coords.length;i++){
           const elev=coords[i][2]||0;
           elevations.push(elev);
           if(i>0){
-            const dx=coords[i][0]-coords[i-1][0];
-            const dy=coords[i][1]-coords[i-1][1];
-            const dist=Math.sqrt(dx*dx+dy*dy)*111000;
+            const dx=(coords[i][0]-coords[i-1][0])*111320*Math.cos(coords[i][1]*Math.PI/180);
+            const dy=(coords[i][1]-coords[i-1][1])*110540;
+            const dist=Math.sqrt(dx*dx+dy*dy);
             distances.push(distances[i-1]+dist);
           }
         }
 
+        /* Slopes */
         const slopes=[];
         for(let i=1;i<elevations.length;i++){
           const dh=elevations[i]-elevations[i-1];
@@ -97,11 +124,22 @@
         }
         slopes.unshift(0);
 
+        /* Décimétrer en km */
+        const kmLabels = distances.map(d => (d/1000));
+
         const ctx=document.getElementById('elevChart').getContext('2d');
         const chart=new Chart(ctx,{
           type:'line',
-          data:{ labels:distances, datasets:[{
+          data:{ labels:kmLabels, datasets:[{
             label:'Dénivelé', data:elevations, borderWidth:2,
+            fill:true,
+            backgroundColor:(ctx)=>{
+              const i=ctx.dataIndex;
+              const s=slopes[i];
+              if(s>0.15) return 'rgba(255,0,0,0.5)';
+              if(s>0.05) return 'rgba(255,165,0,0.5)';
+              return 'rgba(0,128,0,0.5)';
+            },
             segment:{ borderColor:ctx=>{
               const i=ctx.p0DataIndex;
               const s=slopes[i];
@@ -113,19 +151,23 @@
           options:{
             responsive:true,
             interaction:{mode:'nearest',intersect:false},
-            scales:{x:{title:{text:'Distance (m)',display:true}}, y:{title:{text:'Altitude (m)',display:true}}},
+            scales:{
+              x:{title:{text:'Distance (km)',display:true}, ticks:{callback:(v)=>Number(v).toFixed(0)}},
+              y:{title:{text:'Altitude (m)',display:true}}
+            },
             onHover:(event,items)=>{
               if(items.length){
                 const i=items[0].index;
                 const lnglat=[coords[i][0],coords[i][1]];
                 if(window.chartMarker) chartMarker.remove();
                 window.chartMarker=new maplibregl.Marker({color:'#000'}).setLngLat(lnglat).addTo(map);
-                map.easeTo({center:lnglat, duration:200});
+                map.easeTo({center:lnglat, duration:150});
               }
             }
           }
         });
 
+        /* Interaction carte → graphique */
         map.on('mousemove','trail-line',e=>{
           const pt=e.lngLat;
           let nearest=0, mind=Infinity;
@@ -138,6 +180,16 @@
           chart.tooltip.setActiveElements([{datasetIndex:0,index:nearest}]);
           chart.update();
         });
+
+        /* Bouton ouvrir/fermer */
+        const panel=document.getElementById('chart-container');
+        const toggle=document.getElementById('panel-toggle');
+
+        toggle.onclick=()=>{
+          const visible = panel.style.display === 'block';
+          panel.style.display = visible ? 'none' : 'block';
+          toggle.textContent = visible ? 'Ouvrir le profil' : 'Fermer le profil';
+        };
 
       });
   </script>
