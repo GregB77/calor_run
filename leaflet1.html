@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Affichage trace + graphique dénivelé</title>
+  <title>Profil de pente interactif</title>
   <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,33 +11,35 @@
     html,body { height:100%; margin:0; }
     #map { position:absolute; top:0; bottom:0; right:0; left:0; }
 
-    /* Panneau flottant pour le graphique */
-    #panel-toggle {
-      position:absolute;
-      bottom:230px;
-      right:20px;
-      z-index:9999;
-      background:white;
-      padding:8px 12px;
-      border-radius:6px;
-      cursor:pointer;
-      box-shadow:0 2px 5px rgba(0,0,0,0.3);
-      font-family:Arial;
-    }
-
+    /* Panneau flottant */
     #chart-container {
       position:absolute;
       bottom:20px;
       right:20px;
-      width:600px;
-      height:220px;
+      width:620px;
+      height:240px;
       background:white;
       border-radius:10px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.25);
+      box-shadow:0 2px 8px rgba(0,0,0,0.25);
       padding:10px;
-      display:none; /* fermé par défaut */
       z-index:9999;
+      display:none;
+      cursor:grab;
     }
+
+    #panel-toggle, #panel-detach {
+      position:absolute;
+      z-index:9999;
+      background:white;
+      padding:6px 10px;
+      border-radius:6px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.3);
+      cursor:pointer;
+      font-family:Arial;
+    }
+
+    #panel-toggle { bottom:270px; right:20px; }
+    #panel-detach { bottom:20px; right:650px; display:none; }
 
     canvas { width:100%; height:100%; }
   </style>
@@ -46,152 +48,130 @@
   <div id="map"></div>
 
   <div id="panel-toggle">Ouvrir le profil</div>
+  <div id="panel-detach">Déplacer</div>
+
   <div id="chart-container"><canvas id="elevChart"></canvas></div>
 
   <script>
     const map = new maplibregl.Map({
-      container: 'map',
-      style: {
-        version: 8,
-        sources: {
-          'osm-tiles': {
-            type: 'raster',
-            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution:'© OpenStreetMap'
-          }
-        },
-        layers: [{ id:'osm-tiles', type:'raster', source:'osm-tiles' }]
+      container:'map',
+      style:{ version:8,
+        sources:{ 'osm':{ type:'raster', tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize:256 }},
+        layers:[{ id:'osm', type:'raster', source:'osm' }]
       },
-      center: [0,0], zoom: 2
+      center:[0,0], zoom:2
     });
 
     map.addControl(new maplibregl.NavigationControl());
 
-    function computeBBox(geojson) {
-      let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-      function scan(c){ if(typeof c[0]==='number'){minX=Math.min(minX,c[0]);minY=Math.min(minY,c[1]);maxX=Math.max(maxX,c[0]);maxY=Math.max(maxY,c[1]);}
-                         else c.forEach(scan);}      
-      if(geojson.type==='FeatureCollection') geojson.features.forEach(f=>f.geometry&&scan(f.geometry.coordinates));
-      else scan(geojson.coordinates);
-      return [[minX,minY],[maxX,maxY]];
-    }
+    const GEOJSON_URL="./data/trail_10km.geojson";
 
-    /* Permettre un chemin différent pour le GeoJSON */
-    const GEOJSON_URL = "trail_10km.geojson";
+    fetch(GEOJSON_URL).then(r=>r.json()).then(geojson=>{
+      map.addSource('trail',{type:'geojson',data:geojson});
+      map.addLayer({ id:'trail-line', type:'line', source:'trail', paint:{'line-color':'#e91e63','line-width':4} });
 
-    fetch(GEOJSON_URL)
-      .then(r=>r.json())
-      .then(geojson=>{
-        map.addSource('trail',{type:'geojson',data:geojson});
+      const f=geojson.features.find(f=>f.geometry.type==='LineString');
+      const coords=f.geometry.coordinates;
 
-        /* Ligne sans les points bleus → suppression totale de layer trail-points */
-        map.addLayer({
-          id:'trail-line', type:'line', source:'trail',
-          paint:{'line-color':'#e91e63','line-width':4}
-        });
+      /* Compute distances + slopes */
+      const distances=[0];
+      const slopes=[0];
+      for(let i=1;i<coords.length;i++){
+        const dx=(coords[i][0]-coords[i-1][0])*111320*Math.cos(coords[i][1]*Math.PI/180);
+        const dy=(coords[i][1]-coords[i-1][1])*110540;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        distances.push(distances[i-1]+dist);
 
-        let coords=null;
-        if(geojson.type==='FeatureCollection'){
-          const f=geojson.features.find(f=>f.geometry.type==='LineString');
-          coords=f?f.geometry.coordinates:null;
-        }
-        if(!coords) return;
+        const dh=(coords[i][2]||0)-(coords[i-1][2]||0);
+        slopes.push(dist>0?(dh/dist):0);
+      }
 
-        const bbox=computeBBox(geojson);
-        map.fitBounds(bbox,{padding:40});
+      const kmLabels = distances.map(d => (d/1000));
+      const pctSlopes = slopes.map(s => s*100);
 
-        /* Distances + altitudes */
-        const distances=[0];
-        const elevations=[];
-        for(let i=0;i<coords.length;i++){
-          const elev=coords[i][2]||0;
-          elevations.push(elev);
-          if(i>0){
-            const dx=(coords[i][0]-coords[i-1][0])*111320*Math.cos(coords[i][1]*Math.PI/180);
-            const dy=(coords[i][1]-coords[i-1][1])*110540;
-            const dist=Math.sqrt(dx*dx+dy*dy);
-            distances.push(distances[i-1]+dist);
-          }
-        }
+      const ctx=document.getElementById('elevChart').getContext('2d');
 
-        /* Slopes */
-        const slopes=[];
-        for(let i=1;i<elevations.length;i++){
-          const dh=elevations[i]-elevations[i-1];
-          const dd=distances[i]-distances[i-1];
-          slopes.push(dd>0?dh/dd:0);
-        }
-        slopes.unshift(0);
-
-        /* Décimétrer en km */
-        const kmLabels = distances.map(d => (d/1000));
-
-        const ctx=document.getElementById('elevChart').getContext('2d');
-        const chart=new Chart(ctx,{
-          type:'line',
-          data:{ labels:kmLabels, datasets:[{
-            label:'Dénivelé', data:elevations, borderWidth:2,
-            fill:true,
-            backgroundColor:(ctx)=>{
-              const i=ctx.dataIndex;
-              const s=slopes[i];
-              if(s>0.15) return 'rgba(255,0,0,0.5)';
-              if(s>0.05) return 'rgba(255,165,0,0.5)';
-              return 'rgba(0,128,0,0.5)';
-            },
-            segment:{ borderColor:ctx=>{
-              const i=ctx.p0DataIndex;
-              const s=slopes[i];
-              if(s>0.15) return 'red';
-              if(s>0.05) return 'orange';
-              return 'green';
-            }}
-          }]},
-          options:{
-            responsive:true,
-            interaction:{mode:'nearest',intersect:false},
-            scales:{
-              x:{title:{text:'Distance (km)',display:true}, ticks:{callback:(v)=>Number(v).toFixed(0)}},
-              y:{title:{text:'Altitude (m)',display:true}}
-            },
-            onHover:(event,items)=>{
-              if(items.length){
-                const i=items[0].index;
-                const lnglat=[coords[i][0],coords[i][1]];
-                if(window.chartMarker) chartMarker.remove();
-                window.chartMarker=new maplibregl.Marker({color:'#000'}).setLngLat(lnglat).addTo(map);
-                map.easeTo({center:lnglat, duration:150});
-              }
+      const chart=new Chart(ctx,{
+        type:'line',
+        data:{ labels:kmLabels, datasets:[{
+          label:'Pente (%)',
+          data:pctSlopes,
+          borderWidth:2,
+          fill:true,
+          backgroundColor:(c)=>{
+            const s=c.raw;
+            if(s>15) return 'rgba(255,0,0,0.4)';
+            if(s>5) return 'rgba(255,165,0,0.4)';
+            return 'rgba(0,128,0,0.4)';
+          },
+          segment:{ borderColor:(ctx)=>{
+            const s=pctSlopes[ctx.p0DataIndex];
+            if(s>15) return 'red';
+            if(s>5) return 'orange';
+            return 'green';
+          }}
+        }]},
+        options:{
+          responsive:true,
+          interaction:{mode:'nearest',intersect:false},
+          plugins:{ tooltip:{ callbacks:{
+            label:(ctx)=> `Pente: ${ctx.raw.toFixed(1)} %`,
+            title:(ctx)=> `Distance: ${ctx[0].parsed.x.toFixed(1)} km`
+          }}},
+          scales:{
+            x:{ title:{display:true,text:'Distance (km)'}, ticks:{callback:(v)=>Number(v).toFixed(0)}},
+            y:{ title:{display:true,text:'Pente (%)'} }
+          },
+          onHover:(ev,items)=>{
+            if(items.length){
+              const i=items[0].index;
+              const lnglat=[coords[i][0],coords[i][1]];
+              if(window.chartMarker) chartMarker.remove();
+              window.chartMarker=new maplibregl.Marker({color:'#000'}).setLngLat(lnglat).addTo(map);
+              map.easeTo({center:lnglat,duration:150});
             }
           }
-        });
-
-        /* Interaction carte → graphique */
-        map.on('mousemove','trail-line',e=>{
-          const pt=e.lngLat;
-          let nearest=0, mind=Infinity;
-          coords.forEach((c,i)=>{
-            const dx=c[0]-pt.lng, dy=c[1]-pt.lat;
-            const d=dx*dx+dy*dy;
-            if(d<mind){mind=d;nearest=i;}
-          });
-          chart.setActiveElements([{datasetIndex:0,index:nearest}]);
-          chart.tooltip.setActiveElements([{datasetIndex:0,index:nearest}]);
-          chart.update();
-        });
-
-        /* Bouton ouvrir/fermer */
-        const panel=document.getElementById('chart-container');
-        const toggle=document.getElementById('panel-toggle');
-
-        toggle.onclick=()=>{
-          const visible = panel.style.display === 'block';
-          panel.style.display = visible ? 'none' : 'block';
-          toggle.textContent = visible ? 'Ouvrir le profil' : 'Fermer le profil';
-        };
-
+        }
       });
+
+      /* Carte → graphique */
+      map.on('mousemove','trail-line',e=>{
+        let nearest=0,mind=Infinity;
+        coords.forEach((c,i)=>{
+          const dx=c[0]-e.lngLat.lng;
+          const dy=c[1]-e.lngLat.lat;
+          const d=dx*dx+dy*dy;
+          if(d<mind){mind=d;nearest=i;}
+        });
+        chart.setActiveElements([{datasetIndex:0,index:nearest}]);
+        chart.tooltip.setActiveElements([{datasetIndex:0,index:nearest}]);
+        chart.update();
+      });
+
+      /* Ouvrir/fermer */
+      const panel=document.getElementById('chart-container');
+      const toggle=document.getElementById('panel-toggle');
+      const detach=document.getElementById('panel-detach');
+
+      toggle.onclick=()=>{
+        const v=(panel.style.display==='block');
+        panel.style.display=v?'none':'block';
+        detach.style.display=v?'none':'block';
+        toggle.textContent=v?'Ouvrir le profil':'Fermer le profil';
+      };
+
+      /* Déplacement du panneau */
+      let dragging=false, offsetX=0, offsetY=0;
+      detach.onclick=()=>{ dragging=!dragging; detach.textContent = dragging?"Fixer":"Déplacer"; };
+
+      document.addEventListener('mousemove',e=>{
+        if(dragging){
+          panel.style.left = (e.clientX - 300) + "px";
+          panel.style.top = (e.clientY - 20) + "px";
+        }
+      });
+
+    });
   </script>
 </body>
 </html>
