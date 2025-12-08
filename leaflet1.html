@@ -1,177 +1,438 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Profil de pente interactif</title>
-  <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Trail 10km - Carte et Profil d'Élévation</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+
   <style>
-    html,body { height:100%; margin:0; }
-    #map { position:absolute; top:0; bottom:0; right:0; left:0; }
-
-    /* Panneau flottant */
-    #chart-container {
-      position:absolute;
-      bottom:20px;
-      right:20px;
-      width:620px;
-      height:240px;
-      background:white;
-      border-radius:10px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.25);
-      padding:10px;
-      z-index:9999;
-      display:none;
-      cursor:grab;
+    /* Reset + base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html,body { height: 100%; }
+    body {
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      touch-action: manipulation;
+      -webkit-font-smoothing: antialiased;
     }
 
-    #panel-toggle, #panel-detach {
-      position:absolute;
-      z-index:9999;
-      background:white;
-      padding:6px 10px;
-      border-radius:6px;
-      box-shadow:0 2px 5px rgba(0,0,0,0.3);
-      cursor:pointer;
-      font-family:Arial;
+    /* Map + elevation layout */
+    #map { 
+      width: 100vw; 
+      height: 75vh;     /* ← CHANGÉ */
+      transition: height .3s ease; 
+      position: relative; 
+    }
+    #map.fullscreen { height: 100vh; }
+
+    #elevation {
+      width: 100vw;
+      height: 25vh;     /* ← CHANGÉ */
+      background: #f5f5f5;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      transition: height .3s ease;
+    }
+    #elevation.hidden { height: 0; display: none; }
+
+    /* Infobox */
+    .info-box {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.2);
+      z-index: 1000;
+      max-width: 250px;
+      font-size: 14px;
     }
 
-    #panel-toggle { bottom:270px; right:20px; }
-    #panel-detach { bottom:20px; right:650px; display:none; }
+    /* Control buttons */
+    .control-buttons {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+    .control-btn {
+      background: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.25);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: background .15s;
+    }
 
-    canvas { width:100%; height:100%; }
+    /* Mobile tweaks */
+    @media (max-width: 768px) {
+      #map { height: 70vh; }     /* proportion similaire */
+      #elevation { height: 30vh; }
+
+      .info-box { max-width: 90%; right: 5%; top: 10px; font-size: 13px; padding: 10px; }
+      .control-btn { width: 34px; height: 34px; font-size: 18px; border-radius: 6px; }
+      .control-buttons { bottom: 8px; right: 8px; gap: 8px; }
+
+      .d3-tooltip.mobile-fixed {
+        position: fixed !important;
+        left: 50% !important;
+        transform: translateX(-50%);
+        bottom: 10px !important;
+        top: auto !important;
+        max-width: 90vw;
+      }
+    }
   </style>
+
 </head>
+
 <body>
-  <div id="map"></div>
+  <div id="map">
+    <div class="control-buttons">
+      <button id="toggleGraph" class="control-btn" title="Afficher/Masquer le graphique">X</button>
+      <button id="toggleFullscreen" class="control-btn" title="Plein écran">⛶</button>
+    </div>
+  </div>
+  <div id="elevation"></div>
 
-  <div id="panel-toggle">Ouvrir le profil</div>
-  <div id="panel-detach">Déplacer</div>
-
-  <div id="chart-container"><canvas id="elevChart"></canvas></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
 
   <script>
-    const map = new maplibregl.Map({
-      container:'map',
-      style:{ version:8,
-        sources:{ 'osm':{ type:'raster', tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize:256 }},
-        layers:[{ id:'osm', type:'raster', source:'osm' }]
-      },
-      center:[0,0], zoom:2
-    });
+  (function () {
+    'use strict';
 
-    map.addControl(new maplibregl.NavigationControl());
+    const GEOJSON_URL = 'https://gregb77.github.io/calor_run/trail_10km.geojson';
 
-    const GEOJSON_URL="trail_10km.geojson";
+    // helpers
+    const $ = sel => document.querySelector(sel);
+    const create = tag => document.createElement(tag);
+    const debounce = (fn, wait = 100) => {
+      let t;
+      return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), wait); };
+    };
 
-    fetch(GEOJSON_URL).then(r=>r.json()).then(geojson=>{
-      map.addSource('trail',{type:'geojson',data:geojson});
-      map.addLayer({ id:'trail-line', type:'line', source:'trail', paint:{'line-color':'#e91e63','line-width':4} });
+    // Cached DOM
+    const mapContainer = $('#map');
+    const elevationContainer = $('#elevation');
+    const toggleGraphBtn = $('#toggleGraph');
+    const toggleFullscreenBtn = $('#toggleFullscreen');
 
-      const f=geojson.features.find(f=>f.geometry.type==='LineString');
-      const coords=f.geometry.coordinates;
+    // State
+    let map, polyline;
+    let dataPoints = []; // {distance, elevation, index}
+    let coordinates = [];
+    let windowMarkerHover = null;
+    let graphVisible = true;
 
-      /* Compute distances + slopes */
-      const distances=[0];
-      const slopes=[0];
-      for(let i=1;i<coords.length;i++){
-        const dx=(coords[i][0]-coords[i-1][0])*111320*Math.cos(coords[i][1]*Math.PI/180);
-        const dy=(coords[i][1]-coords[i-1][1])*110540;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        distances.push(distances[i-1]+dist);
+    // --- Fetch and init ---
+    fetch(GEOJSON_URL)
+      .then(r => {
+        if (!r.ok) throw new Error('Network error');
+        return r.json();
+      })
+      .then(initWithGeoJSON)
+      .catch(err => {
+        console.error('Erreur chargement GeoJSON:', err);
+        alert('Erreur lors du chargement des données du parcours.');
+      });
 
-        const dh=(coords[i][2]||0)-(coords[i-1][2]||0);
-        slopes.push(dist>0?(dh/dist):0);
+    function initWithGeoJSON(geojsonData) {
+      // coords from geojson
+      coordinates = geojsonData.features[0].geometry.coordinates; // [lon, lat, alt]
+      initMap();
+      computeStatsAndRender(); // calculates elevations/distances and renders infobox + svg graph
+      bindUI();
+    }
+
+    // ---------- MAP ----------
+    function initMap() {
+      map = L.map('map').setView([48.7535, 2.3003], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(map);
+
+      const latlngs = coordinates.map(c => [c[1], c[0]]);
+
+      polyline = L.polyline(latlngs, { color: '#204B9B', weight: 4, opacity: 0.8 }).addTo(map);
+
+      // start/end icons
+      const makeIcon = (label, bg) => L.divIcon({
+        html: `<div style="background:${bg};color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:bold;border:3px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.3)">${label}</div>`,
+        className: '',
+        iconSize: [30,30]
+      });
+
+      L.marker([coordinates[0][1], coordinates[0][0]], { icon: makeIcon('A', '#ef4444') })
+        .addTo(map)
+        .bindPopup('<b>Arrivée</b><br>Altitude: ' + coordinates[0][2].toFixed(1) + ' m');
+
+      L.marker([coordinates[coordinates.length-1][1], coordinates[coordinates.length-1][0]], { icon: makeIcon('D', '#22c55e') })
+        .addTo(map)
+        .bindPopup('<b>Départ</b><br>Altitude: ' + coordinates[coordinates.length-1][2].toFixed(1) + ' m');
+
+      map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+    }
+
+    // ---------- STATS & GRAPH ----------
+    function computeStatsAndRender() {
+      // compute distances and elevations
+      let totalDistance = 0;
+      let gain = 0;
+      let loss = 0;
+      const elevations = [];
+      const distances = [];
+
+      const R = 6371000; // meters
+
+      for (let i = 0; i < coordinates.length; i++) {
+        if (i > 0) {
+          const [lon1, lat1] = coordinates[i-1];
+          const [lon2, lat2] = coordinates[i];
+          const φ1 = lat1 * Math.PI/180;
+          const φ2 = lat2 * Math.PI/180;
+          const Δφ = (lat2 - lat1) * Math.PI/180;
+          const Δλ = (lon2 - lon1) * Math.PI/180;
+          const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                    Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)*Math.sin(Δλ/2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          const d = R * c;
+          totalDistance += d;
+
+          const elevDiff = coordinates[i][2] - coordinates[i-1][2];
+          if (elevDiff > 0) gain += elevDiff;
+          else loss += Math.abs(elevDiff);
+        }
+        elevations.push(coordinates[i][2]);
+        distances.push(totalDistance);
       }
 
-      const kmLabels = distances.map(d => (d/1000));
-      const pctSlopes = slopes.map(s => s*100);
+      // prepare dataPoints (distance in km)
+      dataPoints = distances.map((d, i) => ({
+        distance: d / 1000,
+        elevation: elevations[i],
+        index: i
+      }));
 
-      const ctx=document.getElementById('elevChart').getContext('2d');
+      // add infobox (single append)
+      const statsHtml = `
+        <h3>📊 Statistiques</h3>
+        <p>Distance: <span class="value">${(totalDistance / 1000).toFixed(2)} km</span></p>
+        <p>Dénivelé +: <span class="value">${gain.toFixed(0)} m</span></p>
+        <p>Dénivelé -: <span class="value">${loss.toFixed(0)} m</span></p>
+        <p>Altitude min: <span class="value">${Math.min(...elevations).toFixed(0)} m</span></p>
+        <p>Altitude max: <span class="value">${Math.max(...elevations).toFixed(0)} m</span></p>
+      `;
+      const existing = document.querySelector('.info-box');
+      if (existing) existing.remove();
+      const infoBox = create('div');
+      infoBox.className = 'info-box';
+      infoBox.innerHTML = statsHtml;
+      mapContainer.appendChild(infoBox);
 
-      const chart=new Chart(ctx,{
-        type:'line',
-        data:{ labels:kmLabels, datasets:[{
-          label:'Pente (%)',
-          data:pctSlopes,
-          borderWidth:2,
-          fill:true,
-          backgroundColor:(c)=>{
-            const s=c.raw;
-            if(s>15) return 'rgba(255,0,0,0.4)';
-            if(s>5) return 'rgba(255,165,0,0.4)';
-            return 'rgba(0,128,0,0.4)';
-          },
-          segment:{ borderColor:(ctx)=>{
-            const s=pctSlopes[ctx.p0DataIndex];
-            if(s>15) return 'red';
-            if(s>5) return 'orange';
-            return 'green';
-          }}
-        }]},
-        options:{
-          responsive:true,
-          interaction:{mode:'nearest',intersect:false},
-          plugins:{ tooltip:{ callbacks:{
-            label:(ctx)=> `Pente: ${ctx.raw.toFixed(1)} %`,
-            title:(ctx)=> `Distance: ${ctx[0].parsed.x.toFixed(1)} km`
-          }}},
-          scales:{
-            x:{ title:{display:true,text:'Distance (km)'}, ticks:{callback:(v)=>Number(v).toFixed(0)}},
-            y:{ title:{display:true,text:'Pente (%)'} }
-          },
-          onHover:(ev,items)=>{
-            if(items.length){
-              const i=items[0].index;
-              const lnglat=[coords[i][0],coords[i][1]];
-              if(window.chartMarker) chartMarker.remove();
-              window.chartMarker=new maplibregl.Marker({color:'#000'}).setLngLat(lnglat).addTo(map);
-              map.easeTo({center:lnglat,duration:150});
-            }
+      // render D3 elevation graph (one-time render, same as before)
+      renderElevationSVG(totalDistance / 1000, elevations);
+    }
+
+    function renderElevationSVG(totalDistanceKm, elevations) {
+      // clear previous svg if present
+      elevationContainer.innerHTML = '';
+
+      // margins & sizes
+      const margin = { top: 20, right: 30, bottom: 40, left: 60 };
+      const width = Math.max(600, window.innerWidth) - margin.left - margin.right; // keep minimal width for aesthetics
+      const height = window.innerHeight * 0.25 - margin.top - margin.bottom;
+
+      const svg = d3.select('#elevation')
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+      // compute slopes and dataWithSlope
+      const data = dataPoints; // already prepared distances in km
+      const dataWithSlope = data.map((d, i) => {
+        if (i === 0) return { ...d, slope: 0 };
+        const distDiff = (d.distance - data[i-1].distance) * 1000; // m
+        const elevDiff = d.elevation - data[i-1].elevation;
+        const slope = distDiff > 0 ? (elevDiff / distDiff) * 100 : 0;
+        return { ...d, slope };
+      });
+
+      // scales
+      const x = d3.scaleLinear().domain([0, totalDistanceKm]).range([0, width]);
+      const y = d3.scaleLinear().domain([Math.min(...elevations) - 5, Math.max(...elevations) + 5]).range([height, 0]);
+
+      // axes
+      svg.append('g').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x))
+        .append('text')
+        .attr('x', width / 2).attr('y', 35).attr('fill', '#000').style('font-size', '14px').text('Distance (km)');
+
+      svg.append('g').call(d3.axisLeft(y))
+        .append('text')
+        .attr('transform', 'rotate(-90)').attr('x', -height / 2).attr('y', -45).attr('fill', '#000').style('font-size', '14px').text('Altitude (m)');
+
+      // color scale for slope
+      const colorScale = d3.scaleLinear()
+        .domain([-15, -10, -5, 0, 5, 10, 15, 20])
+        .range(['#0066ff', '#00ccff', '#00ff99', '#ccff00', '#ffff00', '#ffaa00', '#ff5500', '#ff0000'])
+        .clamp(true);
+
+      // area and line drawing per segment (same visual result)
+      const area = d3.area()
+        .x(d => x(d.distance))
+        .y0(height)
+        .y1(d => y(d.elevation))
+        .curve(d3.curveMonotoneX);
+
+      for (let i = 1; i < dataWithSlope.length; i++) {
+        const seg = [dataWithSlope[i-1], dataWithSlope[i]];
+        svg.append('path').datum(seg).attr('fill', colorScale(dataWithSlope[i].slope)).attr('fill-opacity', 0.3).attr('d', area);
+        svg.append('line').attr('x1', x(seg[0].distance)).attr('y1', y(seg[0].elevation)).attr('x2', x(seg[1].distance)).attr('y2', y(seg[1].elevation))
+          .attr('stroke', colorScale(dataWithSlope[i].slope)).attr('stroke-width', 3);
+      }
+
+      // legend gradient
+      const legendWidth = 200, legendHeight = 15;
+      const defs = svg.append('defs');
+      const lg = defs.append('linearGradient').attr('id', 'legend-gradient');
+      const stops = [-15, -10, -5, 0, 5, 10, 15, 20];
+      stops.forEach(stop => {
+        lg.append('stop').attr('offset', `${((stop + 15) / 35) * 100}%`).attr('stop-color', colorScale(stop));
+      });
+
+      const legend = svg.append('g').attr('transform', `translate(${width - legendWidth - 10}, 10)`);
+      const legendScale = d3.scaleLinear().domain([-15, 20]).range([0, legendWidth]);
+      const legendAxis = d3.axisBottom(legendScale).ticks(5).tickFormat(d => d + '%');
+
+      legend.append('rect').attr('width', legendWidth).attr('height', legendHeight).style('fill', 'url(#legend-gradient)');
+      legend.append('g').attr('transform', `translate(0, ${legendHeight})`).call(legendAxis).style('font-size', '10px');
+      legend.append('text').attr('x', legendWidth / 2).attr('y', -5).attr('text-anchor', 'middle').style('font-size', '11px').style('font-weight', 'bold').text('Pente');
+
+      // tooltip and interactive indicators
+      const tooltip = d3.select('body').append('div').attr('class', 'd3-tooltip').style('opacity', 0)
+        .style('background', 'white').style('padding', '8px 12px').style('border-radius', '4px').style('box-shadow', '0 2px 5px rgba(0,0,0,0.2)');
+
+      // mobile fixed class toggle: add if small viewport
+      if (window.matchMedia('(max-width:768px)').matches) tooltip.classed('mobile-fixed', true);
+
+      const graphIndicator = svg.append('circle').attr('r', 5).attr('fill', '#ef4444').attr('stroke', 'white').attr('stroke-width', 2).style('opacity', 0);
+      const graphLine = svg.append('line').attr('stroke', '#ef4444').attr('stroke-width', 1).attr('stroke-dasharray', '4,4').style('opacity', 0);
+
+      svg.append('rect').attr('width', width).attr('height', height).style('fill', 'none').style('pointer-events', 'all')
+        .on('mousemove', function(event) {
+          const [mx] = d3.pointer(event);
+          const distance = x.invert(mx);
+          const bisect = d3.bisector(d => d.distance).left;
+          const idx = bisect(dataWithSlope, distance);
+          if (idx > 0 && idx < dataWithSlope.length) {
+            const d0 = dataWithSlope[idx-1], d1 = dataWithSlope[idx];
+            const d = (distance - d0.distance > d1.distance - distance) ? d1 : d0;
+            tooltip.style('opacity', 1).html(`<strong>Distance:</strong> ${d.distance.toFixed(2)} km<br><strong>Altitude:</strong> ${d.elevation.toFixed(1)} m<br><strong>Pente:</strong> ${d.slope.toFixed(1)}%`)
+              .style('left', (event.pageX + 10) + 'px').style('top', (event.pageY - 30) + 'px');
+
+            graphIndicator.attr('cx', x(d.distance)).attr('cy', y(d.elevation)).style('opacity', 1);
+            graphLine.attr('x1', x(d.distance)).attr('y1', 0).attr('x2', x(d.distance)).attr('y2', height).style('opacity', 1);
+
+            // highlight point on the map
+            const lat = coordinates[d.index][1], lon = coordinates[d.index][0];
+            if (windowMarkerHover) map.removeLayer(windowMarkerHover);
+            windowMarkerHover = L.circleMarker([lat, lon], { radius: 6, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8, weight: 2 }).addTo(map);
           }
-        }
-      });
-
-      /* Carte → graphique */
-      map.on('mousemove','trail-line',e=>{
-        let nearest=0,mind=Infinity;
-        coords.forEach((c,i)=>{
-          const dx=c[0]-e.lngLat.lng;
-          const dy=c[1]-e.lngLat.lat;
-          const d=dx*dx+dy*dy;
-          if(d<mind){mind=d;nearest=i;}
+        })
+        .on('mouseout', function() {
+          tooltip.style('opacity', 0);
+          graphIndicator.style('opacity', 0);
+          graphLine.style('opacity', 0);
+          if (windowMarkerHover) { map.removeLayer(windowMarkerHover); windowMarkerHover = null; }
         });
-        chart.setActiveElements([{datasetIndex:0,index:nearest}]);
-        chart.tooltip.setActiveElements([{datasetIndex:0,index:nearest}]);
-        chart.update();
+
+      // map → graph interaction: reuse polyline mousemove
+      polyline.on('mousemove', function(ev) {
+        const latlng = ev.latlng;
+        let minDist = Infinity, closestIndex = 0;
+        coordinates.forEach((coord, i) => {
+          const lat = coord[1], lon = coord[0];
+          const dist = Math.hypot(lat - latlng.lat, lon - latlng.lng);
+          if (dist < minDist) { minDist = dist; closestIndex = i; }
+        });
+
+        const d = dataWithSlope[closestIndex];
+        graphIndicator.attr('cx', x(d.distance)).attr('cy', y(d.elevation)).style('opacity', 1);
+        graphLine.attr('x1', x(d.distance)).attr('y1', 0).attr('x2', x(d.distance)).attr('y2', height).style('opacity', 1);
+        tooltip.style('opacity', 1).html(`<strong>Distance:</strong> ${d.distance.toFixed(2)} km<br><strong>Altitude:</strong> ${d.elevation.toFixed(1)} m<br><strong>Pente:</strong> ${d.slope.toFixed(1)}%`)
+          .style('left', (ev.originalEvent.pageX + 10) + 'px')
+          .style('top', (ev.originalEvent.pageY - 30) + 'px');
       });
 
-      /* Ouvrir/fermer */
-      const panel=document.getElementById('chart-container');
-      const toggle=document.getElementById('panel-toggle');
-      const detach=document.getElementById('panel-detach');
+      polyline.on('mouseout', function() {
+        tooltip.style('opacity', 0);
+        graphIndicator.style('opacity', 0);
+        graphLine.style('opacity', 0);
+      });
+    }
 
-      toggle.onclick=()=>{
-        const v=(panel.style.display==='block');
-        panel.style.display=v?'none':'block';
-        detach.style.display=v?'none':'block';
-        toggle.textContent=v?'Ouvrir le profil':'Fermer le profil';
-      };
+    // ---------- UI BINDERS ----------
+    function bindUI() {
+      // Toggle graph
+      toggleGraphBtn.addEventListener('click', () => {
+        graphVisible = !graphVisible;
+        if (graphVisible) {
+          elevationContainer.classList.remove('hidden');
+          mapContainer.classList.remove('fullscreen');
+          toggleGraphBtn.innerHTML = 'X';
+          toggleGraphBtn.title = 'Masquer le graphique';
+        } else {
+          elevationContainer.classList.add('hidden');
+          mapContainer.classList.add('fullscreen');
+          toggleGraphBtn.innerHTML = '📈';
+          toggleGraphBtn.title = 'Afficher le graphique';
+        }
+        // small delay to allow transition then invalidate
+        setTimeout(() => map.invalidateSize(), 350);
+      });
 
-      /* Déplacement du panneau */
-      let dragging=false, offsetX=0, offsetY=0;
-      detach.onclick=()=>{ dragging=!dragging; detach.textContent = dragging?"Fixer":"Déplacer"; };
-
-      document.addEventListener('mousemove',e=>{
-        if(dragging){
-          panel.style.left = (e.clientX - 300) + "px";
-          panel.style.top = (e.clientY - 20) + "px";
+      // Fullscreen toggle
+      toggleFullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().then(() => {
+            toggleFullscreenBtn.innerHTML = '⛶';
+            toggleFullscreenBtn.title = 'Quitter le plein écran';
+          }).catch(() => {});
+        } else {
+          document.exitFullscreen().then(() => {
+            toggleFullscreenBtn.innerHTML = '⛶';
+            toggleFullscreenBtn.title = 'Plein écran';
+          }).catch(() => {});
         }
       });
 
-    });
+      // keep map size correct on fullscreen change
+      document.addEventListener('fullscreenchange', () => {
+        setTimeout(() => map.invalidateSize(), 100);
+      });
+
+      // Debounced resize handler (only invalidates map size, same behaviour as original)
+      const debouncedInvalidate = debounce(() => map.invalidateSize(), 120);
+      window.addEventListener('resize', debouncedInvalidate);
+    }
+
+  })();
   </script>
 </body>
 </html>
