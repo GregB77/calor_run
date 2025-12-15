@@ -3,6 +3,1851 @@
   "features": [
     {
       "type": "Feature",
+      "properties": {
+        "name": "Trace GPX",
+        "coordinateProperties": [
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "path",
+            "surface": "gravel"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "path",
+            "surface": "ground"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "track",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "grass"
+          },
+          {
+            "highway": "path",
+            "surface": "asphalt"
+          }
+        ]
+      },
       "geometry": {
         "type": "LineString",
         "coordinates": [
@@ -2307,11 +4152,6 @@
             239.0
           ]
         ]
-      },
-      "properties": {
-        "highway": "track",
-        "surface": "asphalt",
-        "point_count": 460
       }
     }
   ]
