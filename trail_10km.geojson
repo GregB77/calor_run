@@ -1,4158 +1,467 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Calor Run 10km",
-        "coordinateProperties": [
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          },
-          {
-            "highway": null,
-            "surface": null
-          }
-        ]
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            5.003519,
-            45.553319,
-            239.0
-          ],
-          [
-            5.003024,
-            45.553299,
-            238.0
-          ],
-          [
-            5.001601,
-            45.553069,
-            237.0
-          ],
-          [
-            5.001388,
-            45.553668,
-            236.8
-          ],
-          [
-            5.001353,
-            45.553762,
-            236.4
-          ],
-          [
-            5.000969,
-            45.554898,
-            235.5
-          ],
-          [
-            5.000822,
-            45.555072,
-            235.0
-          ],
-          [
-            5.000568,
-            45.555494,
-            234.2
-          ],
-          [
-            5.000554,
-            45.555568,
-            234.0
-          ],
-          [
-            5.000591,
-            45.555632,
-            234.0
-          ],
-          [
-            5.000666,
-            45.555678,
-            234.0
-          ],
-          [
-            5.000779,
-            45.555689,
-            234.0
-          ],
-          [
-            5.002769,
-            45.555878,
-            236.8
-          ],
-          [
-            5.002866,
-            45.555817,
-            236.7
-          ],
-          [
-            5.002963,
-            45.55583,
-            236.3
-          ],
-          [
-            5.004055,
-            45.553688,
-            239.1
-          ],
-          [
-            5.003929,
-            45.5536,
-            239.9
-          ],
-          [
-            5.004091,
-            45.553285,
-            240.0
-          ],
-          [
-            5.004157,
-            45.553089,
-            240.0
-          ],
-          [
-            5.004188,
-            45.55303,
-            240.1
-          ],
-          [
-            5.004256,
-            45.552987,
-            240.3
-          ],
-          [
-            5.004346,
-            45.552963,
-            240.6
-          ],
-          [
-            5.004517,
-            45.552929,
-            241.0
-          ],
-          [
-            5.004612,
-            45.552897,
-            241.0
-          ],
-          [
-            5.004723,
-            45.552787,
-            241.0
-          ],
-          [
-            5.004791,
-            45.552717,
-            241.2
-          ],
-          [
-            5.004892,
-            45.552705,
-            241.3
-          ],
-          [
-            5.005028,
-            45.552635,
-            241.5
-          ],
-          [
-            5.005141,
-            45.552609,
-            241.6
-          ],
-          [
-            5.005266,
-            45.552582,
-            241.7
-          ],
-          [
-            5.005424,
-            45.552558,
-            241.8
-          ],
-          [
-            5.005568,
-            45.552546,
-            241.8
-          ],
-          [
-            5.005753,
-            45.552538,
-            241.9
-          ],
-          [
-            5.005905,
-            45.552533,
-            241.9
-          ],
-          [
-            5.006122,
-            45.552507,
-            242.0
-          ],
-          [
-            5.006202,
-            45.552494,
-            242.0
-          ],
-          [
-            5.006346,
-            45.55246,
-            242.0
-          ],
-          [
-            5.006457,
-            45.552442,
-            242.0
-          ],
-          [
-            5.006607,
-            45.55244,
-            242.0
-          ],
-          [
-            5.006763,
-            45.552441,
-            242.3
-          ],
-          [
-            5.007432,
-            45.552527,
-            243.9
-          ],
-          [
-            5.008152,
-            45.552366,
-            247.9
-          ],
-          [
-            5.008211,
-            45.552326,
-            247.9
-          ],
-          [
-            5.008331,
-            45.552349,
-            248.4
-          ],
-          [
-            5.008422,
-            45.552311,
-            249.2
-          ],
-          [
-            5.008606,
-            45.552302,
-            250.8
-          ],
-          [
-            5.008758,
-            45.552309,
-            256.3
-          ],
-          [
-            5.008905,
-            45.552318,
-            261.2
-          ],
-          [
-            5.009205,
-            45.552252,
-            267.7
-          ],
-          [
-            5.009441,
-            45.552203,
-            272.1
-          ],
-          [
-            5.009739,
-            45.552159,
-            275.1
-          ],
-          [
-            5.009947,
-            45.552153,
-            276.0
-          ],
-          [
-            5.010093,
-            45.552151,
-            276.4
-          ],
-          [
-            5.010255,
-            45.552088,
-            277.9
-          ],
-          [
-            5.010462,
-            45.552088,
-            277.9
-          ],
-          [
-            5.010735,
-            45.552074,
-            278.1
-          ],
-          [
-            5.010694,
-            45.551987,
-            279.4
-          ],
-          [
-            5.010611,
-            45.551864,
-            280.9
-          ],
-          [
-            5.01049,
-            45.551728,
-            282.4
-          ],
-          [
-            5.010387,
-            45.551722,
-            282.5
-          ],
-          [
-            5.010258,
-            45.551629,
-            283.3
-          ],
-          [
-            5.010153,
-            45.551515,
-            284.2
-          ],
-          [
-            5.010094,
-            45.551418,
-            285.0
-          ],
-          [
-            5.010066,
-            45.551333,
-            285.5
-          ],
-          [
-            5.010071,
-            45.551214,
-            286.2
-          ],
-          [
-            5.010093,
-            45.551153,
-            286.8
-          ],
-          [
-            5.010159,
-            45.551088,
-            287.7
-          ],
-          [
-            5.010236,
-            45.551051,
-            288.8
-          ],
-          [
-            5.010348,
-            45.55102,
-            289.9
-          ],
-          [
-            5.010511,
-            45.551017,
-            290.5
-          ],
-          [
-            5.010877,
-            45.551045,
-            291.7
-          ],
-          [
-            5.011032,
-            45.55107,
-            291.3
-          ],
-          [
-            5.011168,
-            45.551094,
-            290.7
-          ],
-          [
-            5.011273,
-            45.551126,
-            289.7
-          ],
-          [
-            5.011355,
-            45.551179,
-            288.7
-          ],
-          [
-            5.01141,
-            45.551231,
-            288.0
-          ],
-          [
-            5.011447,
-            45.551283,
-            287.4
-          ],
-          [
-            5.011467,
-            45.551338,
-            287.0
-          ],
-          [
-            5.011466,
-            45.5514,
-            286.7
-          ],
-          [
-            5.011449,
-            45.551447,
-            286.4
-          ],
-          [
-            5.011413,
-            45.551495,
-            286.2
-          ],
-          [
-            5.011307,
-            45.551554,
-            285.8
-          ],
-          [
-            5.011214,
-            45.551589,
-            285.6
-          ],
-          [
-            5.01049,
-            45.551728,
-            282.4
-          ],
-          [
-            5.010611,
-            45.551864,
-            280.9
-          ],
-          [
-            5.010694,
-            45.551987,
-            279.4
-          ],
-          [
-            5.010735,
-            45.552074,
-            278.1
-          ],
-          [
-            5.010912,
-            45.552411,
-            274.1
-          ],
-          [
-            5.011065,
-            45.55246,
-            273.7
-          ],
-          [
-            5.011244,
-            45.552559,
-            273.8
-          ],
-          [
-            5.011363,
-            45.552621,
-            273.7
-          ],
-          [
-            5.011571,
-            45.552639,
-            274.5
-          ],
-          [
-            5.011741,
-            45.552645,
-            274.7
-          ],
-          [
-            5.011902,
-            45.552615,
-            274.5
-          ],
-          [
-            5.012418,
-            45.552514,
-            272.1
-          ],
-          [
-            5.012566,
-            45.552477,
-            270.9
-          ],
-          [
-            5.012644,
-            45.552443,
-            270.6
-          ],
-          [
-            5.012712,
-            45.552362,
-            269.8
-          ],
-          [
-            5.012746,
-            45.552274,
-            269.0
-          ],
-          [
-            5.012784,
-            45.552198,
-            267.9
-          ],
-          [
-            5.012843,
-            45.552112,
-            267.3
-          ],
-          [
-            5.012909,
-            45.552064,
-            267.0
-          ],
-          [
-            5.012982,
-            45.552035,
-            266.8
-          ],
-          [
-            5.013152,
-            45.552011,
-            266.8
-          ],
-          [
-            5.013325,
-            45.551982,
-            266.9
-          ],
-          [
-            5.013381,
-            45.551973,
-            267.1
-          ],
-          [
-            5.013534,
-            45.551929,
-            268.0
-          ],
-          [
-            5.013688,
-            45.551866,
-            269.8
-          ],
-          [
-            5.013965,
-            45.551599,
-            272.1
-          ],
-          [
-            5.014004,
-            45.551528,
-            273.9
-          ],
-          [
-            5.013995,
-            45.551423,
-            275.9
-          ],
-          [
-            5.013829,
-            45.551017,
-            283.0
-          ],
-          [
-            5.013814,
-            45.550967,
-            283.5
-          ],
-          [
-            5.013805,
-            45.550872,
-            284.6
-          ],
-          [
-            5.013829,
-            45.550685,
-            287.4
-          ],
-          [
-            5.013902,
-            45.550623,
-            289.2
-          ],
-          [
-            5.014174,
-            45.550512,
-            293.6
-          ],
-          [
-            5.014366,
-            45.550436,
-            296.8
-          ],
-          [
-            5.014525,
-            45.550417,
-            298.6
-          ],
-          [
-            5.015005,
-            45.550423,
-            301.5
-          ],
-          [
-            5.015109,
-            45.550414,
-            302.3
-          ],
-          [
-            5.01519,
-            45.550397,
-            303.1
-          ],
-          [
-            5.015264,
-            45.550365,
-            304.0
-          ],
-          [
-            5.015434,
-            45.550232,
-            305.7
-          ],
-          [
-            5.015642,
-            45.550065,
-            307.6
-          ],
-          [
-            5.016262,
-            45.549646,
-            313.4
-          ],
-          [
-            5.016396,
-            45.549556,
-            314.5
-          ],
-          [
-            5.016493,
-            45.549511,
-            315.3
-          ],
-          [
-            5.016825,
-            45.549396,
-            318.2
-          ],
-          [
-            5.017061,
-            45.549347,
-            319.9
-          ],
-          [
-            5.017338,
-            45.549336,
-            321.6
-          ],
-          [
-            5.017598,
-            45.54933,
-            323.4
-          ],
-          [
-            5.018013,
-            45.549298,
-            324.8
-          ],
-          [
-            5.018716,
-            45.549246,
-            326.8
-          ],
-          [
-            5.019133,
-            45.549216,
-            327.0
-          ],
-          [
-            5.019431,
-            45.549131,
-            327.1
-          ],
-          [
-            5.019602,
-            45.549057,
-            327.4
-          ],
-          [
-            5.019809,
-            45.548952,
-            327.8
-          ],
-          [
-            5.020326,
-            45.548653,
-            329.0
-          ],
-          [
-            5.02096,
-            45.548306,
-            331.0
-          ],
-          [
-            5.021749,
-            45.547932,
-            330.1
-          ],
-          [
-            5.021878,
-            45.5479,
-            329.9
-          ],
-          [
-            5.022371,
-            45.547801,
-            330.6
-          ],
-          [
-            5.022705,
-            45.547722,
-            331.4
-          ],
-          [
-            5.02313,
-            45.547599,
-            331.4
-          ],
-          [
-            5.023714,
-            45.547485,
-            331.8
-          ],
-          [
-            5.024176,
-            45.547424,
-            331.2
-          ],
-          [
-            5.024385,
-            45.547429,
-            330.8
-          ],
-          [
-            5.02481,
-            45.547522,
-            332.4
-          ],
-          [
-            5.02492,
-            45.547525,
-            332.7
-          ],
-          [
-            5.025157,
-            45.547455,
-            333.3
-          ],
-          [
-            5.025322,
-            45.5474,
-            333.7
-          ],
-          [
-            5.025728,
-            45.547311,
-            335.0
-          ],
-          [
-            5.026041,
-            45.547241,
-            336.7
-          ],
-          [
-            5.026304,
-            45.547193,
-            337.8
-          ],
-          [
-            5.026581,
-            45.547166,
-            339.6
-          ],
-          [
-            5.026811,
-            45.547155,
-            340.8
-          ],
-          [
-            5.027054,
-            45.547144,
-            341.8
-          ],
-          [
-            5.026934,
-            45.546925,
-            342.1
-          ],
-          [
-            5.02682,
-            45.546696,
-            342.5
-          ],
-          [
-            5.026707,
-            45.546473,
-            342.7
-          ],
-          [
-            5.02661,
-            45.546264,
-            343.0
-          ],
-          [
-            5.026437,
-            45.545863,
-            343.1
-          ],
-          [
-            5.026394,
-            45.545484,
-            343.0
-          ],
-          [
-            5.026403,
-            45.54546,
-            343.1
-          ],
-          [
-            5.026633,
-            45.545056,
-            343.8
-          ],
-          [
-            5.026663,
-            45.54502,
-            344.0
-          ],
-          [
-            5.026716,
-            45.544985,
-            344.3
-          ],
-          [
-            5.02683,
-            45.544919,
-            344.6
-          ],
-          [
-            5.026925,
-            45.544837,
-            344.7
-          ],
-          [
-            5.027147,
-            45.544641,
-            345.7
-          ],
-          [
-            5.027181,
-            45.54461,
-            345.8
-          ],
-          [
-            5.02724,
-            45.544491,
-            345.6
-          ],
-          [
-            5.027314,
-            45.544337,
-            347.0
-          ],
-          [
-            5.027321,
-            45.544314,
-            347.2
-          ],
-          [
-            5.027321,
-            45.544137,
-            348.2
-          ],
-          [
-            5.027326,
-            45.543798,
-            350.6
-          ],
-          [
-            5.027315,
-            45.54365,
-            352.0
-          ],
-          [
-            5.027323,
-            45.543391,
-            354.2
-          ],
-          [
-            5.027313,
-            45.543304,
-            354.8
-          ],
-          [
-            5.027272,
-            45.543024,
-            356.3
-          ],
-          [
-            5.027278,
-            45.542341,
-            358.9
-          ],
-          [
-            5.028197,
-            45.542284,
-            361.7
-          ],
-          [
-            5.02932,
-            45.542204,
-            366.6
-          ],
-          [
-            5.029398,
-            45.542059,
-            367.4
-          ],
-          [
-            5.029417,
-            45.542024,
-            367.6
-          ],
-          [
-            5.029594,
-            45.541828,
-            369.3
-          ],
-          [
-            5.030086,
-            45.541282,
-            374.6
-          ],
-          [
-            5.030621,
-            45.540674,
-            375.8
-          ],
-          [
-            5.03103,
-            45.540203,
-            376.9
-          ],
-          [
-            5.031127,
-            45.54009,
-            377.0
-          ],
-          [
-            5.031164,
-            45.539992,
-            377.0
-          ],
-          [
-            5.031186,
-            45.539801,
-            377.4
-          ],
-          [
-            5.031195,
-            45.539732,
-            377.6
-          ],
-          [
-            5.031222,
-            45.539662,
-            377.4
-          ],
-          [
-            5.03126,
-            45.539579,
-            377.3
-          ],
-          [
-            5.031422,
-            45.539409,
-            377.4
-          ],
-          [
-            5.031975,
-            45.538886,
-            375.1
-          ],
-          [
-            5.03212,
-            45.538692,
-            373.4
-          ],
-          [
-            5.032218,
-            45.538565,
-            373.4
-          ],
-          [
-            5.032271,
-            45.538459,
-            372.9
-          ],
-          [
-            5.032336,
-            45.538302,
-            372.3
-          ],
-          [
-            5.032508,
-            45.537832,
-            371.3
-          ],
-          [
-            5.032524,
-            45.537779,
-            371.3
-          ],
-          [
-            5.032634,
-            45.537604,
-            371.5
-          ],
-          [
-            5.032741,
-            45.537402,
-            370.9
-          ],
-          [
-            5.032937,
-            45.536923,
-            370.7
-          ],
-          [
-            5.033045,
-            45.536684,
-            371.8
-          ],
-          [
-            5.033122,
-            45.536509,
-            372.2
-          ],
-          [
-            5.033154,
-            45.536473,
-            372.4
-          ],
-          [
-            5.033422,
-            45.536189,
-            374.0
-          ],
-          [
-            5.033675,
-            45.535963,
-            375.0
-          ],
-          [
-            5.033788,
-            45.535859,
-            375.0
-          ],
-          [
-            5.033851,
-            45.535785,
-            374.6
-          ],
-          [
-            5.03399,
-            45.535611,
-            373.8
-          ],
-          [
-            5.034013,
-            45.535584,
-            373.6
-          ],
-          [
-            5.034234,
-            45.535424,
-            373.6
-          ],
-          [
-            5.034258,
-            45.535407,
-            373.6
-          ],
-          [
-            5.034268,
-            45.535376,
-            373.6
-          ],
-          [
-            5.03428,
-            45.535309,
-            373.5
-          ],
-          [
-            5.03428,
-            45.53528,
-            373.4
-          ],
-          [
-            5.034268,
-            45.535245,
-            373.6
-          ],
-          [
-            5.034245,
-            45.535194,
-            373.9
-          ],
-          [
-            5.034227,
-            45.535171,
-            374.0
-          ],
-          [
-            5.033864,
-            45.534887,
-            373.7
-          ],
-          [
-            5.0338,
-            45.534843,
-            373.8
-          ],
-          [
-            5.033728,
-            45.534762,
-            374.1
-          ],
-          [
-            5.033625,
-            45.534648,
-            374.6
-          ],
-          [
-            5.033529,
-            45.534538,
-            375.1
-          ],
-          [
-            5.033485,
-            45.53446,
-            375.5
-          ],
-          [
-            5.03336,
-            45.534224,
-            375.9
-          ],
-          [
-            5.033348,
-            45.534199,
-            375.9
-          ],
-          [
-            5.033318,
-            45.53402,
-            377.0
-          ],
-          [
-            5.032999,
-            45.533879,
-            376.9
-          ],
-          [
-            5.032707,
-            45.533702,
-            376.2
-          ],
-          [
-            5.032417,
-            45.533449,
-            375.5
-          ],
-          [
-            5.032114,
-            45.533037,
-            374.2
-          ],
-          [
-            5.030883,
-            45.531295,
-            368.4
-          ],
-          [
-            5.03064,
-            45.531293,
-            368.3
-          ],
-          [
-            5.030423,
-            45.531305,
-            368.3
-          ],
-          [
-            5.030089,
-            45.531369,
-            368.7
-          ],
-          [
-            5.029764,
-            45.531425,
-            368.9
-          ],
-          [
-            5.029131,
-            45.531641,
-            368.2
-          ],
-          [
-            5.02895,
-            45.531697,
-            368.7
-          ],
-          [
-            5.028317,
-            45.531863,
-            368.3
-          ],
-          [
-            5.027698,
-            45.532017,
-            368.8
-          ],
-          [
-            5.027365,
-            45.53209,
-            369.7
-          ],
-          [
-            5.027202,
-            45.532116,
-            370.5
-          ],
-          [
-            5.027044,
-            45.532289,
-            370.8
-          ],
-          [
-            5.026701,
-            45.532793,
-            370.7
-          ],
-          [
-            5.02648,
-            45.533103,
-            370.4
-          ],
-          [
-            5.026382,
-            45.533195,
-            370.5
-          ],
-          [
-            5.026225,
-            45.533289,
-            370.8
-          ],
-          [
-            5.026216,
-            45.533725,
-            366.4
-          ],
-          [
-            5.026216,
-            45.533909,
-            364.4
-          ],
-          [
-            5.026256,
-            45.533992,
-            363.2
-          ],
-          [
-            5.026373,
-            45.534051,
-            361.8
-          ],
-          [
-            5.026592,
-            45.534154,
-            359.4
-          ],
-          [
-            5.026741,
-            45.534222,
-            358.1
-          ],
-          [
-            5.02693,
-            45.534362,
-            355.3
-          ],
-          [
-            5.026955,
-            45.534423,
-            354.2
-          ],
-          [
-            5.026966,
-            45.53449,
-            352.5
-          ],
-          [
-            5.026942,
-            45.534617,
-            349.7
-          ],
-          [
-            5.026921,
-            45.534714,
-            347.4
-          ],
-          [
-            5.026913,
-            45.53481,
-            346.0
-          ],
-          [
-            5.026966,
-            45.534888,
-            344.3
-          ],
-          [
-            5.027179,
-            45.534981,
-            340.6
-          ],
-          [
-            5.027224,
-            45.535057,
-            339.4
-          ],
-          [
-            5.027226,
-            45.535145,
-            338.4
-          ],
-          [
-            5.027061,
-            45.535336,
-            338.2
-          ],
-          [
-            5.026778,
-            45.535658,
-            338.4
-          ],
-          [
-            5.026768,
-            45.535684,
-            338.3
-          ],
-          [
-            5.026743,
-            45.535844,
-            337.7
-          ],
-          [
-            5.026684,
-            45.535927,
-            337.6
-          ],
-          [
-            5.026237,
-            45.536551,
-            338.5
-          ],
-          [
-            5.026208,
-            45.536633,
-            338.4
-          ],
-          [
-            5.026124,
-            45.536909,
-            337.1
-          ],
-          [
-            5.026102,
-            45.536979,
-            336.9
-          ],
-          [
-            5.025754,
-            45.537741,
-            339.1
-          ],
-          [
-            5.025731,
-            45.537786,
-            339.4
-          ],
-          [
-            5.025672,
-            45.537844,
-            340.1
-          ],
-          [
-            5.025552,
-            45.537936,
-            341.5
-          ],
-          [
-            5.025339,
-            45.538077,
-            342.4
-          ],
-          [
-            5.025332,
-            45.538157,
-            341.8
-          ],
-          [
-            5.025309,
-            45.538317,
-            340.8
-          ],
-          [
-            5.025297,
-            45.538383,
-            340.1
-          ],
-          [
-            5.025257,
-            45.538531,
-            338.2
-          ],
-          [
-            5.02525,
-            45.538571,
-            337.7
-          ],
-          [
-            5.025259,
-            45.538589,
-            337.4
-          ],
-          [
-            5.02543,
-            45.538712,
-            334.8
-          ],
-          [
-            5.025455,
-            45.538735,
-            334.4
-          ],
-          [
-            5.025481,
-            45.538773,
-            333.8
-          ],
-          [
-            5.025509,
-            45.538836,
-            332.9
-          ],
-          [
-            5.025528,
-            45.538883,
-            332.3
-          ],
-          [
-            5.025534,
-            45.538956,
-            331.0
-          ],
-          [
-            5.025522,
-            45.539024,
-            329.9
-          ],
-          [
-            5.025497,
-            45.539081,
-            329.1
-          ],
-          [
-            5.025431,
-            45.539145,
-            328.7
-          ],
-          [
-            5.025376,
-            45.5392,
-            327.7
-          ],
-          [
-            5.025298,
-            45.539244,
-            327.0
-          ],
-          [
-            5.025186,
-            45.539312,
-            325.1
-          ],
-          [
-            5.025137,
-            45.539337,
-            324.5
-          ],
-          [
-            5.024968,
-            45.539389,
-            323.6
-          ],
-          [
-            5.024865,
-            45.539411,
-            323.0
-          ],
-          [
-            5.024734,
-            45.539434,
-            322.3
-          ],
-          [
-            5.02459,
-            45.539457,
-            320.9
-          ],
-          [
-            5.024439,
-            45.539482,
-            318.9
-          ],
-          [
-            5.024276,
-            45.539509,
-            316.1
-          ],
-          [
-            5.02407,
-            45.539545,
-            313.6
-          ],
-          [
-            5.023985,
-            45.539558,
-            313.0
-          ],
-          [
-            5.023856,
-            45.539568,
-            312.0
-          ],
-          [
-            5.023746,
-            45.539564,
-            310.5
-          ],
-          [
-            5.023623,
-            45.53955,
-            308.9
-          ],
-          [
-            5.023518,
-            45.539506,
-            307.9
-          ],
-          [
-            5.023454,
-            45.539463,
-            307.3
-          ],
-          [
-            5.023395,
-            45.539398,
-            306.9
-          ],
-          [
-            5.023323,
-            45.539293,
-            305.9
-          ],
-          [
-            5.023238,
-            45.539126,
-            304.6
-          ],
-          [
-            5.023183,
-            45.539024,
-            303.2
-          ],
-          [
-            5.023156,
-            45.538979,
-            302.5
-          ],
-          [
-            5.023114,
-            45.538935,
-            301.5
-          ],
-          [
-            5.023052,
-            45.538903,
-            299.9
-          ],
-          [
-            5.022978,
-            45.538882,
-            298.6
-          ],
-          [
-            5.022868,
-            45.53888,
-            296.7
-          ],
-          [
-            5.022718,
-            45.538904,
-            294.1
-          ],
-          [
-            5.022617,
-            45.538956,
-            292.1
-          ],
-          [
-            5.022549,
-            45.539037,
-            289.6
-          ],
-          [
-            5.022506,
-            45.539134,
-            286.8
-          ],
-          [
-            5.022475,
-            45.539243,
-            285.0
-          ],
-          [
-            5.022462,
-            45.539352,
-            283.5
-          ],
-          [
-            5.022473,
-            45.539556,
-            281.7
-          ],
-          [
-            5.022479,
-            45.539667,
-            281.2
-          ],
-          [
-            5.022475,
-            45.539702,
-            281.1
-          ],
-          [
-            5.022461,
-            45.539758,
-            280.7
-          ],
-          [
-            5.022458,
-            45.539821,
-            280.3
-          ],
-          [
-            5.022469,
-            45.539991,
-            279.1
-          ],
-          [
-            5.022469,
-            45.54001,
-            279.1
-          ],
-          [
-            5.02245,
-            45.540036,
-            279.3
-          ],
-          [
-            5.02243,
-            45.540066,
-            279.5
-          ],
-          [
-            5.022416,
-            45.540082,
-            279.6
-          ],
-          [
-            5.022392,
-            45.540101,
-            279.7
-          ],
-          [
-            5.022318,
-            45.540133,
-            280.0
-          ],
-          [
-            5.022275,
-            45.540139,
-            280.0
-          ],
-          [
-            5.022196,
-            45.540144,
-            279.9
-          ],
-          [
-            5.022172,
-            45.540148,
-            279.9
-          ],
-          [
-            5.021823,
-            45.540349,
-            280.0
-          ],
-          [
-            5.021567,
-            45.540501,
-            281.7
-          ],
-          [
-            5.021439,
-            45.540556,
-            280.1
-          ],
-          [
-            5.02124,
-            45.54064,
-            280.4
-          ],
-          [
-            5.020816,
-            45.540794,
-            279.3
-          ],
-          [
-            5.020326,
-            45.540961,
-            278.9
-          ],
-          [
-            5.020268,
-            45.540979,
-            279.1
-          ],
-          [
-            5.019943,
-            45.541129,
-            278.4
-          ],
-          [
-            5.019792,
-            45.541216,
-            277.5
-          ],
-          [
-            5.0197,
-            45.54129,
-            277.5
-          ],
-          [
-            5.019367,
-            45.541649,
-            276.7
-          ],
-          [
-            5.019302,
-            45.541701,
-            276.5
-          ],
-          [
-            5.019221,
-            45.541748,
-            276.2
-          ],
-          [
-            5.018932,
-            45.54182,
-            275.9
-          ],
-          [
-            5.018219,
-            45.541982,
-            274.8
-          ],
-          [
-            5.018072,
-            45.542017,
-            275.2
-          ],
-          [
-            5.017962,
-            45.542025,
-            274.9
-          ],
-          [
-            5.017828,
-            45.542036,
-            274.6
-          ],
-          [
-            5.017697,
-            45.542047,
-            274.3
-          ],
-          [
-            5.017563,
-            45.542025,
-            273.3
-          ],
-          [
-            5.017391,
-            45.542002,
-            272.5
-          ],
-          [
-            5.017254,
-            45.541985,
-            272.1
-          ],
-          [
-            5.016928,
-            45.541969,
-            271.2
-          ],
-          [
-            5.016139,
-            45.541929,
-            269.0
-          ],
-          [
-            5.016131,
-            45.541963,
-            269.7
-          ],
-          [
-            5.01608,
-            45.542008,
-            270.7
-          ],
-          [
-            5.016029,
-            45.54204,
-            271.0
-          ],
-          [
-            5.015986,
-            45.542094,
-            271.7
-          ],
-          [
-            5.015932,
-            45.542138,
-            271.7
-          ],
-          [
-            5.015774,
-            45.54226,
-            271.8
-          ],
-          [
-            5.015626,
-            45.54235,
-            272.8
-          ],
-          [
-            5.015398,
-            45.542495,
-            272.5
-          ],
-          [
-            5.015253,
-            45.542581,
-            272.1
-          ],
-          [
-            5.014738,
-            45.542872,
-            271.1
-          ],
-          [
-            5.014494,
-            45.543026,
-            270.8
-          ],
-          [
-            5.014199,
-            45.543222,
-            270.2
-          ],
-          [
-            5.013599,
-            45.54364,
-            264.3
-          ],
-          [
-            5.013593,
-            45.543719,
-            265.3
-          ],
-          [
-            5.013561,
-            45.543811,
-            266.0
-          ],
-          [
-            5.013413,
-            45.54417,
-            265.7
-          ],
-          [
-            5.013204,
-            45.544692,
-            264.2
-          ],
-          [
-            5.013065,
-            45.545064,
-            261.7
-          ],
-          [
-            5.013016,
-            45.545207,
-            261.9
-          ],
-          [
-            5.01299,
-            45.545549,
-            262.0
-          ],
-          [
-            5.012963,
-            45.545767,
-            263.2
-          ],
-          [
-            5.012912,
-            45.54606,
-            262.8
-          ],
-          [
-            5.01288,
-            45.546233,
-            262.2
-          ],
-          [
-            5.012721,
-            45.546642,
-            259.2
-          ],
-          [
-            5.012698,
-            45.546735,
-            259.3
-          ],
-          [
-            5.012658,
-            45.547007,
-            260.1
-          ],
-          [
-            5.012632,
-            45.547196,
-            260.2
-          ],
-          [
-            5.01259,
-            45.547542,
-            262.1
-          ],
-          [
-            5.012461,
-            45.547675,
-            260.1
-          ],
-          [
-            5.012418,
-            45.547779,
-            260.9
-          ],
-          [
-            5.012303,
-            45.547867,
-            261.7
-          ],
-          [
-            5.011227,
-            45.548023,
-            255.4
-          ],
-          [
-            5.01093,
-            45.548062,
-            254.4
-          ],
-          [
-            5.010546,
-            45.548139,
-            254.0
-          ],
-          [
-            5.010219,
-            45.548168,
-            252.8
-          ],
-          [
-            5.010015,
-            45.548586,
-            252.2
-          ],
-          [
-            5.009953,
-            45.548739,
-            252.2
-          ],
-          [
-            5.009878,
-            45.549017,
-            252.4
-          ],
-          [
-            5.009819,
-            45.549204,
-            252.1
-          ],
-          [
-            5.00968,
-            45.549482,
-            251.3
-          ],
-          [
-            5.009535,
-            45.549764,
-            252.1
-          ],
-          [
-            5.009353,
-            45.550099,
-            250.8
-          ],
-          [
-            5.009131,
-            45.550533,
-            249.7
-          ],
-          [
-            5.008949,
-            45.550895,
-            249.9
-          ],
-          [
-            5.008666,
-            45.55143,
-            248.5
-          ],
-          [
-            5.008398,
-            45.551951,
-            247.3
-          ],
-          [
-            5.008211,
-            45.552326,
-            247.9
-          ],
-          [
-            5.008152,
-            45.552366,
-            247.9
-          ],
-          [
-            5.007432,
-            45.552527,
-            243.9
-          ],
-          [
-            5.006763,
-            45.552441,
-            242.3
-          ],
-          [
-            5.006607,
-            45.55244,
-            242.0
-          ],
-          [
-            5.006457,
-            45.552442,
-            242.0
-          ],
-          [
-            5.006346,
-            45.55246,
-            242.0
-          ],
-          [
-            5.006202,
-            45.552494,
-            242.0
-          ],
-          [
-            5.006122,
-            45.552507,
-            242.0
-          ],
-          [
-            5.005905,
-            45.552533,
-            241.9
-          ],
-          [
-            5.005753,
-            45.552538,
-            241.9
-          ],
-          [
-            5.005568,
-            45.552546,
-            241.8
-          ],
-          [
-            5.005424,
-            45.552558,
-            241.8
-          ],
-          [
-            5.005266,
-            45.552582,
-            241.7
-          ],
-          [
-            5.005141,
-            45.552609,
-            241.6
-          ],
-          [
-            5.005028,
-            45.552635,
-            241.5
-          ],
-          [
-            5.004892,
-            45.552705,
-            241.3
-          ],
-          [
-            5.004791,
-            45.552717,
-            241.2
-          ],
-          [
-            5.004723,
-            45.552787,
-            241.0
-          ],
-          [
-            5.004612,
-            45.552897,
-            241.0
-          ],
-          [
-            5.004517,
-            45.552929,
-            241.0
-          ],
-          [
-            5.004346,
-            45.552963,
-            240.6
-          ],
-          [
-            5.004256,
-            45.552987,
-            240.3
-          ],
-          [
-            5.004167,
-            45.552994,
-            240.0
-          ],
-          [
-            5.004108,
-            45.552965,
-            240.0
-          ],
-          [
-            5.004066,
-            45.552908,
-            240.0
-          ],
-          [
-            5.004,
-            45.552799,
-            240.0
-          ],
-          [
-            5.003784,
-            45.552729,
-            240.2
-          ],
-          [
-            5.003355,
-            45.552588,
-            240.1
-          ],
-          [
-            5.003307,
-            45.552629,
-            240.0
-          ],
-          [
-            5.003257,
-            45.552681,
-            239.8
-          ],
-          [
-            5.003218,
-            45.552748,
-            239.6
-          ],
-          [
-            5.003163,
-            45.552882,
-            239.2
-          ],
-          [
-            5.003155,
-            45.552909,
-            239.2
-          ],
-          [
-            5.003123,
-            45.553004,
-            239.0
-          ],
-          [
-            5.003075,
-            45.553138,
-            238.7
-          ],
-          [
-            5.003021,
-            45.553298,
-            238.0
-          ],
-          [
-            5.001601,
-            45.553069,
-            237.0
-          ],
-          [
-            5.001385,
-            45.553669,
-            236.8
-          ],
-          [
-            5.001421,
-            45.553724,
-            236.6
-          ],
-          [
-            5.002746,
-            45.55394,
-            237.2
-          ],
-          [
-            5.002772,
-            45.553898,
-            237.0
-          ],
-          [
-            5.002813,
-            45.553863,
-            237.1
-          ],
-          [
-            5.003023,
-            45.553299,
-            238.0
-          ],
-          [
-            5.003519,
-            45.553319,
-            239.0
-          ]
-        ]
-      }
-    }
-  ]
+"type": "FeatureCollection",
+"name": "Calor Run 10km",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "lat": 45.553319, "lon": 5.003519, "ele": 239.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003519, 45.553319 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553299, "lon": 5.003024, "ele": 238.01, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003024, 45.553299 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553069, "lon": 5.001601, "ele": 237.0, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.001601, 45.553069 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553668, "lon": 5.001388, "ele": 236.795, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.001388, 45.553668 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553762, "lon": 5.001353, "ele": 236.387, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.001353, 45.553762 ] } },
+{ "type": "Feature", "properties": { "lat": 45.554898, "lon": 5.000969, "ele": 235.488, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.000969, 45.554898 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555072, "lon": 5.000822, "ele": 235.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.000822, 45.555072 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555494, "lon": 5.000568, "ele": 234.222, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.000568, 45.555494 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555568, "lon": 5.000554, "ele": 234.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.000554, 45.555568 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555632, "lon": 5.000591, "ele": 234.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.000591, 45.555632 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555678, "lon": 5.000666, "ele": 234.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.000666, 45.555678 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555689, "lon": 5.000779, "ele": 234.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.000779, 45.555689 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555878, "lon": 5.002769, "ele": 236.813, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.002769, 45.555878 ] } },
+{ "type": "Feature", "properties": { "lat": 45.555817, "lon": 5.002866, "ele": 236.701, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.002866, 45.555817 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55583, "lon": 5.002963, "ele": 236.341, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.002963, 45.55583 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553688, "lon": 5.004055, "ele": 239.125, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004055, 45.553688 ] } },
+{ "type": "Feature", "properties": { "lat": 45.5536, "lon": 5.003929, "ele": 239.861, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003929, 45.5536 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553285, "lon": 5.004091, "ele": 240.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004091, 45.553285 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553089, "lon": 5.004157, "ele": 240.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004157, 45.553089 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55303, "lon": 5.004188, "ele": 240.077, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004188, 45.55303 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552987, "lon": 5.004256, "ele": 240.322, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004256, 45.552987 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552963, "lon": 5.004346, "ele": 240.646, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004346, 45.552963 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552929, "lon": 5.004517, "ele": 241.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004517, 45.552929 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552897, "lon": 5.004612, "ele": 241.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004612, 45.552897 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552787, "lon": 5.004723, "ele": 241.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004723, 45.552787 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552717, "lon": 5.004791, "ele": 241.219, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004791, 45.552717 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552705, "lon": 5.004892, "ele": 241.262, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004892, 45.552705 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552635, "lon": 5.005028, "ele": 241.514, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.005028, 45.552635 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552609, "lon": 5.005141, "ele": 241.608, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.005141, 45.552609 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552582, "lon": 5.005266, "ele": 241.705, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005266, 45.552582 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552558, "lon": 5.005424, "ele": 241.791, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005424, 45.552558 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552546, "lon": 5.005568, "ele": 241.834, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005568, 45.552546 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552538, "lon": 5.005753, "ele": 241.863, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005753, 45.552538 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552533, "lon": 5.005905, "ele": 241.881, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005905, 45.552533 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552507, "lon": 5.006122, "ele": 241.975, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006122, 45.552507 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552494, "lon": 5.006202, "ele": 242.015, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006202, 45.552494 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55246, "lon": 5.006346, "ele": 242.022, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006346, 45.55246 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552442, "lon": 5.006457, "ele": 242.0, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006457, 45.552442 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55244, "lon": 5.006607, "ele": 242.0, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006607, 45.55244 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552441, "lon": 5.006763, "ele": 242.273, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006763, 45.552441 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552527, "lon": 5.007432, "ele": 243.852, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.007432, 45.552527 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552366, "lon": 5.008152, "ele": 247.865, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.008152, 45.552366 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552326, "lon": 5.008211, "ele": 247.933, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.008211, 45.552326 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552349, "lon": 5.008331, "ele": 248.448, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.008331, 45.552349 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552311, "lon": 5.008422, "ele": 249.162, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.008422, 45.552311 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552302, "lon": 5.008606, "ele": 250.814, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.008606, 45.552302 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552309, "lon": 5.008758, "ele": 256.292, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.008758, 45.552309 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552318, "lon": 5.008905, "ele": 261.214, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.008905, 45.552318 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552252, "lon": 5.009205, "ele": 267.68, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.009205, 45.552252 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552203, "lon": 5.009441, "ele": 272.088, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.009441, 45.552203 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552159, "lon": 5.009739, "ele": 275.069, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.009739, 45.552159 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552153, "lon": 5.009947, "ele": 276.008, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.009947, 45.552153 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552151, "lon": 5.010093, "ele": 276.368, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.010093, 45.552151 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552088, "lon": 5.010255, "ele": 277.86, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.010255, 45.552088 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552088, "lon": 5.010462, "ele": 277.921, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010462, 45.552088 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552074, "lon": 5.010735, "ele": 278.134, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010735, 45.552074 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551987, "lon": 5.010694, "ele": 279.387, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010694, 45.551987 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551864, "lon": 5.010611, "ele": 280.927, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010611, 45.551864 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551728, "lon": 5.01049, "ele": 282.39, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.01049, 45.551728 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551722, "lon": 5.010387, "ele": 282.523, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010387, 45.551722 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551629, "lon": 5.010258, "ele": 283.336, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010258, 45.551629 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551515, "lon": 5.010153, "ele": 284.189, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010153, 45.551515 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551418, "lon": 5.010094, "ele": 285.024, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010094, 45.551418 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551333, "lon": 5.010066, "ele": 285.534, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010066, 45.551333 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551214, "lon": 5.010071, "ele": 286.207, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010071, 45.551214 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551153, "lon": 5.010093, "ele": 286.753, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010093, 45.551153 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551088, "lon": 5.010159, "ele": 287.67, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010159, 45.551088 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551051, "lon": 5.010236, "ele": 288.786, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010236, 45.551051 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55102, "lon": 5.010348, "ele": 289.909, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010348, 45.55102 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551017, "lon": 5.010511, "ele": 290.517, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010511, 45.551017 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551045, "lon": 5.010877, "ele": 291.677, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010877, 45.551045 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55107, "lon": 5.011032, "ele": 291.338, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011032, 45.55107 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551094, "lon": 5.011168, "ele": 290.701, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011168, 45.551094 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551126, "lon": 5.011273, "ele": 289.682, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011273, 45.551126 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551179, "lon": 5.011355, "ele": 288.696, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011355, 45.551179 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551231, "lon": 5.01141, "ele": 287.974, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.01141, 45.551231 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551283, "lon": 5.011447, "ele": 287.394, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011447, 45.551283 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551338, "lon": 5.011467, "ele": 286.982, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011467, 45.551338 ] } },
+{ "type": "Feature", "properties": { "lat": 45.5514, "lon": 5.011466, "ele": 286.654, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011466, 45.5514 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551447, "lon": 5.011449, "ele": 286.41, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011449, 45.551447 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551495, "lon": 5.011413, "ele": 286.182, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011413, 45.551495 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551554, "lon": 5.011307, "ele": 285.811, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011307, 45.551554 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551589, "lon": 5.011214, "ele": 285.559, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.011214, 45.551589 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551728, "lon": 5.01049, "ele": 282.39, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.01049, 45.551728 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551864, "lon": 5.010611, "ele": 280.927, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010611, 45.551864 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551987, "lon": 5.010694, "ele": 279.387, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010694, 45.551987 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552074, "lon": 5.010735, "ele": 278.134, "highway": "path", "surface": "gravel" }, "geometry": { "type": "Point", "coordinates": [ 5.010735, 45.552074 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552411, "lon": 5.010912, "ele": 274.143, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.010912, 45.552411 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55246, "lon": 5.011065, "ele": 273.672, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.011065, 45.55246 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552559, "lon": 5.011244, "ele": 273.816, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.011244, 45.552559 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552621, "lon": 5.011363, "ele": 273.705, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.011363, 45.552621 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552639, "lon": 5.011571, "ele": 274.482, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.011571, 45.552639 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552645, "lon": 5.011741, "ele": 274.644, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.011741, 45.552645 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552615, "lon": 5.011902, "ele": 274.497, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.011902, 45.552615 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552514, "lon": 5.012418, "ele": 272.136, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012418, 45.552514 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552477, "lon": 5.012566, "ele": 270.912, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012566, 45.552477 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552443, "lon": 5.012644, "ele": 270.565, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012644, 45.552443 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552362, "lon": 5.012712, "ele": 269.831, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012712, 45.552362 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552274, "lon": 5.012746, "ele": 268.953, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012746, 45.552274 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552198, "lon": 5.012784, "ele": 267.872, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012784, 45.552198 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552112, "lon": 5.012843, "ele": 267.32, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012843, 45.552112 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552064, "lon": 5.012909, "ele": 267.024, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012909, 45.552064 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552035, "lon": 5.012982, "ele": 266.847, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012982, 45.552035 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552011, "lon": 5.013152, "ele": 266.76, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013152, 45.552011 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551982, "lon": 5.013325, "ele": 266.865, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013325, 45.551982 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551973, "lon": 5.013381, "ele": 267.086, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013381, 45.551973 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551929, "lon": 5.013534, "ele": 267.985, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013534, 45.551929 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551866, "lon": 5.013688, "ele": 269.773, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013688, 45.551866 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551599, "lon": 5.013965, "ele": 272.107, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013965, 45.551599 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551528, "lon": 5.014004, "ele": 273.946, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.014004, 45.551528 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551423, "lon": 5.013995, "ele": 275.867, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013995, 45.551423 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551017, "lon": 5.013829, "ele": 282.994, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013829, 45.551017 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550967, "lon": 5.013814, "ele": 283.526, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013814, 45.550967 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550872, "lon": 5.013805, "ele": 284.621, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013805, 45.550872 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550685, "lon": 5.013829, "ele": 287.374, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013829, 45.550685 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550623, "lon": 5.013902, "ele": 289.205, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013902, 45.550623 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550512, "lon": 5.014174, "ele": 293.554, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.014174, 45.550512 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550436, "lon": 5.014366, "ele": 296.753, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.014366, 45.550436 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550417, "lon": 5.014525, "ele": 298.575, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.014525, 45.550417 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550423, "lon": 5.015005, "ele": 301.468, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015005, 45.550423 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550414, "lon": 5.015109, "ele": 302.314, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015109, 45.550414 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550397, "lon": 5.01519, "ele": 303.08, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.01519, 45.550397 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550365, "lon": 5.015264, "ele": 303.959, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015264, 45.550365 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550232, "lon": 5.015434, "ele": 305.655, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015434, 45.550232 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550065, "lon": 5.015642, "ele": 307.627, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015642, 45.550065 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549646, "lon": 5.016262, "ele": 313.436, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016262, 45.549646 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549556, "lon": 5.016396, "ele": 314.468, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016396, 45.549556 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549511, "lon": 5.016493, "ele": 315.274, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016493, 45.549511 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549396, "lon": 5.016825, "ele": 318.211, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016825, 45.549396 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549347, "lon": 5.017061, "ele": 319.865, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017061, 45.549347 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549336, "lon": 5.017338, "ele": 321.606, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017338, 45.549336 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54933, "lon": 5.017598, "ele": 323.353, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017598, 45.54933 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549298, "lon": 5.018013, "ele": 324.847, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.018013, 45.549298 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549246, "lon": 5.018716, "ele": 326.822, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.018716, 45.549246 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549216, "lon": 5.019133, "ele": 327.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019133, 45.549216 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549131, "lon": 5.019431, "ele": 327.122, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019431, 45.549131 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549057, "lon": 5.019602, "ele": 327.395, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019602, 45.549057 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548952, "lon": 5.019809, "ele": 327.773, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019809, 45.548952 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548653, "lon": 5.020326, "ele": 329.023, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.020326, 45.548653 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548306, "lon": 5.02096, "ele": 331.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02096, 45.548306 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547932, "lon": 5.021749, "ele": 330.11, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.021749, 45.547932 ] } },
+{ "type": "Feature", "properties": { "lat": 45.5479, "lon": 5.021878, "ele": 329.88, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.021878, 45.5479 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547801, "lon": 5.022371, "ele": 330.574, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022371, 45.547801 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547722, "lon": 5.022705, "ele": 331.389, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022705, 45.547722 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547599, "lon": 5.02313, "ele": 331.356, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02313, 45.547599 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547485, "lon": 5.023714, "ele": 331.804, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023714, 45.547485 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547424, "lon": 5.024176, "ele": 331.161, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.024176, 45.547424 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547429, "lon": 5.024385, "ele": 330.831, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.024385, 45.547429 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547522, "lon": 5.02481, "ele": 332.37, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02481, 45.547522 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547525, "lon": 5.02492, "ele": 332.738, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02492, 45.547525 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547455, "lon": 5.025157, "ele": 333.333, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025157, 45.547455 ] } },
+{ "type": "Feature", "properties": { "lat": 45.5474, "lon": 5.025322, "ele": 333.697, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025322, 45.5474 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547311, "lon": 5.025728, "ele": 335.043, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025728, 45.547311 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547241, "lon": 5.026041, "ele": 336.731, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026041, 45.547241 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547193, "lon": 5.026304, "ele": 337.767, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026304, 45.547193 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547166, "lon": 5.026581, "ele": 339.586, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026581, 45.547166 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547155, "lon": 5.026811, "ele": 340.762, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026811, 45.547155 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547144, "lon": 5.027054, "ele": 341.787, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.027054, 45.547144 ] } },
+{ "type": "Feature", "properties": { "lat": 45.546925, "lon": 5.026934, "ele": 342.097, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.026934, 45.546925 ] } },
+{ "type": "Feature", "properties": { "lat": 45.546696, "lon": 5.02682, "ele": 342.539, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.02682, 45.546696 ] } },
+{ "type": "Feature", "properties": { "lat": 45.546473, "lon": 5.026707, "ele": 342.729, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.026707, 45.546473 ] } },
+{ "type": "Feature", "properties": { "lat": 45.546264, "lon": 5.02661, "ele": 343.042, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.02661, 45.546264 ] } },
+{ "type": "Feature", "properties": { "lat": 45.545863, "lon": 5.026437, "ele": 343.085, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026437, 45.545863 ] } },
+{ "type": "Feature", "properties": { "lat": 45.545484, "lon": 5.026394, "ele": 343.032, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026394, 45.545484 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54546, "lon": 5.026403, "ele": 343.084, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026403, 45.54546 ] } },
+{ "type": "Feature", "properties": { "lat": 45.545056, "lon": 5.026633, "ele": 343.782, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026633, 45.545056 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54502, "lon": 5.026663, "ele": 343.975, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026663, 45.54502 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544985, "lon": 5.026716, "ele": 344.247, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026716, 45.544985 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544919, "lon": 5.02683, "ele": 344.593, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02683, 45.544919 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544837, "lon": 5.026925, "ele": 344.686, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026925, 45.544837 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544641, "lon": 5.027147, "ele": 345.682, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027147, 45.544641 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54461, "lon": 5.027181, "ele": 345.807, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027181, 45.54461 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544491, "lon": 5.02724, "ele": 345.58, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02724, 45.544491 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544337, "lon": 5.027314, "ele": 346.967, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027314, 45.544337 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544314, "lon": 5.027321, "ele": 347.195, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027321, 45.544314 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544137, "lon": 5.027321, "ele": 348.242, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027321, 45.544137 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543798, "lon": 5.027326, "ele": 350.607, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027326, 45.543798 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54365, "lon": 5.027315, "ele": 351.961, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027315, 45.54365 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543391, "lon": 5.027323, "ele": 354.235, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027323, 45.543391 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543304, "lon": 5.027313, "ele": 354.83, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027313, 45.543304 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543024, "lon": 5.027272, "ele": 356.313, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027272, 45.543024 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542341, "lon": 5.027278, "ele": 358.859, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.027278, 45.542341 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542284, "lon": 5.028197, "ele": 361.732, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.028197, 45.542284 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542204, "lon": 5.02932, "ele": 366.618, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.02932, 45.542204 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542059, "lon": 5.029398, "ele": 367.42, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.029398, 45.542059 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542024, "lon": 5.029417, "ele": 367.615, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.029417, 45.542024 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541828, "lon": 5.029594, "ele": 369.27, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.029594, 45.541828 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541282, "lon": 5.030086, "ele": 374.65, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.030086, 45.541282 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540674, "lon": 5.030621, "ele": 375.799, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.030621, 45.540674 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540203, "lon": 5.03103, "ele": 376.921, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.03103, 45.540203 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54009, "lon": 5.031127, "ele": 376.981, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.031127, 45.54009 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539992, "lon": 5.031164, "ele": 377.011, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.031164, 45.539992 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539801, "lon": 5.031186, "ele": 377.386, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.031186, 45.539801 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539732, "lon": 5.031195, "ele": 377.583, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.031195, 45.539732 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539662, "lon": 5.031222, "ele": 377.451, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.031222, 45.539662 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539579, "lon": 5.03126, "ele": 377.317, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.03126, 45.539579 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539409, "lon": 5.031422, "ele": 377.423, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.031422, 45.539409 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538886, "lon": 5.031975, "ele": 375.061, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.031975, 45.538886 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538692, "lon": 5.03212, "ele": 373.432, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.03212, 45.538692 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538565, "lon": 5.032218, "ele": 373.441, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032218, 45.538565 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538459, "lon": 5.032271, "ele": 372.901, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032271, 45.538459 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538302, "lon": 5.032336, "ele": 372.3, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032336, 45.538302 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537832, "lon": 5.032508, "ele": 371.287, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032508, 45.537832 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537779, "lon": 5.032524, "ele": 371.264, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032524, 45.537779 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537604, "lon": 5.032634, "ele": 371.52, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032634, 45.537604 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537402, "lon": 5.032741, "ele": 370.936, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032741, 45.537402 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536923, "lon": 5.032937, "ele": 370.687, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.032937, 45.536923 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536684, "lon": 5.033045, "ele": 371.85, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033045, 45.536684 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536509, "lon": 5.033122, "ele": 372.239, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033122, 45.536509 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536473, "lon": 5.033154, "ele": 372.354, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033154, 45.536473 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536189, "lon": 5.033422, "ele": 374.039, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033422, 45.536189 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535963, "lon": 5.033675, "ele": 375.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033675, 45.535963 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535859, "lon": 5.033788, "ele": 375.0, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033788, 45.535859 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535785, "lon": 5.033851, "ele": 374.628, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033851, 45.535785 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535611, "lon": 5.03399, "ele": 373.763, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.03399, 45.535611 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535584, "lon": 5.034013, "ele": 373.652, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.034013, 45.535584 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535424, "lon": 5.034234, "ele": 373.641, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.034234, 45.535424 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535407, "lon": 5.034258, "ele": 373.641, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.034258, 45.535407 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535376, "lon": 5.034268, "ele": 373.589, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.034268, 45.535376 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535309, "lon": 5.03428, "ele": 373.475, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.03428, 45.535309 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53528, "lon": 5.03428, "ele": 373.413, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.03428, 45.53528 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535245, "lon": 5.034268, "ele": 373.601, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.034268, 45.535245 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535194, "lon": 5.034245, "ele": 373.885, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.034245, 45.535194 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535171, "lon": 5.034227, "ele": 373.986, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.034227, 45.535171 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534887, "lon": 5.033864, "ele": 373.724, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033864, 45.534887 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534843, "lon": 5.0338, "ele": 373.81, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.0338, 45.534843 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534762, "lon": 5.033728, "ele": 374.134, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033728, 45.534762 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534648, "lon": 5.033625, "ele": 374.571, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033625, 45.534648 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534538, "lon": 5.033529, "ele": 375.13, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033529, 45.534538 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53446, "lon": 5.033485, "ele": 375.459, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033485, 45.53446 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534224, "lon": 5.03336, "ele": 375.89, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.03336, 45.534224 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534199, "lon": 5.033348, "ele": 375.936, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.033348, 45.534199 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53402, "lon": 5.033318, "ele": 377.001, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.033318, 45.53402 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533879, "lon": 5.032999, "ele": 376.86, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.032999, 45.533879 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533702, "lon": 5.032707, "ele": 376.163, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.032707, 45.533702 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533449, "lon": 5.032417, "ele": 375.52, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.032417, 45.533449 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533037, "lon": 5.032114, "ele": 374.221, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.032114, 45.533037 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531295, "lon": 5.030883, "ele": 368.396, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.030883, 45.531295 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531293, "lon": 5.03064, "ele": 368.345, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.03064, 45.531293 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531305, "lon": 5.030423, "ele": 368.302, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.030423, 45.531305 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531369, "lon": 5.030089, "ele": 368.703, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.030089, 45.531369 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531425, "lon": 5.029764, "ele": 368.87, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.029764, 45.531425 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531641, "lon": 5.029131, "ele": 368.197, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.029131, 45.531641 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531697, "lon": 5.02895, "ele": 368.695, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.02895, 45.531697 ] } },
+{ "type": "Feature", "properties": { "lat": 45.531863, "lon": 5.028317, "ele": 368.335, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.028317, 45.531863 ] } },
+{ "type": "Feature", "properties": { "lat": 45.532017, "lon": 5.027698, "ele": 368.765, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.027698, 45.532017 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53209, "lon": 5.027365, "ele": 369.693, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.027365, 45.53209 ] } },
+{ "type": "Feature", "properties": { "lat": 45.532116, "lon": 5.027202, "ele": 370.5, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.027202, 45.532116 ] } },
+{ "type": "Feature", "properties": { "lat": 45.532289, "lon": 5.027044, "ele": 370.802, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.027044, 45.532289 ] } },
+{ "type": "Feature", "properties": { "lat": 45.532793, "lon": 5.026701, "ele": 370.698, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.026701, 45.532793 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533103, "lon": 5.02648, "ele": 370.445, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.02648, 45.533103 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533195, "lon": 5.026382, "ele": 370.523, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.026382, 45.533195 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533289, "lon": 5.026225, "ele": 370.75, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026225, 45.533289 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533725, "lon": 5.026216, "ele": 366.392, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026216, 45.533725 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533909, "lon": 5.026216, "ele": 364.378, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026216, 45.533909 ] } },
+{ "type": "Feature", "properties": { "lat": 45.533992, "lon": 5.026256, "ele": 363.171, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026256, 45.533992 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534051, "lon": 5.026373, "ele": 361.756, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026373, 45.534051 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534154, "lon": 5.026592, "ele": 359.451, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026592, 45.534154 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534222, "lon": 5.026741, "ele": 358.081, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026741, 45.534222 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534362, "lon": 5.02693, "ele": 355.276, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02693, 45.534362 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534423, "lon": 5.026955, "ele": 354.163, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026955, 45.534423 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53449, "lon": 5.026966, "ele": 352.529, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026966, 45.53449 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534617, "lon": 5.026942, "ele": 349.669, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026942, 45.534617 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534714, "lon": 5.026921, "ele": 347.376, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026921, 45.534714 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53481, "lon": 5.026913, "ele": 346.034, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026913, 45.53481 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534888, "lon": 5.026966, "ele": 344.317, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026966, 45.534888 ] } },
+{ "type": "Feature", "properties": { "lat": 45.534981, "lon": 5.027179, "ele": 340.625, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027179, 45.534981 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535057, "lon": 5.027224, "ele": 339.373, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027224, 45.535057 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535145, "lon": 5.027226, "ele": 338.414, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027226, 45.535145 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535336, "lon": 5.027061, "ele": 338.2, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.027061, 45.535336 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535658, "lon": 5.026778, "ele": 338.356, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026778, 45.535658 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535684, "lon": 5.026768, "ele": 338.318, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026768, 45.535684 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535844, "lon": 5.026743, "ele": 337.687, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026743, 45.535844 ] } },
+{ "type": "Feature", "properties": { "lat": 45.535927, "lon": 5.026684, "ele": 337.6, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026684, 45.535927 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536551, "lon": 5.026237, "ele": 338.51, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026237, 45.536551 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536633, "lon": 5.026208, "ele": 338.424, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026208, 45.536633 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536909, "lon": 5.026124, "ele": 337.122, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026124, 45.536909 ] } },
+{ "type": "Feature", "properties": { "lat": 45.536979, "lon": 5.026102, "ele": 336.85, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.026102, 45.536979 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537741, "lon": 5.025754, "ele": 339.086, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025754, 45.537741 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537786, "lon": 5.025731, "ele": 339.444, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025731, 45.537786 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537844, "lon": 5.025672, "ele": 340.085, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025672, 45.537844 ] } },
+{ "type": "Feature", "properties": { "lat": 45.537936, "lon": 5.025552, "ele": 341.462, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025552, 45.537936 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538077, "lon": 5.025339, "ele": 342.388, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025339, 45.538077 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538157, "lon": 5.025332, "ele": 341.808, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025332, 45.538157 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538317, "lon": 5.025309, "ele": 340.787, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025309, 45.538317 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538383, "lon": 5.025297, "ele": 340.09, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025297, 45.538383 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538531, "lon": 5.025257, "ele": 338.207, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025257, 45.538531 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538571, "lon": 5.02525, "ele": 337.663, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02525, 45.538571 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538589, "lon": 5.025259, "ele": 337.381, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025259, 45.538589 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538712, "lon": 5.02543, "ele": 334.814, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02543, 45.538712 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538735, "lon": 5.025455, "ele": 334.386, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025455, 45.538735 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538773, "lon": 5.025481, "ele": 333.788, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025481, 45.538773 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538836, "lon": 5.025509, "ele": 332.906, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025509, 45.538836 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538883, "lon": 5.025528, "ele": 332.262, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025528, 45.538883 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538956, "lon": 5.025534, "ele": 330.966, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025534, 45.538956 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539024, "lon": 5.025522, "ele": 329.868, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025522, 45.539024 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539081, "lon": 5.025497, "ele": 329.109, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025497, 45.539081 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539145, "lon": 5.025431, "ele": 328.7, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025431, 45.539145 ] } },
+{ "type": "Feature", "properties": { "lat": 45.5392, "lon": 5.025376, "ele": 327.654, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025376, 45.5392 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539244, "lon": 5.025298, "ele": 326.957, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025298, 45.539244 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539312, "lon": 5.025186, "ele": 325.114, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025186, 45.539312 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539337, "lon": 5.025137, "ele": 324.49, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.025137, 45.539337 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539389, "lon": 5.024968, "ele": 323.597, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.024968, 45.539389 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539411, "lon": 5.024865, "ele": 322.963, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.024865, 45.539411 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539434, "lon": 5.024734, "ele": 322.301, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.024734, 45.539434 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539457, "lon": 5.02459, "ele": 320.846, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02459, 45.539457 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539482, "lon": 5.024439, "ele": 318.921, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.024439, 45.539482 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539509, "lon": 5.024276, "ele": 316.118, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.024276, 45.539509 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539545, "lon": 5.02407, "ele": 313.56, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02407, 45.539545 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539558, "lon": 5.023985, "ele": 312.975, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023985, 45.539558 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539568, "lon": 5.023856, "ele": 312.052, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023856, 45.539568 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539564, "lon": 5.023746, "ele": 310.495, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023746, 45.539564 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53955, "lon": 5.023623, "ele": 308.912, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023623, 45.53955 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539506, "lon": 5.023518, "ele": 307.882, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023518, 45.539506 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539463, "lon": 5.023454, "ele": 307.319, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023454, 45.539463 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539398, "lon": 5.023395, "ele": 306.926, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023395, 45.539398 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539293, "lon": 5.023323, "ele": 305.864, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023323, 45.539293 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539126, "lon": 5.023238, "ele": 304.598, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023238, 45.539126 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539024, "lon": 5.023183, "ele": 303.212, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023183, 45.539024 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538979, "lon": 5.023156, "ele": 302.531, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023156, 45.538979 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538935, "lon": 5.023114, "ele": 301.473, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023114, 45.538935 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538903, "lon": 5.023052, "ele": 299.937, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.023052, 45.538903 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538882, "lon": 5.022978, "ele": 298.629, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022978, 45.538882 ] } },
+{ "type": "Feature", "properties": { "lat": 45.53888, "lon": 5.022868, "ele": 296.656, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022868, 45.53888 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538904, "lon": 5.022718, "ele": 294.123, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022718, 45.538904 ] } },
+{ "type": "Feature", "properties": { "lat": 45.538956, "lon": 5.022617, "ele": 292.087, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022617, 45.538956 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539037, "lon": 5.022549, "ele": 289.604, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022549, 45.539037 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539134, "lon": 5.022506, "ele": 286.789, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022506, 45.539134 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539243, "lon": 5.022475, "ele": 284.95, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022475, 45.539243 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539352, "lon": 5.022462, "ele": 283.514, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022462, 45.539352 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539556, "lon": 5.022473, "ele": 281.715, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022473, 45.539556 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539667, "lon": 5.022479, "ele": 281.229, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022479, 45.539667 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539702, "lon": 5.022475, "ele": 281.086, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022475, 45.539702 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539758, "lon": 5.022461, "ele": 280.742, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022461, 45.539758 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539821, "lon": 5.022458, "ele": 280.289, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022458, 45.539821 ] } },
+{ "type": "Feature", "properties": { "lat": 45.539991, "lon": 5.022469, "ele": 279.065, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022469, 45.539991 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54001, "lon": 5.022469, "ele": 279.072, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022469, 45.54001 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540036, "lon": 5.02245, "ele": 279.259, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02245, 45.540036 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540066, "lon": 5.02243, "ele": 279.475, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02243, 45.540066 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540082, "lon": 5.022416, "ele": 279.59, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022416, 45.540082 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540101, "lon": 5.022392, "ele": 279.727, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022392, 45.540101 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540133, "lon": 5.022318, "ele": 279.958, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022318, 45.540133 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540139, "lon": 5.022275, "ele": 280.001, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022275, 45.540139 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540144, "lon": 5.022196, "ele": 279.939, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022196, 45.540144 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540148, "lon": 5.022172, "ele": 279.873, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.022172, 45.540148 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540349, "lon": 5.021823, "ele": 280.032, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.021823, 45.540349 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540501, "lon": 5.021567, "ele": 281.699, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.021567, 45.540501 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540556, "lon": 5.021439, "ele": 280.097, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.021439, 45.540556 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54064, "lon": 5.02124, "ele": 280.338, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.02124, 45.54064 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540794, "lon": 5.020816, "ele": 279.264, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.020816, 45.540794 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540961, "lon": 5.020326, "ele": 278.944, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.020326, 45.540961 ] } },
+{ "type": "Feature", "properties": { "lat": 45.540979, "lon": 5.020268, "ele": 279.105, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.020268, 45.540979 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541129, "lon": 5.019943, "ele": 278.36, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019943, 45.541129 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541216, "lon": 5.019792, "ele": 277.522, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019792, 45.541216 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54129, "lon": 5.0197, "ele": 277.526, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.0197, 45.54129 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541649, "lon": 5.019367, "ele": 276.684, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019367, 45.541649 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541701, "lon": 5.019302, "ele": 276.507, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019302, 45.541701 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541748, "lon": 5.019221, "ele": 276.189, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.019221, 45.541748 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54182, "lon": 5.018932, "ele": 275.915, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.018932, 45.54182 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541982, "lon": 5.018219, "ele": 274.75, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.018219, 45.541982 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542017, "lon": 5.018072, "ele": 275.164, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.018072, 45.542017 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542025, "lon": 5.017962, "ele": 274.886, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017962, 45.542025 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542036, "lon": 5.017828, "ele": 274.548, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017828, 45.542036 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542047, "lon": 5.017697, "ele": 274.294, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017697, 45.542047 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542025, "lon": 5.017563, "ele": 273.257, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017563, 45.542025 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542002, "lon": 5.017391, "ele": 272.532, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017391, 45.542002 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541985, "lon": 5.017254, "ele": 272.151, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.017254, 45.541985 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541969, "lon": 5.016928, "ele": 271.214, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016928, 45.541969 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541929, "lon": 5.016139, "ele": 269.039, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016139, 45.541929 ] } },
+{ "type": "Feature", "properties": { "lat": 45.541963, "lon": 5.016131, "ele": 269.697, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016131, 45.541963 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542008, "lon": 5.01608, "ele": 270.707, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.01608, 45.542008 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54204, "lon": 5.016029, "ele": 270.996, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.016029, 45.54204 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542094, "lon": 5.015986, "ele": 271.732, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015986, 45.542094 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542138, "lon": 5.015932, "ele": 271.735, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015932, 45.542138 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54226, "lon": 5.015774, "ele": 271.768, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015774, 45.54226 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54235, "lon": 5.015626, "ele": 272.791, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015626, 45.54235 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542495, "lon": 5.015398, "ele": 272.504, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015398, 45.542495 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542581, "lon": 5.015253, "ele": 272.065, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.015253, 45.542581 ] } },
+{ "type": "Feature", "properties": { "lat": 45.542872, "lon": 5.014738, "ele": 271.128, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.014738, 45.542872 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543026, "lon": 5.014494, "ele": 270.781, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.014494, 45.543026 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543222, "lon": 5.014199, "ele": 270.161, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.014199, 45.543222 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54364, "lon": 5.013599, "ele": 264.311, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013599, 45.54364 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543719, "lon": 5.013593, "ele": 265.322, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013593, 45.543719 ] } },
+{ "type": "Feature", "properties": { "lat": 45.543811, "lon": 5.013561, "ele": 265.998, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013561, 45.543811 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54417, "lon": 5.013413, "ele": 265.738, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013413, 45.54417 ] } },
+{ "type": "Feature", "properties": { "lat": 45.544692, "lon": 5.013204, "ele": 264.148, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013204, 45.544692 ] } },
+{ "type": "Feature", "properties": { "lat": 45.545064, "lon": 5.013065, "ele": 261.665, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013065, 45.545064 ] } },
+{ "type": "Feature", "properties": { "lat": 45.545207, "lon": 5.013016, "ele": 261.851, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.013016, 45.545207 ] } },
+{ "type": "Feature", "properties": { "lat": 45.545549, "lon": 5.01299, "ele": 262.05, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.01299, 45.545549 ] } },
+{ "type": "Feature", "properties": { "lat": 45.545767, "lon": 5.012963, "ele": 263.19, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012963, 45.545767 ] } },
+{ "type": "Feature", "properties": { "lat": 45.54606, "lon": 5.012912, "ele": 262.777, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012912, 45.54606 ] } },
+{ "type": "Feature", "properties": { "lat": 45.546233, "lon": 5.01288, "ele": 262.221, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.01288, 45.546233 ] } },
+{ "type": "Feature", "properties": { "lat": 45.546642, "lon": 5.012721, "ele": 259.201, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012721, 45.546642 ] } },
+{ "type": "Feature", "properties": { "lat": 45.546735, "lon": 5.012698, "ele": 259.273, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012698, 45.546735 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547007, "lon": 5.012658, "ele": 260.1, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012658, 45.547007 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547196, "lon": 5.012632, "ele": 260.237, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012632, 45.547196 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547542, "lon": 5.01259, "ele": 262.12, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.01259, 45.547542 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547675, "lon": 5.012461, "ele": 260.062, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012461, 45.547675 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547779, "lon": 5.012418, "ele": 260.864, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012418, 45.547779 ] } },
+{ "type": "Feature", "properties": { "lat": 45.547867, "lon": 5.012303, "ele": 261.651, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.012303, 45.547867 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548023, "lon": 5.011227, "ele": 255.368, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.011227, 45.548023 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548062, "lon": 5.01093, "ele": 254.434, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.01093, 45.548062 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548139, "lon": 5.010546, "ele": 253.955, "highway": "path", "surface": "ground" }, "geometry": { "type": "Point", "coordinates": [ 5.010546, 45.548139 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548168, "lon": 5.010219, "ele": 252.807, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.010219, 45.548168 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548586, "lon": 5.010015, "ele": 252.184, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.010015, 45.548586 ] } },
+{ "type": "Feature", "properties": { "lat": 45.548739, "lon": 5.009953, "ele": 252.213, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.009953, 45.548739 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549017, "lon": 5.009878, "ele": 252.38, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.009878, 45.549017 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549204, "lon": 5.009819, "ele": 252.139, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.009819, 45.549204 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549482, "lon": 5.00968, "ele": 251.344, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.00968, 45.549482 ] } },
+{ "type": "Feature", "properties": { "lat": 45.549764, "lon": 5.009535, "ele": 252.125, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.009535, 45.549764 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550099, "lon": 5.009353, "ele": 250.82, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.009353, 45.550099 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550533, "lon": 5.009131, "ele": 249.672, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.009131, 45.550533 ] } },
+{ "type": "Feature", "properties": { "lat": 45.550895, "lon": 5.008949, "ele": 249.889, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.008949, 45.550895 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55143, "lon": 5.008666, "ele": 248.503, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.008666, 45.55143 ] } },
+{ "type": "Feature", "properties": { "lat": 45.551951, "lon": 5.008398, "ele": 247.262, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.008398, 45.551951 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552326, "lon": 5.008211, "ele": 247.933, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.008211, 45.552326 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552366, "lon": 5.008152, "ele": 247.865, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.008152, 45.552366 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552527, "lon": 5.007432, "ele": 243.852, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.007432, 45.552527 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552441, "lon": 5.006763, "ele": 242.273, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006763, 45.552441 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55244, "lon": 5.006607, "ele": 242.0, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006607, 45.55244 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552442, "lon": 5.006457, "ele": 242.0, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006457, 45.552442 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55246, "lon": 5.006346, "ele": 242.022, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006346, 45.55246 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552494, "lon": 5.006202, "ele": 242.015, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006202, 45.552494 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552507, "lon": 5.006122, "ele": 241.975, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.006122, 45.552507 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552533, "lon": 5.005905, "ele": 241.881, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005905, 45.552533 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552538, "lon": 5.005753, "ele": 241.863, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005753, 45.552538 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552546, "lon": 5.005568, "ele": 241.834, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.005568, 45.552546 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552558, "lon": 5.005424, "ele": 241.791, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.005424, 45.552558 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552582, "lon": 5.005266, "ele": 241.705, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.005266, 45.552582 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552609, "lon": 5.005141, "ele": 241.608, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.005141, 45.552609 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552635, "lon": 5.005028, "ele": 241.514, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.005028, 45.552635 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552705, "lon": 5.004892, "ele": 241.262, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004892, 45.552705 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552717, "lon": 5.004791, "ele": 241.219, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004791, 45.552717 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552787, "lon": 5.004723, "ele": 241.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004723, 45.552787 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552897, "lon": 5.004612, "ele": 241.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004612, 45.552897 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552929, "lon": 5.004517, "ele": 241.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004517, 45.552929 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552963, "lon": 5.004346, "ele": 240.646, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004346, 45.552963 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552987, "lon": 5.004256, "ele": 240.322, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004256, 45.552987 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552994, "lon": 5.004167, "ele": 240.001, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004167, 45.552994 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552965, "lon": 5.004108, "ele": 240.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004108, 45.552965 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552908, "lon": 5.004066, "ele": 240.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004066, 45.552908 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552799, "lon": 5.004, "ele": 240.0, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.004, 45.552799 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552729, "lon": 5.003784, "ele": 240.176, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003784, 45.552729 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552588, "lon": 5.003355, "ele": 240.053, "highway": "track", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003355, 45.552588 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552629, "lon": 5.003307, "ele": 239.956, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003307, 45.552629 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552681, "lon": 5.003257, "ele": 239.821, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003257, 45.552681 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552748, "lon": 5.003218, "ele": 239.629, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003218, 45.552748 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552882, "lon": 5.003163, "ele": 239.242, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003163, 45.552882 ] } },
+{ "type": "Feature", "properties": { "lat": 45.552909, "lon": 5.003155, "ele": 239.189, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003155, 45.552909 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553004, "lon": 5.003123, "ele": 239.045, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003123, 45.553004 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553138, "lon": 5.003075, "ele": 238.724, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003075, 45.553138 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553298, "lon": 5.003021, "ele": 238.003, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.003021, 45.553298 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553069, "lon": 5.001601, "ele": 237.0, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.001601, 45.553069 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553669, "lon": 5.001385, "ele": 236.789, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.001385, 45.553669 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553724, "lon": 5.001421, "ele": 236.594, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.001421, 45.553724 ] } },
+{ "type": "Feature", "properties": { "lat": 45.55394, "lon": 5.002746, "ele": 237.184, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.002746, 45.55394 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553898, "lon": 5.002772, "ele": 237.033, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.002772, 45.553898 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553863, "lon": 5.002813, "ele": 237.127, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.002813, 45.553863 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553299, "lon": 5.003023, "ele": 238.006, "highway": "path", "surface": "grass" }, "geometry": { "type": "Point", "coordinates": [ 5.003023, 45.553299 ] } },
+{ "type": "Feature", "properties": { "lat": 45.553319, "lon": 5.003519, "ele": 239.0, "highway": "path", "surface": "asphalt" }, "geometry": { "type": "Point", "coordinates": [ 5.003519, 45.553319 ] } }
+]
 }
